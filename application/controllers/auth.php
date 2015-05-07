@@ -15,7 +15,8 @@ class Auth extends CI_Controller {
 		if (!$this->ion_auth->logged_in())
 		{
 			//redirect them to the login page
-			redirect('auth/login', 'refresh');
+			redirect('auth/Principal', 'refresh');
+			//redirect('auth/login', 'refresh');
 		}
 		elseif ($this->ion_auth->in_group('general')) //remove this elseif if you want to enable this for non-admins
 		{
@@ -83,6 +84,11 @@ class Auth extends CI_Controller {
 		$this->load->view('detalle_conv_view');
 	}
 
+	function verReportes()
+	{
+		$this->load->view('reportes/reportes_view');
+	}
+
 	//log the user in
 	function login()
 	{
@@ -143,7 +149,7 @@ class Auth extends CI_Controller {
 
 		//redirect them to the login page
 		$this->session->set_flashdata('message', $this->ion_auth->messages());
-		redirect('auth/login', 'refresh');
+		redirect('auth', 'refresh');
 	}
 
 	//change password

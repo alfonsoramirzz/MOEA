@@ -8,7 +8,7 @@
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
-            <a href="#" class="navbar-brand">
+            <a href="#" class="navbar-brand" id="menu-toggle">
                 <strog class="titulo">MOVILIDAD</strong>
             </a>      
           </div>
@@ -20,12 +20,7 @@
                     <span class="usuario-icono usuario">&nbsp;INGRESA</span>
                 </a>
               </li>
-              <li>
-                <a class=" btn-menu usuario-icono" id="menu-toggle">
-                  <span class="usuario-icono"></span>
-                  <span id="btn-toggle" class="glyphicon glyphicon-triangle-right usuario-icono">MOSTRAR</span>
-                </a>
-              </li>
+              <li id="li-user"></li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>
@@ -41,7 +36,7 @@
             <div>
               <h5><small><strong>YA SOY USUARIO MOVILIDAD</strong></small></h5>
               <p><small>Introduce tu dirección de e-mail y la contraseña para identificarte en la web.</small></p>
-              <form class="form-horizontal" name="form" action="#" method="POST">
+              <form class="form-horizontal" name="form" action="<?php base_url();?>login" method="POST">
                 <div>         
                   <input type="email" name="identity" class="form-control"/><br>
                 </div>
@@ -107,6 +102,12 @@
                     <a onclick="verMiHistorico()">
                       <i class="glyphicon glyphicon-file "></i>
                       <span>MI HISTORIAL</span>
+                    </a>
+                </li>
+                <li>
+                    <a onclick="verReportes()">
+                      <i class="glyphicon glyphicon-file "></i>
+                      <span>REPORTES</span>
                     </a>
                 </li>
             </ul>
