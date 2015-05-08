@@ -11,6 +11,7 @@ class Auth extends CI_Controller {
 	//redirect if needed, otherwise display the user list
 	function index()
 	{
+		$this->_example_output((object)array('output' => '' , 'js_files' => array() , 'css_files' => array()));
 
 		if (!$this->ion_auth->logged_in())
 		{
@@ -84,9 +85,24 @@ class Auth extends CI_Controller {
 		$this->load->view('detalle_conv_view');
 	}
 
-	function verReportes()
+	function verReporte()
 	{
 		$this->load->view('reportes/reportes_view');
+	}
+
+	function verReporteContenido()
+	{
+		$crud = new grocery_CRUD();
+
+		$crud->set_table('groups');		
+		$crud->unset_delete();
+		$crud->unset_edit();
+		$crud->unset_add();
+		$crud->unset_read();
+
+		$output = $crud->render();
+
+		$this->load->view('reportes/reportecontenido_view',$output);
 	}
 
 	//log the user in

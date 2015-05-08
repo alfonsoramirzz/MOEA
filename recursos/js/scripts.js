@@ -6,18 +6,6 @@ window.onload = function(e)
 $("#menu-toggle").click(function(e) {
     e.preventDefault();
     $("#wrapper").toggleClass("toggled");
-    if ($("#btn-toggle").text() == 'MOSTRAR') 
-    {
-        $("#btn-toggle").text("OCULTAR");
-        $("#btn-toggle").toggleClass("glyphicon glyphicon-triangle-right"," ");
-        $("#btn-toggle").addClass('glyphicon glyphicon-triangle-left');
-    }
-    else
-    {
-        $("#btn-toggle").text("MOSTRAR");
-        $("#btn-toggle").toggleClass("glyphicon glyphicon-triangle-left", " ");
-        $("#btn-toggle").addClass('glyphicon glyphicon-triangle-right');
-    };
 });
 
 
@@ -32,9 +20,6 @@ function verConvocatorias()
                             try
                             {     
                                 $("#wrapper").toggleClass("toggled");
-                                $("#btn-toggle").text("MOSTRAR");
-                                $("#btn-toggle").toggleClass("glyphicon glyphicon-triangle-left", " ");
-                                $("#btn-toggle").addClass('glyphicon glyphicon-triangle-right');
                                 $("#page-content-wrapper").html(jso);                                 
                             }catch(e)
                             {
@@ -59,9 +44,6 @@ function verConvInfor()
                             try
                             {     
                                 $("#wrapper").toggleClass("toggled");
-                                $("#btn-toggle").text("MOSTRAR");
-                                $("#btn-toggle").toggleClass("glyphicon glyphicon-triangle-left", " ");
-                                $("#btn-toggle").addClass('glyphicon glyphicon-triangle-right');
                                 $("#page-content-wrapper").html(jso);
                             }catch(e)
                             {
@@ -86,9 +68,6 @@ function verMisConv()
                             try
                             {     
                                 $("#wrapper").toggleClass("toggled");
-                                $("#btn-toggle").text("MOSTRAR");
-                                $("#btn-toggle").toggleClass("glyphicon glyphicon-triangle-left", " ");
-                                $("#btn-toggle").addClass('glyphicon glyphicon-triangle-right');
                                 $("#page-content-wrapper").html(jso);
                             }catch(e)
                             {
@@ -112,10 +91,7 @@ function verMiHistorico()
                         {
                             try
                             {     
-                                $("#wrapper").toggleClass("toggled");
-                                $("#btn-toggle").text("MOSTRAR");
-                                $("#btn-toggle").toggleClass("glyphicon glyphicon-triangle-left", " ");
-                                $("#btn-toggle").addClass('glyphicon glyphicon-triangle-right');
+                                $("#wrapper").toggleClass("toggled");                                
                                 $("#page-content-wrapper").html(jso);
                             }catch(e)
                             {
@@ -140,9 +116,6 @@ function verSeguimiento()
                             try
                             {     
                                 $("#wrapper").toggleClass("toggled");
-                                $("#btn-toggle").text("MOSTRAR");
-                                $("#btn-toggle").toggleClass("glyphicon glyphicon-triangle-left", " ");
-                                $("#btn-toggle").addClass('glyphicon glyphicon-triangle-right');
                                 $("#page-content-wrapper").html(jso);
                             }catch(e)
                             {
@@ -166,6 +139,54 @@ function verDetalleCov()
                         {
                             try
                             {     
+                                $("#page-content-wrapper").html(jso);
+                            }catch(e)
+                            {
+                                alert('Exception while resquest...');
+                            }                       
+                        },
+                error:  function()
+                        {
+                            alert('Error while resquest..');
+                        }
+            });
+}
+
+function verReporte()
+{
+    $.ajax
+            ({
+                type: "POST",
+                url: "verReporte",
+                success: function(jso)
+                        {
+                            try
+                            {     
+                                $("#wrapper").toggleClass("toggled");                               
+                                $("#page-content-wrapper").html(jso);
+                            }catch(e)
+                            {
+                                alert('Exception while resquest...');
+                            }                       
+                        },
+                error:  function()
+                        {
+                            alert('Error while resquest..');
+                        }
+            });
+}
+
+function verReportContenido(tipo)
+{
+    $.ajax
+            ({
+                type: "POST",
+                url: "verReporteContenido",
+                data: {'tipo': tipo },
+                success: function(jso)
+                        {
+                            try
+                            {                                                                
                                 $("#page-content-wrapper").html(jso);
                             }catch(e)
                             {
