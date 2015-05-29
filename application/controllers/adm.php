@@ -863,6 +863,7 @@ class Adm extends CI_Controller {
 	{
 		$data['area'] = $this->adm_model->obtArea();
 		$data['lugar'] = $this->adm_model->obtLugar();
+		$data['ciudad'] = $this->adm_model->obtCiudad();
 		$data['grado'] = $this->adm_model->obtGrado();
 		$data['uni'] = $this->adm_model->obtUni();
 		$this->load->view('adm/registrarConvocatoria.html',$data);
@@ -875,6 +876,77 @@ class Adm extends CI_Controller {
 			$_POST['grado'],$_POST['universidad'],$_POST['area'],$_POST['prom'],$_POST['ciudad']);
 		}
 		$this->load->view('adm/convocatorias.html');		
+	}
+
+	function guardaUniversidad()
+	{
+		if($_POST)
+		{
+			$this->adm_model->guardaUni($_POST['name']);
+		}
+		redirect('adm/altaConvocatoria');
+	}
+
+	function agregarUniversidad()
+	{
+		$this->load->view('adm/agregarUniversidad.html');
+	}
+
+	function agregarArea()
+	{
+		$this->load->view('adm/agregarArea.html');
+	}
+
+	function guardaArea()
+	{
+		if($_POST)
+		{
+			$this->adm_model->guardaArea($_POST['name']);
+		}
+		redirect('adm/altaConvocatoria');	
+	}
+
+	function agregarPais()
+	{
+		$this->load->view('adm/agregarPais.html');
+	}
+
+	function guardaPais()
+	{
+		if($_POST)
+		{
+			$this->adm_model->guardaPais($_POST['name']);
+		}
+		redirect('adm/altaConvocatoria');	
+	}
+
+	function agregarCiudad()
+	{
+		$data['lugar'] = $this->adm_model->obtLugar();
+		$this->load->view('adm/agregarCiudad.html',$data);
+	}
+
+	function guardaCiudad()
+	{
+		if($_POST)
+		{
+			$this->adm_model->guardaCiudad($_POST['name'],$_POST['pais']);
+		}
+		redirect('adm/altaConvocatoria');	
+	}
+	
+	function agregarGrado()
+	{
+		$this->load->view('adm/agregarGrado.html');
+	}
+
+	function guardaGrado()
+	{
+		if($_POST)
+		{
+			$this->adm_model->guardaGrado($_POST['name']);
+		}
+		redirect('adm/altaConvocatoria');	
 	}
 
 }

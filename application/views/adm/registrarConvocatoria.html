@@ -102,51 +102,92 @@
                             'type'  => 'text'
                         );
                         echo form_input($name);?>
-						<br>						
+						<br>	
+
+                        <table width="100%">
+                        <tr>
+                        <td width="50%">
 						<label>Área de interes:</label>
                         <select name="area" class="form-control">
                         <?php foreach ($area as $row) { ?>
                             <option> <?= $row->nombreAreaFormacion;?> </option>;
                         <?php } ?>
                         </select>
-
+                        </td>
+                        <td width="50%" align="center">
+                        <br>
+                        <a href="<?= base_url()?>adm/agregarArea">ADD</a>
+                        </td>
+                        </tr>
+                        </table>
 						<br>
+
+                        <table width="100%">
+                        <tr>
+                        <td width="50%">
 						<label>País:</label>
                         <select name="pais" class="form-control">
                         <?php foreach ($lugar as $row) { ?>
                             <option> <?= $row->pais;?> </option>;
                         <?php } ?>
                         </select>			
-						<br>
-						
+						</td>
+                        <td width="50%" align="center">
+                        <br>
+                        <a href="<?= base_url()?>adm/agregarPais">ADD</a>
+                        </td>
+                        </tr>
+                        </table>
+                        <br>
+
+						<table width="100%">
+                        <tr>
+                        <td width="50%">
 						<label>Ciudad:</label>
                         <select name="ciudad" class="form-control">
-                        <?php foreach ($lugar as $row) { ?>
+                        <?php foreach ($ciudad as $row) { ?>
                             <option> <?= $row->ciudad;?> </option>;
                         <?php } ?>
                         </select>
-						<br>
+                        </td>
+                        <td width="50%" align="center">
+                        <br>
+                        <a href="<?= base_url()?>adm/agregarCiudad">ADD</a>
+                        </td>
+                        </tr>
+                        </table>
 
+						<br>
+                        <table width="100%">
+                        <tr>
+                        <td width="50%">
 						<label>Grado:</label>
                         <select name="grado" class="form-control">
                         <?php foreach ($grado as $row) { ?>
                             <option> <?= $row->nombre;?> </option>;
                         <?php } ?>
                         </select>
-						<br>
-
+                        </td>
+                        <td width="50%" align="center">
+                        <br>
+                        <a href="<?= base_url()?>adm/agregarGrado">ADD</a>
+                        </td>
+                        </tr>
+                        </table>
+						
+                        <br>
 						<label>Promedio:</label>
 						<input type="number" class="form-control" name="prom" step="0.1" min="6" max="10">				
 						<br>
 
 						<table width="100%">
 						<tr>
-						<td>
+						<td width="50%">
 						<label>Fecha inicial:</label>
 						<input type="date" class="form-control" name="fechaI">
 						</td>
 
-						<td>
+						<td width="50%">
 						<label>Fecha Final:</label>
 						<input type="date" class="form-control" name="fechaF">
 						</td>
@@ -154,12 +195,22 @@
 						</table>
 						<br>
 
+                        <table width="100%">
+                        <tr>
+                        <td width="50%">
 						<label>Universidad:</label>
 						<select name="universidad" class="form-control">
 						<?php foreach ($uni as $row) { ?>
                             <option> <?= $row->nombre;?> </option>;
                         <?php } ?>
 						</select>
+                        </td>
+                        <td width="50%" align="center">
+                        <br>
+                        <a href="<?= base_url()?>adm/agregarUniversidad">ADD</a>
+                        </td>
+                        </tr>
+                        </table>
 
 						<br>
 						<label>Descripción:</label>
