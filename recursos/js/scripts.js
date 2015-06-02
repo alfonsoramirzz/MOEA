@@ -187,7 +187,14 @@ function verReportContenido(tipo)
                         {
                             try
                             {                                                                
-                                $("#page-content-wrapper").html(jso);
+                                //$("#page-content-wrapper").html(jso);
+                                var list = document.getElementById("area_report");
+                                var contenido = list.innerHTML;  
+                                while (list.hasChildNodes())
+                                {   
+                                    list.removeChild(list.firstChild);
+                                }
+                                list.innerHTML = contenido;
                             }catch(e)
                             {
                                 alert('Exception while resquest...');

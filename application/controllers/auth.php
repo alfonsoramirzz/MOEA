@@ -92,17 +92,11 @@ class Auth extends CI_Controller {
 
 	function verReporteContenido()
 	{
-		$crud = new grocery_CRUD();
-
-		$crud->set_table('groups');		
-		$crud->unset_delete();
-		$crud->unset_edit();
-		$crud->unset_add();
-		$crud->unset_read();
-
-		$output = $crud->render();
-
-		$this->load->view('reportes/reportecontenido_view',$output);
+		$tipo = $this->input->post('tipo');
+		
+		$html = $this->load->view('reportes/reportecontenido_view');
+		$data = pdf_create($html, '', false);
+     	write_file('recursos/temporal.pdf', $data);
 	}
 
 	//log the user in

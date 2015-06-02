@@ -1,12 +1,18 @@
 <!-- Single button -->
 <div class="btn-group">
-  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-    Seleccione el reporte <span class="caret"></span>
-  </button>
-  <ul class="dropdown-menu" role="menu">
-    <li><a >Por Área de Conocimiento</a></li>
-    <li><a >Por Perfil Acádemico</a></li>
-    <li><a >Por Pais</a></li>
-    <li><a >Por universidad</a></li>
-  </ul>
-  <a type="button" class="btn btn-default" onclick="verReportContenido('sd')">GENERAR</a>
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+      Seleccione el reporte <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" role="menu">
+      <li><a onclick="verReportContenido('1')">Convocatorias</a></li>
+      <li><a onclick="verReportContenido('sd')">Por Perfil Acádemico</a></li>
+      <li><a onclick="verReportContenido('sd')">Por Pais</a></li>
+      <li><a onclick="verReportContenido('sd')">Por universidad</a></li>
+    </ul>
+</div>
+<br><br>
+<img src="" alt="">
+
+<div id="area_report">
+    <object data="<?= base_url(); ?>recursos/pdf/temporal.pdf" type="application/pdf" width="100%" height="1000"></object>
+</div>
