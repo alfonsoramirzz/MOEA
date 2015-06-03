@@ -93,7 +93,7 @@ class Auth extends CI_Controller {
 	function getTipos()
 	{
 		$id = $this->input->post('id');
-		if($id == 1 || $id == 2 ||$id == 3 ||$id == 4 || $id == 5)
+		if($id == 1 || $id == 2 ||$id == 3 ||$id == 4 || $id == 5 || $id == 6)
 		{
 			switch ($id) 
 			{
@@ -120,7 +120,9 @@ class Auth extends CI_Controller {
 					$this->data['query'] = $this->ion_auth_model->getTipo($id);
 					$this->load->view('reportes/selectTipo_view', $this->data);
 					break;
-				
+				case '6':
+					$this->verReporteContenido(6);
+					break;	
 				
 				default:
 					# code...
@@ -140,9 +142,28 @@ class Auth extends CI_Controller {
 				$query = $this->ion_auth_model->getReg($idReporte, $tipo);
 				if($query != false)
 				{
+					switch ($idReporte) 
+					{
+						case '2':
+							$this->data['tipo'] = "Reporte de convocatorias por grado de estudio";
+							break;
+						case '3':
+							$this->data['tipo'] = "Reporte de convocatorias por area de formación";
+							break;
+						case '4':
+							$this->data['tipo'] = "Reporte de convocatorias por país";
+							break;
+						case '5':
+							$this->data['tipo'] = "Reporte de convocatorias por universidad";
+							break;
+						
+						default:
+							break;
+					}						
 					$this->data['registros'] = $query;	
 					$html = $this->load->view('reportes/reportecontenido_view', $this->data, true);
 					$data = pdf_create($html, '', false);
+					unlink('recursos/pdf/temporal.pdf');
 			     	write_file('recursos/pdf/temporal.pdf', $data);
 				}
 			}
@@ -152,9 +173,24 @@ class Auth extends CI_Controller {
 			$query = $this->ion_auth_model->getReg(0, 0);
 			if($query != false)
 			{
+				$this->data['tipo'] = "Reporte de convocatorias";
 				$this->data['registros'] = $query;	
 				$html = $this->load->view('reportes/reportecontenido_view', $this->data, true);
 				$data = pdf_create($html, '', false);
+				unlink('recursos/pdf/temporal.pdf');
+		     	write_file('recursos/pdf/temporal.pdf', $data);
+			}
+		}
+		elseif ($idReporte == 6) 
+		{
+			$query = $this->ion_auth_model->getFavs();
+			
+			if($query != false)
+			{
+				$this->data['favs'] = $query;					
+				$html = $this->load->view('reportes/reporteFavoritos_view', $this->data, true);
+				$data = pdf_create($html, '', false);
+				unlink('recursos/pdf/temporal.pdf');
 		     	write_file('recursos/pdf/temporal.pdf', $data);
 			}
 		}

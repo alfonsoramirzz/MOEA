@@ -7,6 +7,7 @@
       <option id="3"  onclick="getTipos()">Por Area de Formación</option>
       <option id="4"  onclick="getTipos()">Por Pais</option>
       <option id="5"  onclick="getTipos()">Por universidad</option>
+      <option id="6"  onclick="getTipos()">Favoritas</option>
   </select>
 </div>
 <div id="FiltroReportes"> 

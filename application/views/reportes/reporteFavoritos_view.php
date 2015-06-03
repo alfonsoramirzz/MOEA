@@ -68,39 +68,28 @@
     </div>
     <div class="container">
       <div>
-        <p class="t1"><?php echo $tipo ?></p>
+        <p class="t1">Reporte de convocatorias favoritas</p>
       </div>
       <div class="table-responsive">
         <!--<table class="table table-bordered table-hover" align="center">-->
         <table class="tftable" border="1">
             <thead>
                 <tr>
-                    <th >Convocatoria</th>
-                    <th>Universidad</th>
-                    <th>Área de Conocimiento</th>
-                    <th>Promedio</th>
-                    <th>Grado</th>
-                    <th>Ciudad</th>
-                    <th>País</th>
-                    <th>Fecha de Inicio</th>
-                    <th>Fecha Fin</th>
+                    <th>Convocatoria</th>
+				    <th>Numero de Favoritos</th>
                 </tr>
             </thead>
             <tbody>
               <?php
-                foreach ($registros -> result() as $row) {
-                  echo "<tr>";
-                    echo "<td>".$row->Convocatoria."</td>";
-                    echo "<td>".$row->Universidad."</td>";
-                    echo "<td>".$row->Area."</td>";
-                    echo "<td>".$row->promedio."</td>";
-                    echo "<td>".$row->Grado."</td>";
-                    echo "<td>".$row->Ciudad."</td>";
-                    echo "<td>".$row->Pais."</td>";
-                    echo "<td>".$row->fechaInicio."</td>";
-                    echo "<td>".$row->fechaFin."</td>";
-                }
-              ?>
+		    		foreach ($favs -> result() as $row) 
+		    		{
+		    			echo "<tr>";
+		    				echo "<td>".$row->Convocatoria."</td>";
+		    				echo "<td>".$row->favs."</td>";
+		    				
+		    		}
+		    	?>
+
             </tbody>
         </table>
       </div>

@@ -2302,4 +2302,20 @@ class Ion_auth_model extends CI_Model
 			return false;
 		}
 	}
+
+	function getFavs()
+	{
+		$this->db->distinct();
+
+		$this->db->select('convocatoria.nombreConv as Convocatoria,(SELECT count(*) from favoritos where idPrograma = convocatoria.idPrograma) as favs');    
+		$this->db->from('convocatoria');
+		$this->db->join('favoritos', 'favoritos.idPrograma=convocatoria.idPrograma'); 
+		$query = $this->db->get();
+		return $query;
+		if($query -> num_rows() > 0){
+			return $query;
+		}else{
+			return false;
+		}
+	}
 }

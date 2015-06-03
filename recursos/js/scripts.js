@@ -188,7 +188,7 @@ function getTipos()
                 success: function(jso)
                         {
                             try
-                            {                                                                
+                            {                                                               
                                 //$("#page-content-wrapper").html(jso);
                                 var list = document.getElementById("FiltroReportes");  
                                 while (list.hasChildNodes())
@@ -197,7 +197,7 @@ function getTipos()
                                 }
                                 contenido = jso;
                                 list.innerHTML = contenido;
-                                if (idReporte == 1) 
+                                if (idReporte == 1 || idReporte == 6) 
                                 {
                                     var list = document.getElementById("area_report");
                                     var contenido = list.innerHTML;  
