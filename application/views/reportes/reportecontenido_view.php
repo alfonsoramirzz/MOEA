@@ -4,6 +4,7 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+<<<<<<< HEAD
         
         <?php $this->load->helper('url');?>
         <link rel="stylesheet" href="<?php echo base_url("recursos/css/bootstrap.css"); ?>"/>
@@ -58,9 +59,6 @@
     line-height: 20px;
     text-align: center;
   }
-  
-
-
   </style>
   </head>
   <body>
