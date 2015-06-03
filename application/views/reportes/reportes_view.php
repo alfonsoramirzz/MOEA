@@ -1,17 +1,17 @@
-<!-- Single button -->
-<div class="btn-group">
-    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-      Seleccione el reporte <span class="caret"></span>
-    </button>
-    <ul class="dropdown-menu" role="menu">
-      <li><a onclick="verReportContenido('1')">Convocatorias</a></li>
-      <li><a onclick="verReportContenido('2')">Por Area de Formación</a></li>
-      <li><a onclick="verReportContenido('3')">Por Pais</a></li>
-      <li><a onclick="verReportContenido('4')">Por universidad</a></li>
-    </ul>
+<div class="form-group" >
+  <label for="">Tipo</label><br>
+  <select id="Reporte" name="tipoReporte">
+      <option>Seleccione un Reporte...</option>
+      <option id="1"  onclick="getTipos()">Convocatorias</option>
+      <option id="2"  onclick="getTipos()">Grado</option>
+      <option id="3"  onclick="getTipos()">Por Area de Formación</option>
+      <option id="4"  onclick="getTipos()">Por Pais</option>
+      <option id="5"  onclick="getTipos()">Por universidad</option>
+  </select>
+</div>
+<div id="FiltroReportes"> 
 </div>
 <br><br>
-<a href="verReporteContenido" class="btn btn-primary">TEST</a>
 <div id="area_report">
-    <object data="<?= base_url(); ?>recursos/pdf/temporal.pdf" type="application/pdf" width="100%" height="1000"></object>
+    <object data="<?= base_url(); ?>recursos/pdf/temporal.pdf?#zoom=80" type="application/pdf" width="100%" height="1000" zoom="100%"></object>
 </div>

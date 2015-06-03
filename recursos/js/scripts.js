@@ -176,13 +176,61 @@ function verReporte()
             });
 }
 
-function verReportContenido(tipo)
+function getTipos()
 {
+    var Reporte = document.getElementById("Reporte");
+    var idReporte = Reporte.options[Reporte.selectedIndex].id;
+    $.ajax
+            ({
+                type: "POST",
+                url: "getTipos",
+                data: {'id': idReporte },
+                success: function(jso)
+                        {
+                            try
+                            {                                                                
+                                //$("#page-content-wrapper").html(jso);
+                                var list = document.getElementById("FiltroReportes");  
+                                while (list.hasChildNodes())
+                                {   
+                                    list.removeChild(list.firstChild);
+                                }
+                                contenido = jso;
+                                list.innerHTML = contenido;
+                                if (idReporte == 1) 
+                                {
+                                    var list = document.getElementById("area_report");
+                                    var contenido = list.innerHTML;  
+                                    while (list.hasChildNodes())
+                                    {   
+                                        list.removeChild(list.firstChild);
+                                    }
+                                    list.innerHTML = contenido;   
+                                };
+                            }catch(e)
+                            {
+                                alert('Exception while resquest...');
+                            }                       
+                        },
+                error:  function()
+                        {
+                            alert('Error while resquest..');
+                        }
+            });
+
+}
+
+function verReportContenido()
+{
+    var Reporte = document.getElementById("Reporte");
+    var idReporte = Reporte.options[Reporte.selectedIndex].id;
+    var tipoReporte = document.getElementById("tipoReporte");
+    var tipo = tipoReporte.options[tipoReporte.selectedIndex].text;
     $.ajax
             ({
                 type: "POST",
                 url: "verReporteContenido",
-                data: {'tipo': tipo },
+                data: {'idReporte':idReporte, 'tipo': tipo},
                 success: function(jso)
                         {
                             try

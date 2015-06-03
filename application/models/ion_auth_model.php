@@ -2232,7 +2232,39 @@ class Ion_auth_model extends CI_Model
 		return $ip_address;
 	}
 
-	function getReg()
+	function getTipo($id)
+	{
+		switch ($id) 
+		{
+			case '2':
+				$this->db->select('nombre As nombre');
+				$query = $this->db->get('grado');
+				return $query->result();
+				break;
+			case '3':
+				$this->db->select('nombreAreaFormacion As nombre');
+				$query = $this->db->get('area');
+				return $query->result();
+				break;
+			case '4':
+				$this->db->distinct('pais');
+				$this->db->select('pais As nombre');				
+				$query = $this->db->get('lugar');
+				return $query->result();
+				break;
+			case '5':
+				$this->db->select('nombre As nombre');
+				$query = $this->db->get('universidad');
+				return $query->result();
+				break;
+			
+			default:
+				# code...
+				break;
+		}
+	}
+
+	function getReg($idReporte, $tipo)
 	{
 		$this->db->select('convocatoria.nombreConv as Convocatoria, convocatoria.fechaInicio,convocatoria.fechaFin,convocatoria.promedioSolicitado as promedio,universidad.nombre as Universidad, area.nombreAreaFormacion as Area, grado.nombre as Grado, lugar.ciudad as Ciudad, lugar.pais as Pais');    
 		$this->db->from('convocatoria');
@@ -2241,10 +2273,28 @@ class Ion_auth_model extends CI_Model
 		$this->db->join('grado', 'convocatoria.Grado_idGrado = grado.idGrado');
 		$this->db->join('lugar', 'convocatoria.Lugar_idLugar = lugar.idLugar');
 		$this->db->order_by("convocatoria.fechaInicio","asc");
-		//$this->db->where('grado.nombre', 'Doctorado');
-		//$this->db->where('area.nombreAreaFormacion', 'Económico-Administrativo');
-		//$this->db->where('lugar.pais', 'EUA');
-		//$this->db->where('convocatoria.Universidad_idUniversidad1', 5); 
+		switch ($idReporte) 
+		{
+			case '2':
+				$this->db->where('grado.nombre', $tipo);
+				break;
+			case '3':
+				$this->db->where('area.nombreAreaFormacion', $tipo);
+				break;
+			case '4':
+				$this->db->where('lugar.pais', $tipo);
+				break;
+			case '5':
+				$this->db->select('idUniversidad');
+				$this->db->where('nombre', $tipo);
+				$que = $this->db->get('universidad');
+				$que->row();
+				$this->db->where('convocatoria.Universidad_idUniversidad1', $row);
+				break;
+			default:
+				# code...
+				break;
+		}
 		$query = $this->db->get();
 		if($query -> num_rows() > 0){
 			return $query;

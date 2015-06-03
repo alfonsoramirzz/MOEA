@@ -90,19 +90,76 @@ class Auth extends CI_Controller {
 		$this->load->view('reportes/reportes_view');
 	}
 
-	function verReporteContenido()
+	function getTipos()
 	{
-		$tipo = $this->input->post('tipo');
-		$query = $this->ion_auth_model->getReg();
-		print_r($query);
-		if($query != false)
+		$id = $this->input->post('id');
+		if($id == 1 || $id == 2 ||$id == 3 ||$id == 4 || $id == 5)
 		{
-			$this->data['registros'] = $query;	
-
-			$html = $this->load->view('reportes/reportecontenido_view', $this->data, true);
-			$data = pdf_create($html, '', false);
-	     	write_file('recursos/pdf/temporal.pdf', $data);
+			switch ($id) 
+			{
+				case '1':
+					$this->verReporteContenido(1);
+					break;
+				case '2':
+					$this->data['tipo'] = "Grado";
+					$this->data['query'] = $this->ion_auth_model->getTipo($id);
+					$this->load->view('reportes/selectTipo_view', $this->data);
+					break;
+				case '3':
+					$this->data['tipo'] = "Area";
+					$this->data['query'] = $this->ion_auth_model->getTipo($id);
+					$this->load->view('reportes/selectTipo_view', $this->data);
+					break;					
+				case '4':
+					$this->data['tipo'] = "País";
+					$this->data['query'] = $this->ion_auth_model->getTipo($id);
+					$this->load->view('reportes/selectTipo_view', $this->data);
+					break;				
+				case '5':
+					$this->data['tipo'] = "Universidad";
+					$this->data['query'] = $this->ion_auth_model->getTipo($id);
+					$this->load->view('reportes/selectTipo_view', $this->data);
+					break;
+				
+				
+				default:
+					# code...
+					break;
+			}
 		}
+	}
+
+	function verReporteContenido($idReporte = 0)
+	{		
+		if ($idReporte == 0) 
+		{		
+			$tipo = $this->input->post('tipo');
+			$idReporte = $this->input->post('idReporte');
+			if($idReporte == 1 || $idReporte == 2 ||$idReporte == 3 ||$idReporte == 4 || $idReporte == 5)
+			{
+				$query = $this->ion_auth_model->getReg($idReporte, $tipo);
+				if($query != false)
+				{
+					$this->data['registros'] = $query;	
+
+					$html = $this->load->view('reportes/reportecontenido_view', $this->data, true);
+					$data = pdf_create($html, '', false);
+			     	write_file('recursos/pdf/temporal.pdf', $data);
+				}
+			}
+		}
+		elseif ($idReporte == 1) 
+		{
+			$query = $this->ion_auth_model->getReg(0, 0);
+			if($query != false)
+			{
+				$this->data['registros'] = $query;	
+				$html = $this->load->view('reportes/reportecontenido_view', $this->data, true);
+				$data = pdf_create($html, '', false);
+		     	write_file('recursos/pdf/temporal.pdf', $data);
+			}
+		}
+
 	}
 
 	//log the user in
