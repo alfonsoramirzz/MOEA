@@ -6,7 +6,7 @@
         <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
         <script type="text/javascript" src="<?= base_url(); ?>recursos/js/jquery-2.1.4.js); ?>"></script>
         <script type="text/javascript" src="<?= base_url(); ?>recursos/js/bootstrap.js); ?>"></script>
-        <link rel="stylesheet" href="<?= echo base_url("recursos/css/bootstrap.css"); ?>"/>
+        <link rel="stylesheet" href="<?php echo base_url("recursos/css/bootstrap.css"); ?>"/>
   
   </head>
   <body>

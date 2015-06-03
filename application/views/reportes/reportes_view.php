@@ -5,9 +5,9 @@
     </button>
     <ul class="dropdown-menu" role="menu">
       <li><a onclick="verReportContenido('1')">Convocatorias</a></li>
-      <li><a onclick="verReportContenido('sd')">Por Perfil Acádemico</a></li>
-      <li><a onclick="verReportContenido('sd')">Por Pais</a></li>
-      <li><a onclick="verReportContenido('sd')">Por universidad</a></li>
+      <li><a onclick="verReportContenido('2')">Por Area de Formación</a></li>
+      <li><a onclick="verReportContenido('3')">Por Pais</a></li>
+      <li><a onclick="verReportContenido('4')">Por universidad</a></li>
     </ul>
 </div>
 <br><br>

@@ -2241,7 +2241,7 @@ class Ion_auth_model extends CI_Model
 		$this->db->join('grado', 'convocatoria.Grado_idGrado = grado.idGrado');
 		$this->db->join('lugar', 'convocatoria.Lugar_idLugar = lugar.idLugar');
 		$this->db->order_by("convocatoria.fechaInicio","asc");
-		$this->db->where('grado.nombre', 'Doctorado');
+		//$this->db->where('grado.nombre', 'Doctorado');
 		//$this->db->where('area.nombreAreaFormacion', 'Económico-Administrativo');
 		//$this->db->where('lugar.pais', 'EUA');
 		//$this->db->where('convocatoria.Universidad_idUniversidad1', 5); 
