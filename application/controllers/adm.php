@@ -6,7 +6,7 @@ class Adm extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->database();
-		$this->load->library(array('ion_auth','form_validation'));
+		$this->load->library(array('ion_auth','form_validation','uri'));
 		$this->load->helper(array('url','language'));
 		$this->load->model('adm_model');
 
@@ -873,9 +873,9 @@ class Adm extends CI_Controller {
 	{
 		if($_POST){
 			$this->adm_model->conv($_POST['name'],$_POST['fechaI'],$_POST['fechaF'],$_POST['desc'],
-			$_POST['grado'],$_POST['universidad'],$_POST['area'],$_POST['prom'],$_POST['ciudad']);
+			$_POST['grado'],$_POST['universidad'],$_POST['area'],$_POST['prom'],$_POST['pais']);
 		}
-		$this->load->view('adm/convocatorias.html');		
+		redirect('adm/convocatoria');		
 	}
 
 	function guardaUniversidad()
@@ -949,4 +949,49 @@ class Adm extends CI_Controller {
 		redirect('adm/altaConvocatoria');	
 	}
 
+////////////////////////////////////////////////////////////////////////////////////	
+//////////////Actualizar functions //////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+	public function Convocatoria()
+	{
+
+		$data['convocatoria'] = $this->adm_model->obtView();
+		$this->load->view('adm/verConvocatoria.html',$data);
+	}
+
+	public function actualizar()
+	{
+		$data['area'] = $this->adm_model->obtArea();
+		$data['lugar'] = $this->adm_model->obtLugar();
+		$data['ciudad'] = $this->adm_model->obtCiudad();
+		$data['grado'] = $this->adm_model->obtGrado();
+		$data['uni'] = $this->adm_model->obtUni();
+		$id = $this->uri->segment(3);
+		$data['convocatoria'] = $this->adm_model->obtConvocatoria($id);
+		$this->load->view('adm/actualizaConvocatoria.html',$data);
+	}
+
+	public function desactivar()
+	{
+		$id = $this->uri->segment(3);
+		$this->adm_model->desactivar($id);
+        redirect('adm/Convocatoria');
+	}
+
+	public function activar()
+	{
+		$id = $this->uri->segment(3);
+		$this->adm_model->activar($id);
+        redirect('adm/Convocatoria');
+	}
+
+	public function actualizarConvocatoria()
+	{
+		if($_POST){
+			$this->adm_model->actualiza($_POST['name'],$_POST['fechaI'],$_POST['fechaF'],$_POST['desc'],
+			$_POST['grado'],$_POST['universidad'],$_POST['area'],$_POST['prom'],$_POST['pais']);
+		}
+		redirect('adm/convocatoria');		
+	}
 }
