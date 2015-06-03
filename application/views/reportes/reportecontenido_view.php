@@ -18,7 +18,7 @@
   {
     font-size:10px;
     color:#333333;
-    width:75%;
+    width:82%;
     border-width: 1px;
     border-color: black;
     border-collapse: collapse;
@@ -51,27 +51,35 @@
     border-color: black;
     
   }
+  .t1{
+    font-size: 28px;
+    font-weight: bold;
+    line-height: 20px;
+    text-align: center;
+  }
+  
+
 
   </style>
   </head>
   <body>
     <div class="container">
       <div class="page-header">
-        <img src="<?php echo base_url("recursos/images/reportes/uv.png"); ?>" align="left">
-        <h2><p class="text-center">Universidad Veracruzana</p></h2>
-        <h3><p class="text-center">Dirección General de Relaciones Internacionales</p></h3>
+        <img src="<?php echo base_url("recursos/images/reportes/uv1.png"); ?>" align="left">
+        <img src="<?php echo base_url("recursos/images/reportes/uv2.png"); ?>" align="center">
+        
       </div>
     </div>
     <div class="container">
       <div>
-        <h2><p class="text-center">Reporte de convocatorias por grado de estudios</p></h2>
+        <p class="t1">Reporte de convocatorias por grado de estudios</p>
       </div>
       <div class="table-responsive">
         <!--<table class="table table-bordered table-hover" align="center">-->
         <table class="tftable" border="1">
             <thead>
                 <tr>
-                    <th align="center">Convocatoria</th>
+                    <th >Convocatoria</th>
                     <th>Universidad</th>
                     <th>Área de Conocimiento</th>
                     <th>Promedio</th>
