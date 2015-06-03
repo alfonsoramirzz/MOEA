@@ -60,7 +60,7 @@ $autoload['packages'] = array();
 |	$autoload['libraries'] = array('user_agent' => 'ua');
 */
 
-$autoload['libraries'] = array('database','ion_auth','form_validation','grocery_CRUD');
+$autoload['libraries'] = array('database','ion_auth','form_validation');
 
 
 /*
@@ -88,7 +88,7 @@ $autoload['drivers'] = array();
 |	$autoload['helper'] = array('url', 'file');
 */
 
-$autoload['helper'] = array('url','language', 'dompdf');
+$autoload['helper'] = array('url','language', 'dompdf', 'file');
 
 
 /*

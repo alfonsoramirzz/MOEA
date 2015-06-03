@@ -93,10 +93,16 @@ class Auth extends CI_Controller {
 	function verReporteContenido()
 	{
 		$tipo = $this->input->post('tipo');
-		
-		$html = $this->load->view('reportes/reportecontenido_view');
-		$data = pdf_create($html, '', false);
-     	write_file('recursos/temporal.pdf', $data);
+		$query = $this->ion_auth_model->getReg();
+		print_r($query);
+		if($query != false)
+		{
+			$this->data['registros'] = $query;	
+
+			$html = $this->load->view('reportes/reportecontenido_view', $this->data, true);
+			$data = pdf_create($html, '', false);
+	     	write_file('recursos/pdf/temporal.pdf', $data);
+		}
 	}
 
 	//log the user in

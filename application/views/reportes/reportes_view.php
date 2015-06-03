@@ -11,8 +11,7 @@
     </ul>
 </div>
 <br><br>
-<img src="" alt="">
-
+<a href="verReporteContenido" class="btn btn-primary">TEST</a>
 <div id="area_report">
     <object data="<?= base_url(); ?>recursos/pdf/temporal.pdf" type="application/pdf" width="100%" height="1000"></object>
 </div>
