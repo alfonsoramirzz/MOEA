@@ -49,6 +49,7 @@
     padding: 8px;
     border-style: solid;
     border-color: black;
+    text-align:center;
     
   }
   .t1{
