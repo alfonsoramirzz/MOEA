@@ -141,7 +141,6 @@ class Auth extends CI_Controller {
 				if($query != false)
 				{
 					$this->data['registros'] = $query;	
-
 					$html = $this->load->view('reportes/reportecontenido_view', $this->data, true);
 					$data = pdf_create($html, '', false);
 			     	write_file('recursos/pdf/temporal.pdf', $data);

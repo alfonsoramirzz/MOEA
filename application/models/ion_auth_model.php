@@ -2285,11 +2285,11 @@ class Ion_auth_model extends CI_Model
 				$this->db->where('lugar.pais', $tipo);
 				break;
 			case '5':
-				$this->db->select('idUniversidad');
-				$this->db->where('nombre', $tipo);
-				$que = $this->db->get('universidad');
-				$que->row();
-				$this->db->where('convocatoria.Universidad_idUniversidad1', $row);
+				$que = $this->db->query("SELECT idUniversidad FROM universidad 
+													WHERE nombre = '".$tipo."';"
+									);
+				$que = $que->row();
+				$this->db->where('convocatoria.Universidad_idUniversidad1', $que->idUniversidad);
 				break;
 			default:
 				# code...

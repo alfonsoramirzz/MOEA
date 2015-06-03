@@ -234,7 +234,7 @@ function verReportContenido()
                 success: function(jso)
                         {
                             try
-                            {                                                                
+                            {                                                            
                                 //$("#page-content-wrapper").html(jso);
                                 var list = document.getElementById("area_report");
                                 var contenido = list.innerHTML;  
