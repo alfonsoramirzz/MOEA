@@ -75,6 +75,7 @@ class adm_model extends CI_Model
 	{	
 		if($this->validaFecha($fi,$ff) && $this->validaNombre($nom) && $this->validaDesc($desc))
 		{
+			$nom = strtoupper($nom);
 		$this->db->query("insert into Convocatoria 
 			(nombreConv, fechaInicio, fechaFin, descripcion, Grado_idGrado,
 			 Universidad_idUniversidad1, Area_idArea, promedioSolicitado, Lugar_idLugar,edo)
@@ -94,28 +95,69 @@ class adm_model extends CI_Model
 
 	public function guardaUni($uni)
 	{
-		$this->db->query("insert into Universidad (nombre) Values ('$uni')");
+		if($this->validaNombre($uni))
+		{
+			$uni = strtoupper($uni);
+			$this->db->query("insert into Universidad (nombre) Values ('$uni')");
+			return true;
+		}else
+		{
+			return false;
+		}
 	}
 
 	public function guardaArea($area)
 	{
-		$this->db->query("insert into Area (nombreAreaFormacion) Values ('$area')");
+		if($this->validaNombre($area))
+		{
+			$area = strtoupper($area);
+			$this->db->query("insert into Area (nombreAreaFormacion) Values ('$area')");
+			return true;
+		}else
+		{
+			return false;
+		}
 	}
 
 	public function guardaPais($pais)
 	{
-		$this->db->query("insert into Lugar (pais) Values ('$pais')");
+		if($this->validaNombre($pais))
+		{
+			$pais = strtoupper($pais);
+			$this->db->query("insert into Lugar (pais) Values ('$pais')");
+			return true;
+		}else
+		{
+			return false;
+		}
 	}
 
 	public function guardaCiudad($ciudad,$id)
 	{
-		$this->db->query("insert into ciudad (Lugar_idLugar, ciudad) Values
-		 ((select idLugar from Lugar where pais = '$id'),'$ciudad')");
+		if($this->validaNombre($ciudad) && $this->validaNombre($id))
+		{
+			$ciudad = strtoupper($ciudad);
+			$id = strtoupper($id);
+			$this->db->query("insert into ciudad (Lugar_idLugar, ciudad) Values
+			((select idLugar from Lugar where pais = '$id'),'$ciudad')");
+			return true;
+		}else
+		{
+			return false;
+		}
 	}
 
 	public function guardaGrado($grado)
 	{
-		$this->db->query("insert into Grado (nombre) Values ('$grado')");
+		if($this->validaNombre($grado))
+		{
+			$grado = strtoupper($grado);
+			$this->db->query("insert into Grado (nombre) Values ('$grado')");
+			return true;
+		}else
+		{
+			return false;
+		}
 	}
 
 //////////function actulizar
@@ -179,6 +221,7 @@ class adm_model extends CI_Model
 	{	
 		if($this->validaFecha($fi,$ff) && $this->validaNombre($nom) && $this->validaDesc($desc))
 		{
+			$nom = strtoupper($nom);
 			$this->db->query("update Convocatoria 
 			set nombreConv = '$nom',
 			fechaInicio = '$fi',

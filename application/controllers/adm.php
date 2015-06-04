@@ -24,7 +24,7 @@ class Adm extends CI_Controller {
 		if (!$this->ion_auth->logged_in())
 		{
 			//redirect them to the login page
-			redirect('auth/Principal', 'refresh');
+			redirect('adm/convocatoria', 'refresh');
 			//redirect('auth/login', 'refresh');
 		}
 		elseif ($this->ion_auth->in_group('general')) //remove this elseif if you want to enable this for non-admins
@@ -872,10 +872,17 @@ class Adm extends CI_Controller {
 	function guardarConvocatoria()
 	{
 		if($_POST){
-			if($this->adm_model->conv($_POST['name'],$_POST['fechaI'],$_POST['fechaF'],$_POST['desc'],
-			$_POST['grado'],$_POST['universidad'],$_POST['area'],$_POST['prom'],$_POST['pais']))
+			$this->form_validation->set_rules('name','Name','unique');
+			if($this->form_validation->run() == false)
 			{
-				redirect('adm/convocatoria');
+				if($this->adm_model->conv($_POST['name'],$_POST['fechaI'],$_POST['fechaF'],$_POST['desc'],
+				$_POST['grado'],$_POST['universidad'],$_POST['area'],$_POST['prom'],$_POST['pais']))
+				{
+					redirect('adm/convocatoria');
+				}else
+				{
+					redirect("adm/altaConvocatoria");
+				}
 			}else
 			{
 				redirect("adm/altaConvocatoria");
@@ -883,18 +890,30 @@ class Adm extends CI_Controller {
 		}		
 	}
 
+	function agregarUniversidad()
+	{
+		$this->load->view('adm/agregarUniversidad.html');
+	}
+
 	function guardaUniversidad()
 	{
 		if($_POST)
 		{
-			$this->adm_model->guardaUni($_POST['name']);
+			$this->form_validation->set_rules('name','Name','unique');
+			if($this->form_validation->run() == false)
+			{
+				if($this->adm_model->guardaUni($_POST['name']))
+				{
+					echo "<script languaje='javascript' type='text/javascript'>window.close();</script>";
+				}else
+				{
+					redirect('adm/agregarUniversidad');
+				}
+			}else
+			{
+				redirect('adm/agregarUniversidad');
+			}
 		}
-		redirect('adm/altaConvocatoria');
-	}
-
-	function agregarUniversidad()
-	{
-		$this->load->view('adm/agregarUniversidad.html');
 	}
 
 	function agregarArea()
@@ -906,9 +925,21 @@ class Adm extends CI_Controller {
 	{
 		if($_POST)
 		{
-			$this->adm_model->guardaArea($_POST['name']);
+			$this->form_validation->set_rules('name','Name','unique');
+			if($this->form_validation->run() == false)
+			{
+				if($this->adm_model->guardaArea($_POST['name']))
+				{
+					echo "<script languaje='javascript' type='text/javascript'>window.close();</script>";
+				}else
+				{
+					redirect('adm/agregarArea');
+				}
+			}else
+			{
+				redirect('adm/agregarArea');
+			}
 		}
-		redirect('adm/altaConvocatoria');	
 	}
 
 	function agregarPais()
@@ -920,9 +951,21 @@ class Adm extends CI_Controller {
 	{
 		if($_POST)
 		{
-			$this->adm_model->guardaPais($_POST['name']);
-		}
-		redirect('adm/altaConvocatoria');	
+			$this->form_validation->set_rules('name','Name','unique');
+			if($this->form_validation->run() == false)
+			{
+				if($this->adm_model->guardaPais($_POST['name']))
+				{
+					echo "<script languaje='javascript' type='text/javascript'>window.close();</script>";
+				}else
+				{
+					redirect('adm/agregarPais');
+				}
+			}else
+			{
+				redirect('adm/agregarPais');
+			}
+		}	
 	}
 
 	function agregarCiudad()
@@ -935,9 +978,21 @@ class Adm extends CI_Controller {
 	{
 		if($_POST)
 		{
-			$this->adm_model->guardaCiudad($_POST['name'],$_POST['pais']);
-		}
-		redirect('adm/altaConvocatoria');	
+			$this->form_validation->set_rules('name','Name','unique');
+			if($this->form_validation->run() == false)
+			{
+				if($this->adm_model->guardaCiudad($_POST['name'],$_POST['pais']))
+				{
+					echo "<script languaje='javascript' type='text/javascript'>window.close();</script>";
+				}else
+				{
+					redirect('adm/agregarCiudad');
+				}
+			}else
+			{
+				redirect('adm/agregarCiudad');
+			}
+		}	
 	}
 	
 	function agregarGrado()
@@ -949,9 +1004,21 @@ class Adm extends CI_Controller {
 	{
 		if($_POST)
 		{
-			$this->adm_model->guardaGrado($_POST['name']);
-		}
-		redirect('adm/altaConvocatoria');	
+			$this->form_validation->set_rules('name','Name','unique');
+			if($this->form_validation->run() == false)
+			{
+				if($this->adm_model->guardaGrado($_POST['name']))
+				{
+					echo "<script languaje='javascript' type='text/javascript'>window.close();</script>";
+				}else
+				{
+					redirect('adm/agregarGrado');
+				}
+			}else
+			{
+				redirect('adm/agregarGrado');
+			}
+		}	
 	}
 
 ////////////////////////////////////////////////////////////////////////////////////	
