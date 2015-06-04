@@ -872,10 +872,15 @@ class Adm extends CI_Controller {
 	function guardarConvocatoria()
 	{
 		if($_POST){
-			$this->adm_model->conv($_POST['name'],$_POST['fechaI'],$_POST['fechaF'],$_POST['desc'],
-			$_POST['grado'],$_POST['universidad'],$_POST['area'],$_POST['prom'],$_POST['pais']);
-		}
-		redirect('adm/convocatoria');		
+			if($this->adm_model->conv($_POST['name'],$_POST['fechaI'],$_POST['fechaF'],$_POST['desc'],
+			$_POST['grado'],$_POST['universidad'],$_POST['area'],$_POST['prom'],$_POST['pais']))
+			{
+				redirect('adm/convocatoria');
+			}else
+			{
+				redirect("adm/altaConvocatoria");
+			}
+		}		
 	}
 
 	function guardaUniversidad()
@@ -986,12 +991,24 @@ class Adm extends CI_Controller {
         redirect('adm/Convocatoria');
 	}
 
+	public function eliminar()
+	{
+		$id = $this->uri->segment(3);
+		$this->adm_model->eliminar($id);
+        redirect('adm/Convocatoria');
+	}
+
 	public function actualizarConvocatoria()
 	{
 		if($_POST){
-			$this->adm_model->actualiza($_POST['name'],$_POST['fechaI'],$_POST['fechaF'],$_POST['desc'],
-			$_POST['grado'],$_POST['universidad'],$_POST['area'],$_POST['prom'],$_POST['pais']);
-		}
-		redirect('adm/convocatoria');		
+			if($this->adm_model->actualiza($_POST['name'],$_POST['fechaI'],$_POST['fechaF'],$_POST['desc'],
+			$_POST['grado'],$_POST['universidad'],$_POST['area'],$_POST['prom'],$_POST['pais'],$_POST['id']))
+			{
+				redirect('adm/convocatoria');
+			}else
+			{
+				redirect("adm/actualizar/".$_POST['id']);
+			}
+		}		
 	}
 }

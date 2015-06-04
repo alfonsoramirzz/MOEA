@@ -73,7 +73,8 @@ class adm_model extends CI_Model
 	//(1,'conv','2000-10-10','2000-10-10','desc',1,1,1,6,(select idLugar from Lugar where pais='EUA'));
 	public function conv($nom,$fi,$ff,$desc,$grado,$uni,$area,$prom,$lug)
 	{	
-
+		if($this->validaFecha($fi,$ff) && $this->validaNombre($nom) && $this->validaDesc($desc))
+		{
 		$this->db->query("insert into Convocatoria 
 			(nombreConv, fechaInicio, fechaFin, descripcion, Grado_idGrado,
 			 Universidad_idUniversidad1, Area_idArea, promedioSolicitado, Lugar_idLugar,edo)
@@ -84,8 +85,11 @@ class adm_model extends CI_Model
 			(select idArea from Area where nombreAreaFormacion = '$area'),
 			$prom,
 			(select idLugar from Lugar where pais = '$lug'),1)");
-
 		return true;
+		}else
+		{
+			return false;
+		}
 	}
 
 	public function guardaUni($uni)
@@ -165,10 +169,17 @@ class adm_model extends CI_Model
 		$this->db->update('Convocatoria',$data); 
 	}
 
-	public function actualiza($nom,$fi,$ff,$desc,$grado,$uni,$area,$prom,$lug)
-	{	
+	public function eliminar($id)
+	{
+		$this->db->where('idPrograma', $id);
+		$this->db->delete('Convocatoria'); 
+	}
 
-		$this->db->query("update Convocatoria 
+	public function actualiza($nom,$fi,$ff,$desc,$grado,$uni,$area,$prom,$lug,$id)
+	{	
+		if($this->validaFecha($fi,$ff) && $this->validaNombre($nom) && $this->validaDesc($desc))
+		{
+			$this->db->query("update Convocatoria 
 			set nombreConv = '$nom',
 			fechaInicio = '$fi',
 			fechaFin = '$ff',
@@ -177,9 +188,52 @@ class adm_model extends CI_Model
 			Grado_idGrado = (select idGrado from Grado where nombre = '$grado'),
 			Universidad_idUniversidad1 = (select idUniversidad from Universidad where nombre = '$uni'),
 			Area_idArea = (select idArea from Area where nombreAreaFormacion = '$area'),
-			Lugar_idLugar = (select idLugar from Lugar where pais = '$lug')");
+			Lugar_idLugar = (select idLugar from Lugar where pais = '$lug')
+			where idPrograma = '$id'");
+			
+			return true;	
+		}else
+		{
+			return false;
+		}
+	}
 
-		return true;
+	public function validaNombre($nom)
+	{
+		if($nom != '')
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	public function validaFecha($fi,$ff)
+	{
+		$datetime1 = new DateTime($fi);
+        $datetime2 = new DateTime($ff);
+        $interval = $datetime1->diff($datetime2);
+        if($interval->format('%R%') == '+')
+        {
+            return true;
+        }else
+        {
+            return false;
+        }
+	}
+
+	public function validaDesc($desc)
+	{
+		if($desc != '')
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 }
