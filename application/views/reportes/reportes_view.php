@@ -14,5 +14,6 @@
 </div>
 <br><br>
 <div id="area_report">
-    <object data="<?= base_url(); ?>recursos/pdf/temporal.pdf?#zoom=80" type="application/pdf" width="100%" height="1000" zoom="100%"></object>
+    <object id="objectPDF" data="<?= base_url(); ?>recursos/pdf/temporal.pdf?#zoom=80" 
+            type="application/pdf" width="100%" height="1000" zoom="100%"></object>
 </div>

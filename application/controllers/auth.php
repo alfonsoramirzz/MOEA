@@ -163,7 +163,7 @@ class Auth extends CI_Controller {
 					$this->data['registros'] = $query;	
 					$html = $this->load->view('reportes/reportecontenido_view', $this->data, true);
 					$data = pdf_create($html, '', false);
-					unlink('recursos/pdf/temporal.pdf');
+					delete_files('recursos/pdf/temporal.pdf');
 			     	write_file('recursos/pdf/temporal.pdf', $data);
 				}
 			}
@@ -177,7 +177,7 @@ class Auth extends CI_Controller {
 				$this->data['registros'] = $query;	
 				$html = $this->load->view('reportes/reportecontenido_view', $this->data, true);
 				$data = pdf_create($html, '', false);
-				unlink('recursos/pdf/temporal.pdf');
+				delete_files('recursos/pdf/temporal.pdf');
 		     	write_file('recursos/pdf/temporal.pdf', $data);
 			}
 		}
@@ -190,7 +190,7 @@ class Auth extends CI_Controller {
 				$this->data['favs'] = $query;					
 				$html = $this->load->view('reportes/reporteFavoritos_view', $this->data, true);
 				$data = pdf_create($html, '', false);
-				unlink('recursos/pdf/temporal.pdf');
+				delete_files('recursos/pdf/temporal.pdf');
 		     	write_file('recursos/pdf/temporal.pdf', $data);
 			}
 		}

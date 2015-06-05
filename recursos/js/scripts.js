@@ -241,7 +241,7 @@ function verReportContenido()
                                 while (list.hasChildNodes())
                                 {   
                                     list.removeChild(list.firstChild);
-                                }
+                                }   
                                 list.innerHTML = contenido;
                             }catch(e)
                             {
