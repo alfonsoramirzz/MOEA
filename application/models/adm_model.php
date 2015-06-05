@@ -73,10 +73,10 @@ class adm_model extends CI_Model
 	//(1,'conv','2000-10-10','2000-10-10','desc',1,1,1,6,(select idLugar from Lugar where pais='EUA'));
 	public function conv($nom,$fi,$ff,$desc,$grado,$uni,$area,$prom,$lug)
 	{	
-		if($this->validaFecha($fi,$ff) && $this->validaNombre($nom) && $this->validaDesc($desc))
+		if($this->validaFecha($fi,$ff) && $this->validaNombre($nom) && $this->validaDesc($desc) && $this->unico($nom))
 		{
 			$nom = strtoupper($nom);
-		$this->db->query("insert into Convocatoria 
+			$this->db->query("insert into Convocatoria 
 			(nombreConv, fechaInicio, fechaFin, descripcion, Grado_idGrado,
 			 Universidad_idUniversidad1, Area_idArea, promedioSolicitado, Lugar_idLugar,edo)
 			values
@@ -274,6 +274,19 @@ class adm_model extends CI_Model
 			return true;
 		}
 		else
+		{
+			return false;
+		}
+	}
+
+	public function unico($nombreConv)
+	{
+		$this->db->where('nombreConv',$nombreConv);
+		$this->db->from('Convocatoria');
+		if($this->db->count_all_results() == 0)
+		{
+			return true;	
+		}else
 		{
 			return false;
 		}

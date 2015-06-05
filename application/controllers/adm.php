@@ -872,17 +872,10 @@ class Adm extends CI_Controller {
 	function guardarConvocatoria()
 	{
 		if($_POST){
-			$this->form_validation->set_rules('name','Name','unique');
-			if($this->form_validation->run() == false)
+			if($this->adm_model->conv($_POST['name'],$_POST['fechaI'],$_POST['fechaF'],$_POST['desc'],
+			$_POST['grado'],$_POST['universidad'],$_POST['area'],$_POST['prom'],$_POST['pais']))
 			{
-				if($this->adm_model->conv($_POST['name'],$_POST['fechaI'],$_POST['fechaF'],$_POST['desc'],
-				$_POST['grado'],$_POST['universidad'],$_POST['area'],$_POST['prom'],$_POST['pais']))
-				{
-					redirect('adm/convocatoria');
-				}else
-				{
-					redirect("adm/altaConvocatoria");
-				}
+				redirect('adm/convocatoria');
 			}else
 			{
 				redirect("adm/altaConvocatoria");
@@ -899,16 +892,9 @@ class Adm extends CI_Controller {
 	{
 		if($_POST)
 		{
-			$this->form_validation->set_rules('name','Name','unique');
-			if($this->form_validation->run() == false)
+			if($this->adm_model->guardaUni($_POST['name']))
 			{
-				if($this->adm_model->guardaUni($_POST['name']))
-				{
-					echo "<script languaje='javascript' type='text/javascript'>window.close();</script>";
-				}else
-				{
-					redirect('adm/agregarUniversidad');
-				}
+				echo "<script languaje='javascript' type='text/javascript'>window.close();</script>";
 			}else
 			{
 				redirect('adm/agregarUniversidad');
@@ -925,16 +911,9 @@ class Adm extends CI_Controller {
 	{
 		if($_POST)
 		{
-			$this->form_validation->set_rules('name','Name','unique');
-			if($this->form_validation->run() == false)
+			if($this->adm_model->guardaArea($_POST['name']))
 			{
-				if($this->adm_model->guardaArea($_POST['name']))
-				{
-					echo "<script languaje='javascript' type='text/javascript'>window.close();</script>";
-				}else
-				{
-					redirect('adm/agregarArea');
-				}
+				echo "<script languaje='javascript' type='text/javascript'>window.close();</script>";
 			}else
 			{
 				redirect('adm/agregarArea');
@@ -951,7 +930,7 @@ class Adm extends CI_Controller {
 	{
 		if($_POST)
 		{
-			$this->form_validation->set_rules('name','Name','unique');
+			$this->form_validation->set_rules('pais','name','unique');
 			if($this->form_validation->run() == false)
 			{
 				if($this->adm_model->guardaPais($_POST['name']))
@@ -978,16 +957,9 @@ class Adm extends CI_Controller {
 	{
 		if($_POST)
 		{
-			$this->form_validation->set_rules('name','Name','unique');
-			if($this->form_validation->run() == false)
+			if($this->adm_model->guardaCiudad($_POST['name'],$_POST['pais']))
 			{
-				if($this->adm_model->guardaCiudad($_POST['name'],$_POST['pais']))
-				{
-					echo "<script languaje='javascript' type='text/javascript'>window.close();</script>";
-				}else
-				{
-					redirect('adm/agregarCiudad');
-				}
+				echo "<script languaje='javascript' type='text/javascript'>window.close();</script>";
 			}else
 			{
 				redirect('adm/agregarCiudad');
@@ -1004,16 +976,9 @@ class Adm extends CI_Controller {
 	{
 		if($_POST)
 		{
-			$this->form_validation->set_rules('name','Name','unique');
-			if($this->form_validation->run() == false)
+			if($this->adm_model->guardaGrado($_POST['name']))
 			{
-				if($this->adm_model->guardaGrado($_POST['name']))
-				{
-					echo "<script languaje='javascript' type='text/javascript'>window.close();</script>";
-				}else
-				{
-					redirect('adm/agregarGrado');
-				}
+				echo "<script languaje='javascript' type='text/javascript'>window.close();</script>";
 			}else
 			{
 				redirect('adm/agregarGrado');
