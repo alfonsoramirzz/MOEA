@@ -27,7 +27,7 @@
 
 
 <body>
-<form name="formulario" method="post" action="<?=base_url()?>index.php/auth/guarda_encuesta">
+<form name="formulario" method="post" action="<?=base_url()?>index.php/auth/guarda">
 <input type='text' name="id" value='<?=$id?>' hidden>
   <label>
     ¿Porqué medio te enteraste del programa?

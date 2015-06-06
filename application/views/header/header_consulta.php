@@ -8,7 +8,7 @@
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
-            <a href="#" class="navbar-brand">
+            <a href="Principal" class="navbar-brand">
                 <strog class="titulo">MOVILIDAD</strong>
             </a>      
           </div>
@@ -20,12 +20,7 @@
                     <span class="usuario-icono usuario">&nbsp;INGRESA</span>
                 </a>
               </li>
-              <li>
-                <a class=" btn-menu usuario-icono" id="menu-toggle">
-                  <span class="usuario-icono"></span>
-                  <span id="btn-toggle" class="glyphicon glyphicon-triangle-right usuario-icono">MOSTRAR</span>
-                </a>
-              </li>
+              
             </ul>
           </div><!--/.nav-collapse -->
         </div>
@@ -75,43 +70,4 @@
     </div>
     <!--Termina Togle Login -->
     <!--Inicia Togle Perfil -->
-    <div id="wrapper"  role="navigation">          
-        <!-- Sidebar -->
-        <div id="sidebar-wrapper">            
-            <ul class="sidebar-nav">
-                <li class="user-img-div  sidebar-brand">
-                    <h4>PEPITO CONTRERAS</h4>   
-                    <figure>
-                      <img src="<?= base_url(); ?>recursos/images/USUARIOS/user.png" class="img-thumbnail" />
-                    <figure>                
-                </li>
-                <li>
-                    <a onclick="verConvocatorias()">
-                      <i class="glyphicon glyphicon-th"></i>
-                      <span>CONVOCATORIAS</span>
-                    </a>
-                </li>
-                <li>
-                    <a onclick="verConvInfor()">
-                      <i class="glyphicon glyphicon-info-sign "></i>
-                      <span>INFORMACIÓN</span>
-                    </a>
-                </li>
-                <li>
-                    <a onclick="verMisConv()">
-                      <i class="glyphicon glyphicon-thumbs-up"></i>
-                      <span>MIS CONVOCATORIAS</span>
-                    </a>
-                </li>
-                <li>
-                    <a onclick="verMiHistorico()">
-                      <i class="glyphicon glyphicon-file "></i>
-                      <span>MI HISTORIAL</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <!-- Sidebar Wrapper-->
-        <!--Termina Togle Perfil -->
-</header>
-
+    

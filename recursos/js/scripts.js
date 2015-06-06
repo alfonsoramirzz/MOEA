@@ -20,6 +20,7 @@ $("#menu-toggle").click(function(e) {
     };
 });
 
+//la siguiente funcion es necesaria para que se despliege el menu en la vista del usuario
 $("#menu-toggle_usuario").click(function(e) {
     e.preventDefault();
     $("#wrapper").toggleClass("toggled");
@@ -34,7 +35,6 @@ $("#menu-toggle_usuario").click(function(e) {
         $("#btn-toggle").addClass('glyphicon glyphicon-triangle-right');
     };
 });
-
 
 function verConvocatorias()
 {

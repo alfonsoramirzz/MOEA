@@ -1,15 +1,20 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Auth extends CI_Controller {
+class Adm extends CI_Controller {
 
 	function __construct()
 	{
 		parent::__construct();
-		$this->load->model('Consulta/Consulta_model');
-		$this->form_validation->set_error_delimiters($this->config->item('error_start_delimiter', 'ion_auth'), $this->config->item('error_end_delimiter', 'ion_auth'));
-		//El siguiene modelo es necesario para el la encuesta
-		$this->load->model('Seguimiento_model');
-		$this->load->helper('text');
+		/*$this->load->database();
+		$this->load->library(array('ion_auth','form_validation','uri'));
+		$this->load->helper(array('url','language'));
+		*/
+		$this->load->model('adm_model');
+		$this->form_validation->set_error_delimiters($this->config->item('error_start_delimiter', 'ion_auth'), 
+		$this->config->item('error_end_delimiter', 'ion_auth'));
+/*
+		$this->lang->load('ion_auth');
+		$this->lang->load('auth');	*/
 	}
 
 	//redirect if needed, otherwise display the user list
@@ -19,26 +24,20 @@ class Auth extends CI_Controller {
 		if (!$this->ion_auth->logged_in())
 		{
 			//redirect them to the login page
-			//redirect('auth/login', 'refresh');
-			redirect('auth/principal', 'refresh');
-		}
-		elseif ($this->ion_auth->in_group('admin')) 
-		{
 			redirect('adm/convocatoria', 'refresh');
+			//redirect('auth/login', 'refresh');
 		}
-		/*elseif (!$this->ion_auth->is_admin()) //remove this elseif if you want to enable this for non-admins
+		elseif ($this->ion_auth->in_group('general')) //remove this elseif if you want to enable this for non-admins
+		{
+			redirect('auth/Principal', 'refresh');
+		}
+		elseif (!$this->ion_auth->is_admin()) //remove this elseif if you want to enable this for non-admins
 		{
 			//redirect them to the home page because they must be an administrator to view this
 			return show_error('You must be an administrator to view this page.');
-		}*/
-		elseif ($this->ion_auth->in_group('interesado')) 
-		{
-			redirect('auth/PrincipalInt', 'refresh');
 		}
 		else
 		{
-			redirect('auth/logout');
-			/*
 			//set the flash data error message if there is one
 			$this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
 
@@ -49,77 +48,8 @@ class Auth extends CI_Controller {
 				$this->data['users'][$k]->groups = $this->ion_auth->get_users_groups($user->id)->result();
 			}
 
-			$this->_render_page('auth/index', $this->data);*/
+			$this->_render_page('auth/index', $this->data);
 		}
-	}
-
-	function Principal()
-	{
-		$this->data['user'] = $this->ion_auth->user()->row();//
-		$datos_convocatoria = array
-		(
-			'datos_convocatoria' => $this->Consulta_model->getConvocatoria(), 
-			'numero_filas' => $this->Consulta_model->getCantidadFilas(),
-			'dataUser' => $this->data
-		);
-		$this->load->view('pagina_principal/principal_view',$datos_convocatoria);
-	}
-	
-	function showConvocatoriaVigente()
-	{
-		$datos_convocatoria=array
-		(
-			'datos_convocatoria' => $this->Consulta_model->getConvocatoria()
-		);
-		$this->load->view('pagina_principal/convocatorias_vigentes',$datos_convocatoria);
-	}
-	
-	function showConvocatoria(){
-		$id = $_POST['id'];
-		
-		
-		$data = array(
-		    'data' => $this->Consulta_model->obtener($id)
-		);
-		
-		$this->load->view('pagina_principal/contenido',$data);
-		
-		
-	}
-	
-	function verIniSesion()
-	{
-		$this->load->view('auth/login');
-	}
-	
-	function verConvocatorias()
-	{
-		$this->load->view('convocatorias_view');
-	}
-
-	function verConvInfo()
-	{
-		$this->load->view('informacion_view');
-	}
-
-	function verMisConv()
-	{
-		$this->load->view('misconvocatorias_view');
-	}
-
-	function verMiHistorico()
-	{
-		$this->load->view('mihistorico_view');
-	}
-
-	function verSeguimiento()
-	{
-		$this->load->view('seguimiento_view');
-	}
-
-	function verDetalleConv()
-	{
-		$this->load->view('detalle_conv_view');
 	}
 
 	//log the user in
@@ -142,24 +72,14 @@ class Auth extends CI_Controller {
 				//if the login is successful
 				//redirect them back to the home page
 				$this->session->set_flashdata('message', $this->ion_auth->messages());
-				$usuario = $this->ion_auth->user()->row();
-				$tipo = $this->Seguimiento_model->tipoUsuario($usuario->id);
-				//echo $usuario->id.$tipo;
-				if($tipo=='interesado'){
-					redirect('auth/principalInt', 'refresh');
-				}else{
-					redirect('adm/convocatoria', 'refresh');
-				}
-				//redirect(base_url().'index.php/auth/principalInt', 'refresh');
-				//echo "Entre";
+				redirect('/', 'refresh');
 			}
 			else
 			{
 				//if the login was un-successful
 				//redirect them back to the login page
 				$this->session->set_flashdata('message', $this->ion_auth->errors());
-				//redirect('auth/login', 'refresh'); //use redirects instead of loading views for compatibility with MY_Controller libraries
-				echo "no entre";
+				redirect('auth/login', 'refresh'); //use redirects instead of loading views for compatibility with MY_Controller libraries
 			}
 		}
 		else
@@ -192,8 +112,7 @@ class Auth extends CI_Controller {
 
 		//redirect them to the login page
 		$this->session->set_flashdata('message', $this->ion_auth->messages());
-		//redirect('auth/login', 'refresh');
-		redirect('auth/principal', 'refresh');
+		redirect('auth', 'refresh');
 	}
 
 	//change password
@@ -892,77 +811,276 @@ class Auth extends CI_Controller {
 
 		if (!$render) return $view_html;
 	}
-	
-	/**
-	*	INICIA MODULO ENCUESTA
-	*/
-	
-	
-	public function encuesta_favorito()
+
+
+	function Principal()
 	{
 		$this->data['user'] = $this->ion_auth->user()->row();
-		$matricula = $this->Seguimiento_model->obtenerMatricula($this->data['user']->id);
-		$this->data['convocatorias'] = $this->Seguimiento_model->obtenerConvocatorias($matricula);
-		$this->load->view('seguimiento/principal_view', $this->data);
+		$this->load->view('pagina_principal/principal_view', $this->data);
 	}
-	
-	/**
-	* Muestra la encuesta a contestar. los parametros entran por url
-	* el unico paramero que se recibe es el id de favoritos
-	*/
 
-	public  function ver_encuesta(){
-    //id de favoritos
-		$id=$this->uri->segment(3);
-		$datos= array('id' => $id );
-    //echo $id;
-		$this->load->view('seguimiento/encuesta', $datos);
-	}
-	/**
-	* Esta funcion guarda la encuesta de la convocatoria favorita 
-	*/
-	public function guarda_encuesta(){
-		$id=$_POST["id"];
-		$r1=$_POST["p1"];
-		$r2=$_POST["p2"];
-		$r3=$_POST["p3"];
-		$datos= array('idFavoritos' => $id, "respuesta1" => $r1, "respuesta2" => $r2, "respuesta3" =>$r3 );
-		$this->Seguimiento_model->guardaCuestionario($datos);
-		$this->load->view("seguimiento/continuar");
-	}
-	
-	/**
-	*	FINALIZA MODULO ENCUESTA
-	*/
-	
-	function PrincipalInt()
+	function verIniSesion()
 	{
-		$this->data['user'] = $this->ion_auth->user()->row();//
-		
-		$datos_convocatoria = array
-		(
-			'datos_convocatoria' => $this->Consulta_model->getConvocatoria(), 
-			'numero_filas' => $this->Consulta_model->getCantidadFilas(),
-			'dataUser' => $this->data,
-			'tablas_favoritas' => $this->Consulta_model->getFavoritos(),
-			'user' => $this->data['user']
-		);
-		$this->load->view('pagina_principal/principal_int',$datos_convocatoria);
+		$this->load->view('auth/login');
 	}
 	
-	function megusta(){
-		$id = $_POST['id'];
-		$iduser = $_POST['userid'];
+	function verConvocatorias()
+	{
+		$this->load->view('convocatorias_view');
+	}
 
-		     $query = $this->Consulta_model->getUsuario($iduser);
-		//$this->load->view('pagina_principal/prueba',$data);
-		foreach($query->result() as $row){
-			$mat=$row->matricula;
+	function verConvInfo()
+	{
+		$this->load->view('informacion_view');
+	}
+
+	function verMisConv()
+	{
+		$this->load->view('misconvocatorias_view');
+	}
+
+	function verMiHistorico()
+	{
+		$this->load->view('mihistorico_view');
+	}
+
+	function verSeguimiento()
+	{
+		$this->load->view('seguimiento_view');
+	}
+
+	function verDetalleConv()
+	{
+		$this->load->view('detalle_conv_view');
+	}
+
+	function verReportes()
+	{
+		$this->load->view('reportes/reportes_view');
+	}
+
+	function altaConvocatoria()
+	{
+		$data['area'] = $this->adm_model->obtArea();
+		$data['lugar'] = $this->adm_model->obtLugar();
+		$data['ciudad'] = $this->adm_model->obtCiudad();
+		$data['grado'] = $this->adm_model->obtGrado();
+		$data['uni'] = $this->adm_model->obtUni();
+		$this->load->view('adm/registrarConvocatoria.html',$data);
+	}
+
+	function guardarConvocatoria()
+	{
+		if($_POST){
+			/*$this->form_validation->set_rules('name','Name','unique');
+			if($this->form_validation->run() == false)
+			{*/
+				if($this->adm_model->conv($_POST['name'],$_POST['fechaI'],$_POST['fechaF'],$_POST['desc'],
+				$_POST['grado'],$_POST['universidad'],$_POST['area'],$_POST['prom'],$_POST['pais']))
+				{
+					redirect('adm/convocatoria');
+				}else
+				{
+					redirect("adm/altaConvocatoria");
+				}
+			/*}else
+			{
+				redirect("adm/altaConvocatoria");
+			}*/
+		}		
+	}
+
+	function agregarUniversidad()
+	{
+		$this->load->view('adm/agregarUniversidad.html');
+	}
+
+	function guardaUniversidad()
+	{
+		if($_POST)
+		{
+			/*$this->form_validation->set_rules('name','Name','unique');
+			if($this->form_validation->run() == false)
+			{*/
+				if($this->adm_model->guardaUni($_POST['name']))
+				{
+					echo "<script languaje='javascript' type='text/javascript'>window.close();</script>";
+				}else
+				{
+					redirect('adm/agregarUniversidad');
+				}
+			/*}else
+			{
+				redirect('adm/agregarUniversidad');
+			}*/
 		}
-		$this->Consulta_model->favorito($id,$mat);
-		redirect('auth/PrincipalInt');
+	}
+
+	function agregarArea()
+	{
+		$this->load->view('adm/agregarArea.html');
+	}
+
+	function guardaArea()
+	{
+		if($_POST)
+		{
+			/*$this->form_validation->set_rules('name','Name','unique');
+			if($this->form_validation->run() == false)
+			{*/
+				if($this->adm_model->guardaArea($_POST['name']))
+				{
+					echo "<script languaje='javascript' type='text/javascript'>window.close();</script>";
+				}else
+				{
+					redirect('adm/agregarArea');
+				}
+			/*}else
+			{
+				redirect('adm/agregarArea');
+			}*/
+		}
+	}
+
+	function agregarPais()
+	{
+		$this->load->view('adm/agregarPais');
+	}
+
+	function guardaPais()
+	{
+		if($_POST)
+		{
+			/*$this->form_validation->set_rules('name','Name','is_unique['.$tables['pais'].'.name]');
+			if($this->form_validation->run() == false)
+			{
+				*/
+				if($this->adm_model->guardaPais($_POST['name']))
+				{
+					echo "<script languaje='javascript' type='text/javascript'>window.close();</script>";
+				}else
+				{
+					redirect('adm/agregarPais');
+				}
+			/*}else
+			{
+				echo "No guarda";
+				//redirect('adm/agregarPais');
+			}*/
+		}	
+	}
+
+	function agregarCiudad()
+	{
+		$data['lugar'] = $this->adm_model->obtLugar();
+		$this->load->view('adm/agregarCiudad.html',$data);
+	}
+
+	function guardaCiudad()
+	{
+		if($_POST)
+		{
+			/*$this->form_validation->set_rules('name','Name','unique');
+			if($this->form_validation->run() == false)
+			{*/
+				if($this->adm_model->guardaCiudad($_POST['name'],$_POST['pais']))
+				{
+					echo "<script languaje='javascript' type='text/javascript'>window.close();</script>";
+				}else
+				{
+					redirect('adm/agregarCiudad');
+				}
+			/*}else
+			{
+				redirect('adm/agregarCiudad');
+			}*/
+		}	
 	}
 	
-	
+	function agregarGrado()
+	{
+		$this->load->view('adm/agregarGrado.html');
+	}
 
+	function guardaGrado()
+	{
+		if($_POST)
+		{
+			/*$this->form_validation->set_rules('name','Name','unique');
+			if($this->form_validation->run() == false)
+			{*/
+				if($this->adm_model->guardaGrado($_POST['name']))
+				{
+					echo "<script languaje='javascript' type='text/javascript'>window.close();</script>";
+				}else
+				{
+					redirect('adm/agregarGrado');
+				}
+			/*}else
+			{
+				redirect('adm/agregarGrado');
+			}*/
+		}	
+	}
+
+////////////////////////////////////////////////////////////////////////////////////	
+//////////////Actualizar functions //////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+	public function Convocatoria()
+	{
+
+		$data['convocatoria'] = $this->adm_model->obtView();
+		/*foreach($data['convocatoria'] as $row){
+			print_r($row);
+		}*/
+		$this->load->view('adm/verConvocatoria.html',$data);
+	}
+
+	public function actualizar()
+	{
+		$data['area'] = $this->adm_model->obtArea();
+		$data['lugar'] = $this->adm_model->obtLugar();
+		$data['ciudad'] = $this->adm_model->obtCiudad();
+		$data['grado'] = $this->adm_model->obtGrado();
+		$data['uni'] = $this->adm_model->obtUni();
+		$id = $this->uri->segment(3);
+		$data['convocatoria'] = $this->adm_model->obtConvocatoria($id);
+		$this->load->view('adm/actualizaConvocatoria.html',$data);
+	}
+
+	public function desactivar()
+	{
+		$id = $this->uri->segment(3);
+		$this->adm_model->desactivar($id);
+        redirect('adm/Convocatoria');
+	}
+
+	public function activar()
+	{
+		$id = $this->uri->segment(3);
+		$this->adm_model->activar($id);
+        redirect('adm/Convocatoria');
+	}
+
+	public function eliminar()
+	{
+		$id = $this->uri->segment(3);
+		$this->adm_model->eliminar($id);
+        redirect('adm/Convocatoria');
+	}
+
+	public function actualizarConvocatoria()
+	{
+		if($_POST){
+			if($this->adm_model->actualiza($_POST['name'],$_POST['fechaI'],$_POST['fechaF'],$_POST['desc'],
+			$_POST['grado'],$_POST['universidad'],$_POST['area'],$_POST['prom'],$_POST['pais'],$_POST['id']))
+			{
+				redirect('adm/convocatoria');
+			}else
+			{
+				redirect("adm/actualizar/".$_POST['id']);
+			}
+		}		
+	}
 }
