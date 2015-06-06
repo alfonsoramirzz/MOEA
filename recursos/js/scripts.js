@@ -20,6 +20,21 @@ $("#menu-toggle").click(function(e) {
     };
 });
 
+$("#menu-toggle_usuario").click(function(e) {
+    e.preventDefault();
+    $("#wrapper").toggleClass("toggled");
+    if ($("#btn-toggle").text() == 'MOSTRAR') 
+    {
+        $("#btn-toggle").toggleClass("glyphicon glyphicon-triangle-right"," ");
+        $("#btn-toggle").addClass('glyphicon glyphicon-triangle-left');
+    }
+    else
+    {
+        $("#btn-toggle").toggleClass("glyphicon glyphicon-triangle-left", " ");
+        $("#btn-toggle").addClass('glyphicon glyphicon-triangle-right');
+    };
+});
+
 
 function verConvocatorias()
 {
