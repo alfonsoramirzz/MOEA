@@ -5,7 +5,11 @@ class Auth extends CI_Controller {
 	function __construct()
 	{
 		parent::__construct();
+		$this->load->model('Consulta/Consulta_model');
 		$this->form_validation->set_error_delimiters($this->config->item('error_start_delimiter', 'ion_auth'), $this->config->item('error_end_delimiter', 'ion_auth'));
+		//El siguiene modelo es necesario para el la encuesta
+		$this->load->model('Seguimiento_model');
+		$this->load->helper('text');
 	}
 
 	//redirect if needed, otherwise display the user list
@@ -15,19 +19,26 @@ class Auth extends CI_Controller {
 		if (!$this->ion_auth->logged_in())
 		{
 			//redirect them to the login page
-			redirect('auth/login', 'refresh');
+			//redirect('auth/login', 'refresh');
+			redirect('auth/principal', 'refresh');
 		}
-		elseif ($this->ion_auth->in_group('general')) //remove this elseif if you want to enable this for non-admins
+		elseif ($this->ion_auth->in_group('admin')) 
 		{
-			redirect('auth/Principal', 'refresh');
+			redirect('adm/convocatoria', 'refresh');
 		}
-		elseif (!$this->ion_auth->is_admin()) //remove this elseif if you want to enable this for non-admins
+		/*elseif (!$this->ion_auth->is_admin()) //remove this elseif if you want to enable this for non-admins
 		{
 			//redirect them to the home page because they must be an administrator to view this
 			return show_error('You must be an administrator to view this page.');
+		}*/
+		elseif ($this->ion_auth->in_group('interesado')) 
+		{
+			redirect('auth/PrincipalInt', 'refresh');
 		}
 		else
 		{
+			redirect('auth/logout');
+			/*
 			//set the flash data error message if there is one
 			$this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
 
@@ -38,16 +49,44 @@ class Auth extends CI_Controller {
 				$this->data['users'][$k]->groups = $this->ion_auth->get_users_groups($user->id)->result();
 			}
 
-			$this->_render_page('auth/index', $this->data);
+			$this->_render_page('auth/index', $this->data);*/
 		}
 	}
 
 	function Principal()
 	{
-		$this->data['user'] = $this->ion_auth->user()->row();
-		$this->load->view('pagina_principal/principal_view', $this->data);
+		$this->data['user'] = $this->ion_auth->user()->row();//
+		$datos_convocatoria = array
+		(
+			'datos_convocatoria' => $this->Consulta_model->getConvocatoria(), 
+			'numero_filas' => $this->Consulta_model->getCantidadFilas(),
+			'dataUser' => $this->data
+		);
+		$this->load->view('pagina_principal/principal_view',$datos_convocatoria);
 	}
-
+	
+	function showConvocatoriaVigente()
+	{
+		$datos_convocatoria=array
+		(
+			'datos_convocatoria' => $this->Consulta_model->getConvocatoria()
+		);
+		$this->load->view('pagina_principal/convocatorias_vigentes',$datos_convocatoria);
+	}
+	
+	function showConvocatoria(){
+		$id = $_POST['id'];
+		
+		
+		$data = array(
+		    'data' => $this->Consulta_model->obtener($id)
+		);
+		
+		$this->load->view('pagina_principal/contenido',$data);
+		
+		
+	}
+	
 	function verIniSesion()
 	{
 		$this->load->view('auth/login');
@@ -83,6 +122,123 @@ class Auth extends CI_Controller {
 		$this->load->view('detalle_conv_view');
 	}
 
+	function verReporte()
+	{
+		$this->load->view('reportes/reportes_view');
+	}
+
+	function getTipos()
+	{
+		$id = $this->input->post('id');
+		if($id == 1 || $id == 2 ||$id == 3 ||$id == 4 || $id == 5 || $id == 6)
+		{
+			switch ($id) 
+			{
+				case '1':
+					$this->verReporteContenido(1);
+					break;
+				case '2':
+					$this->data['tipo'] = "Grado";
+					$this->data['query'] = $this->ion_auth_model->getTipo($id);
+					$this->load->view('reportes/selectTipo_view', $this->data);
+					break;
+				case '3':
+					$this->data['tipo'] = "Area";
+					$this->data['query'] = $this->ion_auth_model->getTipo($id);
+					$this->load->view('reportes/selectTipo_view', $this->data);
+					break;					
+				case '4':
+					$this->data['tipo'] = "País";
+					$this->data['query'] = $this->ion_auth_model->getTipo($id);
+					$this->load->view('reportes/selectTipo_view', $this->data);
+					break;				
+				case '5':
+					$this->data['tipo'] = "Universidad";
+					$this->data['query'] = $this->ion_auth_model->getTipo($id);
+					$this->load->view('reportes/selectTipo_view', $this->data);
+					break;
+				case '6':
+					$this->verReporteContenido(6);
+					break;	
+				
+				default:
+					# code...
+					break;
+			}
+		}
+	}
+
+	function verReporteContenido($idReporte = 0)
+	{		
+		if ($idReporte == 0) 
+		{		
+			$tipo = $this->input->post('tipo');
+			$idReporte = $this->input->post('idReporte');
+			if($idReporte == 1 || $idReporte == 2 ||$idReporte == 3 ||$idReporte == 4 || $idReporte == 5)
+			{
+				$query = $this->ion_auth_model->getReg($idReporte, $tipo);
+				if($query != false)
+				{
+					switch ($idReporte) 
+					{
+						case '2':
+							$this->data['tipo'] = "Reporte de convocatorias por grado de estudio";
+							break;
+						case '3':
+							$this->data['tipo'] = "Reporte de convocatorias por area de formación";
+							break;
+						case '4':
+							$this->data['tipo'] = "Reporte de convocatorias por país";
+							break;
+						case '5':
+							$this->data['tipo'] = "Reporte de convocatorias por universidad";
+							break;
+						
+						default:
+							break;
+					}						
+					$this->data['registros'] = $query;	
+					$html = $this->load->view('reportes/reportecontenido_view', $this->data, true);
+					$data = pdf_create($html, '', false);
+					delete_files('recursos/pdf/temporal.pdf');
+			     	write_file('recursos/pdf/temporal.pdf', $data);
+				}
+			}
+		}
+		elseif ($idReporte == 1) 
+		{
+			$query = $this->ion_auth_model->getReg(0, 0);
+			if($query != false)
+			{
+				$this->data['tipo'] = "Reporte de convocatorias";
+				$this->data['registros'] = $query;	
+				$html = $this->load->view('reportes/reportecontenido_view', $this->data, true);
+				$data = pdf_create($html, '', false);
+				delete_files('recursos/pdf/temporal.pdf');
+		     	write_file('recursos/pdf/temporal.pdf', $data);
+			}
+		}
+		elseif ($idReporte == 6) 
+		{
+			$query = $this->ion_auth_model->getFavs();
+			
+			if($query != false)
+			{
+				$this->data['favs'] = $query;					
+				$html = $this->load->view('reportes/reporteFavoritos_view', $this->data, true);
+				$data = pdf_create($html, '', false);
+				delete_files('recursos/pdf/temporal.pdf');
+		     	write_file('recursos/pdf/temporal.pdf', $data);
+			}
+		}
+
+	}
+	
+	
+	function reportes(){
+		$this->load->view('reportes/principal_view');
+	}
+
 	//log the user in
 	function login()
 	{
@@ -103,14 +259,25 @@ class Auth extends CI_Controller {
 				//if the login is successful
 				//redirect them back to the home page
 				$this->session->set_flashdata('message', $this->ion_auth->messages());
-				redirect('/', 'refresh');
+				/*$usuario = $this->ion_auth->user()->row();
+				$tipo = $this->Seguimiento_model->tipoUsuario($usuario->id);
+				//echo $usuario->id.$tipo;
+				if($tipo=='interesado'){
+					redirect('auth/principalInt', 'refresh');
+				}else{
+					redirect('adm/convocatoria', 'refresh');
+				}*/
+				
+				redirect('auth/index', 'refresh');
+				//echo "Entre";
 			}
 			else
 			{
 				//if the login was un-successful
 				//redirect them back to the login page
 				$this->session->set_flashdata('message', $this->ion_auth->errors());
-				redirect('auth/login', 'refresh'); //use redirects instead of loading views for compatibility with MY_Controller libraries
+				//redirect('auth/login', 'refresh'); //use redirects instead of loading views for compatibility with MY_Controller libraries
+				echo "no entre";
 			}
 		}
 		else
@@ -143,7 +310,8 @@ class Auth extends CI_Controller {
 
 		//redirect them to the login page
 		$this->session->set_flashdata('message', $this->ion_auth->messages());
-		redirect('auth/login', 'refresh');
+		//redirect('auth/login', 'refresh');
+		redirect('auth/principal', 'refresh');
 	}
 
 	//change password
@@ -842,5 +1010,87 @@ class Auth extends CI_Controller {
 
 		if (!$render) return $view_html;
 	}
+	
+	/**
+	*	INICIA MODULO ENCUESTA
+	*/
+	
+	
+	public function encuesta_favorito()
+	{
+		$this->data['user'] = $this->ion_auth->user()->row();
+		$matricula = $this->Seguimiento_model->obtenerMatricula($this->data['user']->id);
+		$this->data['convocatorias'] = $this->Seguimiento_model->obtenerConvocatorias($matricula);
+		$this->load->view('seguimiento/principal_view', $this->data);
+	}
+	
+	/**
+	* Muestra la encuesta a contestar. los parametros entran por url
+	* el unico paramero que se recibe es el id de favoritos
+	*/
+
+	public  function ver_encuesta(){
+    //id de favoritos
+		$id=$this->uri->segment(3);
+		$datos= array('id' => $id );
+    //echo $id;
+		$this->load->view('seguimiento/encuesta', $datos);
+	}
+	/*
+	*
+	*/
+	public function seguimiento_correo()
+	{
+		$this->data['user'] = $this->ion_auth->user()->row();
+		$matricula = $this->Seguimiento_model->obtenerMatricula($this->data['user']->id);
+		$this->data['convocatorias'] = $this->Seguimiento_model->obtenerConvocatoriasCorreo($matricula);
+		$this->load->view('seguimiento/correo_view', $this->data);
+	}
+	/**
+	* Esta funcion guarda la encuesta de la convocatoria favorita 
+	*/
+	public function guarda_encuesta(){
+		$id=$_POST["id"];
+		$r1=$_POST["p1"];
+		$r2=$_POST["p2"];
+		$r3=$_POST["p3"];
+		$datos= array('idFavoritos' => $id, "respuesta1" => $r1, "respuesta2" => $r2, "respuesta3" =>$r3 );
+		$this->Seguimiento_model->guardaCuestionario($datos);
+		$this->load->view("seguimiento/continuar");
+	}
+	
+	/**
+	*	FINALIZA MODULO ENCUESTA
+	*/
+	
+	function PrincipalInt()
+	{
+		$this->data['user'] = $this->ion_auth->user()->row();//
+		
+		$datos_convocatoria = array
+		(
+			'datos_convocatoria' => $this->Consulta_model->getConvocatoria(), 
+			'numero_filas' => $this->Consulta_model->getCantidadFilas(),
+			'dataUser' => $this->data,
+			'tablas_favoritas' => $this->Consulta_model->getFavoritos(),
+			'user' => $this->data['user']
+		);
+		$this->load->view('pagina_principal/principal_int',$datos_convocatoria);
+	}
+	
+	function megusta(){
+		$id = $_POST['id'];
+		$iduser = $_POST['userid'];
+
+		     $query = $this->Consulta_model->getUsuario($iduser);
+		//$this->load->view('pagina_principal/prueba',$data);
+		foreach($query->result() as $row){
+			$mat=$row->matricula;
+		}
+		$this->Consulta_model->favorito($id,$mat);
+		redirect('auth/PrincipalInt');
+	}
+	
+	
 
 }

@@ -41,7 +41,7 @@
             <div>
               <h5><small><strong>YA SOY USUARIO MOVILIDAD</strong></small></h5>
               <p><small>Introduce tu dirección de e-mail y la contraseña para identificarte en la web.</small></p>
-              <form class="form-horizontal" name="form" action="#" method="POST">
+              <form class="form-horizontal" name="form" action="<?=base_url()?>/index.php/auth/login" method="POST">
                 <div>         
                   <input type="email" name="identity" class="form-control"/><br>
                 </div>

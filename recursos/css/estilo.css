@@ -203,6 +203,18 @@ div.slide
   color: #4F4F4F;
 
 }
+.fondo{
+  width: 80%;
+  height: 500px;
+  margin-top:7%;
+  margin-left:10%;
+  text-align:justify;
+  color:#000000;
+}
+.titulo{
+  text-align:center;
+  color:#000000;
+}
 
 
 

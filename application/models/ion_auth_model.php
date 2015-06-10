@@ -2231,4 +2231,135 @@ class Ion_auth_model extends CI_Model
 		//just return the string IP address now for better compatibility
 		return $ip_address;
 	}
+
+	function getTipo($id)
+	{
+		switch ($id) 
+		{
+			case '2':
+				$this->db->select('nombre As nombre');
+				$query = $this->db->get('grado');
+				return $query->result();
+				break;
+			case '3':
+				$this->db->select('nombreAreaFormacion As nombre');
+				$query = $this->db->get('area');
+				return $query->result();
+				break;
+			case '4':
+				$this->db->distinct('pais');
+				$this->db->select('pais As nombre');				
+				$query = $this->db->get('lugar');
+				return $query->result();
+				break;
+			case '5':
+				$this->db->select('nombre As nombre');
+				$query = $this->db->get('universidad');
+				return $query->result();
+				break;
+			
+			default:
+				# code...
+				break;
+		}
+	}
+
+	function getReg($idReporte, $tipo)
+	{
+		$this->db->select('convocatoria.nombreConv as Convocatoria, convocatoria.fechaInicio,convocatoria.fechaFin,convocatoria.promedioSolicitado as promedio,universidad.nombre as Universidad, area.nombreAreaFormacion as Area, grado.nombre as Grado, lugar.ciudad as Ciudad, lugar.pais as Pais');    
+		$this->db->from('convocatoria');
+		$this->db->join('universidad', 'convocatoria.Universidad_idUniversidad1 = idUniversidad');
+		$this->db->join('area', 'convocatoria.Area_idArea = area.idArea');
+		$this->db->join('grado', 'convocatoria.Grado_idGrado = grado.idGrado');
+		$this->db->join('lugar', 'convocatoria.Lugar_idLugar = lugar.idLugar');
+		$this->db->order_by("convocatoria.fechaInicio","asc");
+		switch ($idReporte) 
+		{
+			case '2':
+				$this->db->where('grado.nombre', $tipo);
+				break;
+			case '3':
+				$this->db->where('area.nombreAreaFormacion', $tipo);
+				break;
+			case '4':
+				$this->db->where('lugar.pais', $tipo);
+				break;
+			case '5':
+				$que = $this->db->query("SELECT idUniversidad FROM universidad 
+													WHERE nombre = '".$tipo."';"
+									);
+				$que = $que->row();
+				$this->db->where('convocatoria.Universidad_idUniversidad1', $que->idUniversidad);
+				break;
+			default:
+				# code...
+				break;
+		}
+		$query = $this->db->get();
+		if($query -> num_rows() > 0){
+			return $query;
+		}else{
+			return false;
+		}
+	}
+
+	function getFavs()
+	{
+		$this->db->distinct();
+
+		$this->db->select('convocatoria.nombreConv as Convocatoria,(SELECT count(*) from favoritos where idPrograma = convocatoria.idPrograma) as favs');    
+		$this->db->from('convocatoria');
+		$this->db->join('favoritos', 'favoritos.idPrograma=convocatoria.idPrograma'); 
+		$query = $this->db->get();
+		return $query;
+		if($query -> num_rows() > 0){
+			return $query;
+		}else{
+			return false;
+		}
+	}
+
+	function registrarUniv($contacto, $correo, $calle, $numero, $cp, $nombre, $pais, $ciudad, $telefono)
+	{
+		$cont = array(
+					   'nombre_contacto' => $contacto,
+					   'correo_contacto' => $correo
+					);
+		$this->db->insert('contacto', $cont);
+
+		$this->db->select('idContacto');
+		$this->db->where('nombre_contacto', $contacto); 
+		$this->db->where('correo_contacto', $correo);  
+		$query1 = $this->db->get('contacto');
+		$query1 = $query1->row();
+
+
+		$direccion = array(
+					   'calle' => $calle,
+					   'numero' => $numero,
+					   'cp' => $cp
+					);
+		$this->db->insert('direccionuniv', $direccion);
+
+
+		$this->db->select('idDireccion');
+		$this->db->where('calle', $calle); 
+		$this->db->where('numero', $numero); 
+		$this->db->where('cp', $cp); 
+		$query2 = $this->db->get('direccionuniv');
+		$query2 = $query2->row();
+
+
+		$uni = array(
+						'idUniversidad' => 23,
+						'nombre' => $nombre,
+						'pais' => $pais,
+						'ciudad' => $ciudad,
+						'telefono' => $telefono,
+						'idCont' => $query1->idContacto,
+						'idDir' => $query2->idDireccion
+					);
+
+		$this->db->insert('universidad', $uni);
+	}
 }

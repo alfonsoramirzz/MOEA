@@ -9,7 +9,7 @@ class Interesado extends CI_Controller {
 	function verConvocatorias()
 	{
 		
-	}
+	
 		
 		$datos=
 			array(

@@ -1,0 +1,1 @@
+el menu del interesado lo cargo de seguimiento/menu_view.php
