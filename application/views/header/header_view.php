@@ -106,7 +106,7 @@
                 </li>
                 <li>
                     <a onclick="verReporte()">
-                      <i class="glyphicon glyphicon-file "></i>
+                      <i class="glyphicon glyphicon-file"></i>
                       <span>REPORTES</span>
                     </a>
                 </li>

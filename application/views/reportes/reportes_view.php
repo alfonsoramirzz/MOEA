@@ -14,6 +14,11 @@
 </div>
 <br><br>
 <div id="area_report">
-    <object id="objectPDF" data="<?= base_url(); ?>recursos/pdf/temporal.pdf?#zoom=80" 
-            type="application/pdf" width="100%" height="1000" zoom="100%"></object>
+    <!--<object id="objectPDF" data="<?= base_url(); ?>recursos/pdf/temporal.pdf?#zoom=80" 
+            type="application/pdf" width="100%" height="1000" zoom="100%"></object>-->
+    <div class="container">
+      <div class="progress progress-striped active">
+          <div class="bar" style="width: 0%;"></div>
+      </div>
+    </div>
 </div>
