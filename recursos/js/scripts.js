@@ -247,12 +247,12 @@ function verReportContenido()
     $.ajax
             ({
                 type: "POST",
-                url: "adm/verReporteContenido",
+                url: "verReporteContenido",
                 data: {'idReporte':idReporte, 'tipo': tipo},
                 success: function(jso)
                         {
                             try
-                            {                                                            
+                            {                                                          
                                 //$("#page-content-wrapper").html(jso);
                                 var list = document.getElementById("area_report");
                                 var contenido = list.innerHTML;  
