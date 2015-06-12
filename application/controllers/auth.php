@@ -753,7 +753,7 @@ class Auth extends CI_Controller {
 
 	//create a new user
 	function create_user()
-	{
+	{		
 		$tables = $this->config->item('tables','ion_auth');
 
 		//validate form input
@@ -765,12 +765,14 @@ class Auth extends CI_Controller {
 		$this->form_validation->set_rules('email', 'E-Mail', 'required|valid_email|is_unique['.$tables['users'].'.email]');
 		$this->form_validation->set_rules('password', $this->lang->line('create_user_validation_password_label'), 'required|min_length[' . $this->config->item('min_password_length', 'ion_auth') . ']|max_length[' . $this->config->item('max_password_length', 'ion_auth') . ']|matches[password_confirm]');
 		$this->form_validation->set_rules('password_confirm', $this->lang->line('create_user_validation_password_confirm_label'), 'required');
-		$this->form_validation->set_rules('ftg', 'Facebook, Twitter, Google+', 'required');
+		$this->form_validation->set_rules('ftg1', 'Facebook, Twitter, Google+', 'required');
+		$this->form_validation->set_rules('ftg2', 'Facebook, Twitter, Google+', 'required');
 		$this->form_validation->set_rules('matricula', 'Matrícula/Número de personal', 'required');
 		$this->form_validation->set_rules('promedio', 'Promedio', 'required');
 		$this->form_validation->set_rules('pais1', 'Pais Opción 1', 'required');
 		$this->form_validation->set_rules('pais2', 'Pais Opción 2', 'required');
 		$this->form_validation->set_rules('pais3', 'Pais Opción 3', 'required');
+		$this->form_validation->set_rules('beca', 'Solicitas beca', 'required');
 		
 		if ($this->form_validation->run() == true)
 		{
@@ -789,8 +791,9 @@ class Auth extends CI_Controller {
 		if ($this->form_validation->run() == true)
 		{
 			$idUser = $this->ion_auth->register($username, $password, $email, $additional_data);
-			if ($idUser != -1) 
+			if ($idUser != -1)
 			{
+			
 				$idioma = array
 				(
 					'idioma1' => $_POST['idioma1'],
@@ -816,7 +819,7 @@ class Auth extends CI_Controller {
 				);
 				$iddatosPersonales = $this->ion_auth->registrarDatosPersonales($datosPersonales);
 
-				$pais = array
+				$paises = array
 				(
 					'pais1' => $_POST['pais1'],
 					'pais2' => $_POST['pais2'],
@@ -824,27 +827,35 @@ class Auth extends CI_Controller {
 				);
 				$idpaises = $this->ion_auth->registrarPaises($paises);
 
+				$cuentas = array
+				(
+					'correo' => $_POST['ftg1'],
+					'otraCuenta' => $_POST['ftg2']
+				);
+				$idcuentas = $this->ion_auth->registrarCuenta($cuentas);
+
 				$interesado = array
 				(
 					'matricula' => $this->input->post('matricula'),
 					'areaInteres' => $this->input->post('nombre'),
 					'semestre' => $this->input->post('nombre'),
-					'solicitaBEca' => $this->input->post('nombre'),
-					'promedio_solicitante' => $this->input->post('nombre'),
+					'solicitaBeca' =>  $_POST['beca'],
+					'promedio_solicitante' => $this->input->post('promedio'),
 					'Usuario_idUsuario' => $idUser,
 					'Facultad_idFacultad' => $idFacultad,
 					'Idioma_idIdioma' => $idIdioma,
-					'otroPerfil_idotroPerfil' => $this->input->post('ftg'),
+					'otroPerfil_idotroPerfil' => $idcuentas,
 					'datosPersonales_iddatosPersonales' => $iddatosPersonales,
 					'situacionActual' => $_POST['situacionActual'],
 					'nivelDeInteres' => $_POST['nivel'],
 					'pais_idpais' => $idpaises
 				 );
+				$this->ion_auth->registrarInteresado($interesado);
+				//check to see if we are creating the user
+				//redirect them back to the admin page
+				$this->session->set_flashdata('message', $this->ion_auth->messages());
+				redirect("auth", 'refresh');
 			}
-			//check to see if we are creating the user
-			//redirect them back to the admin page
-			$this->session->set_flashdata('message', $this->ion_auth->messages());
-			redirect("auth", 'refresh');
 		}
 		else
 		{
@@ -860,7 +871,8 @@ class Auth extends CI_Controller {
 			$this->data['email'] = $this->form_validation->set_value('email');
 			$this->data['password'] = $this->form_validation->set_value('password');
 			$this->data['password_confirm'] = $this->form_validation->set_value('password_confirm');
-			$this->data['ftg'] = $this->form_validation->set_value('ftg');
+			$this->data['ftg1'] = $this->form_validation->set_value('ftg1');
+			$this->data['ftg2'] = $this->form_validation->set_value('ftg1');
 			$this->data['matricula'] =$this->form_validation->set_value('matricula');
 			$this->data['promedio'] =$this->form_validation->set_value('promedio');
 			$this->data['pais1'] =$this->form_validation->set_value('pais1');

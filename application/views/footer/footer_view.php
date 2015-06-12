@@ -3,7 +3,7 @@
     <script src="<?= base_url(); ?>assets/js/ajax/jquery-latest.min.js"></script>
     <script src="<?= base_url(); ?>assets/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     <script src="<?= base_url(); ?>assets/js/scripts.js"></script>
-    <script src="<?= base_url(); ?>assets/js/jquery.js"></script>
+    <script src="<?= base_url(); ?>assets/js/ajax/jquery.js"></script>
     <!--Fin JavaScript-->
     
     <footer>

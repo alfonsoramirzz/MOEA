@@ -2206,7 +2206,7 @@ class Ion_auth_model extends CI_Model
 	 **/
 	public function registrarDatosPersonales($datosPersonales)
 	{
-		$this->db->insert('datospersonales', $datospersonales);
+		$this->db->insert('datospersonales', $datosPersonales);
 		return $this->db->insert_id();
 	}
 
@@ -2225,8 +2225,8 @@ class Ion_auth_model extends CI_Model
 	/**
 	 * register
 	 *
-	 * @return bool
-	 * @author Mathew
+	 * @return int
+	 * @author Mathew, EQU5
 	 **/
 	public function register($username, $password, $email, $additional_data = array(), $groups = array())
 	{
@@ -2322,6 +2322,31 @@ class Ion_auth_model extends CI_Model
 		$this->trigger_events('post_register');
 
 		return (isset($id)) ? $id : -1;
+	}
+
+	
+	/**
+	 * registrarCuenta
+	 *
+	 * @return int
+	 * @author EQU5
+	 **/
+	public function registrarCuenta($cuentas)
+	{
+		$this->db->insert('cuenta', $cuentas);
+		return $this->db->insert_id();
+	}
+
+	/**
+	 * registrarInteresado
+	 *
+	 * @return int
+	 * @author EQU5
+	 **/
+	public function registrarInteresado($interesado)
+	{
+		$this->db->insert('interesado', $interesado);
+		return $this->db->insert_id();
 	}
 	/**************************************************************************/
 	/************************** EQUIPO 5 **************************************/

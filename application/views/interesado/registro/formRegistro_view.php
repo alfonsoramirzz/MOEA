@@ -8,52 +8,68 @@
 		<div class="span6 center">
 			<form action="create_user" method="POST">
 				<div class="form-group">				 
-				      <?php echo validation_errors(); ?>
-				      <?php echo form_open('form'); ?>
+				      <div id="infoMessage"><?php echo $message;?></div>
 				</div>
 				<div class="form-group ">
 					<label>Nombre:</label>
 					<input  class="form-control" type="text" name="nombre" 
-							pattern="[A-Z]+[\s]*[A-Z]*" placeholder="Ejemplo: MARIO ALEJANDRO" 
-							value="<?php echo $nombre ?>" />
+							pattern="[A-Z]{1,}[\s]{0,1}[A-Z]{1,}" placeholder="Ejemplo: MARIO ALEJANDRO" 
+							value="<?php echo $nombre ?>"/>
 				</div>
 				<div class="form-group ">								
 					<label>Apellido Paterno:</label>
-					<input type="text" name="apellidoP" class="form-control" pattern="[A-Z]+[\s]*[A-Z]*" placeholder="Ejemplo: DEL ANGEL"  />
+					<input type="text" name="apellidoP" class="form-control" 
+							pattern="[A-ZÁÉÍÓÚÑ]*[\s]*[A-ZÁÉÍÓÚÑ]*" placeholder="Ejemplo: DEL ANGEL"  
+							value="<?php echo $apellidoP ?>"/>
 				</div>
 				<div class="form-group ">
 					<label>Apellido Materno*:</label>
-					<input type="text" name="apellidoM"class="form-control" pattern="[A-Z]+[\s]*[A-Z]*" placeholder="Ejemplo: DEL ANGEL"/>
+					<input type="text" name="apellidoM" class="form-control" 
+							pattern="[A-ZÁÉÍÓÚÑ]+[\s]*[A-ZÁÉÍÓÚÑ]*" placeholder="Ejemplo: DEL ANGEL"
+							value="<?php echo $apellidoM ?>"/>
 				</div>
 				<div class="form-group ">
 					<label>Teléfono:</label>
 					<input type="text" name="telefono" class="form-control" pattern="[0-9]{4}[-]{1}[0-9]{2}[-]{1}[0-9]{2}[-]{1}[0-9]{2}" 
-					placeholder="Ejemplo: 2281-81-79-53"/>
+					placeholder="Ejemplo: 2281-81-79-53" value="<?php echo $telefono ?>"/>
 				</div>
 				<div class="form-group ">
 					<label>CURP:</label>
-					<input type="text" name="curp" class="form-control" pattern="[A-Z]{4}[0-9]{6}[A-Z]{6}[0-9]{2}" placeholder="Ejemplo: ROVJ901121MDFJLN01" />
+					<input type="text" name="curp" class="form-control" 
+							pattern="[A-Z]{4}[0-9]{6}[A-Z]{6}[0-9]{2}" placeholder="Ejemplo: ROVJ901121MDFJLN01"
+							value="<?php echo $curp ?>" />
 				</div>				
 				<div class="form-group">
 					<label>E-Mail:</label>
-					<input type="text" name="email"class="form-control" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" placeholder="Ejemplo: usuario@serviciocorreo.com"/>
+					<input type="text" name="email"class="form-control" 
+						placeholder="Ejemplo: usuario@serviciocorreo.com"
+						value="<?php echo $email ?>"/>
 				</div>
 				<div class="form-group">
 					<label>Contraseña:</label>
-					<input type="password" name="password" class="form-control" />
+					<input type="password" name="password" class="form-control" 
+					value="<?php echo $password; ?>"/>
 				</div>
 				<div class="form-group">
 					<label>Verificar contraseña:</label>
-					<input type="password" name="password_confirm" class="form-control"/>
+					<input type="password" name="password_confirm" class="form-control"
+					value="<?php echo $password_confirm; ?>"/>
 				</div>
 				
 				<div class="form-group">
 					<label>Facebook, Twitter, Google+*: </label>
-					<input type="text" name="ftg" class="form-control"  pattern="[a-zA-Z0-9.\s]*" placeholder="Ejemplo: ALEJANDRITA BONITA " />
+					<input type="text" name="ftg1" class="form-control"  
+					placeholder="Ejemplo: ALEJANDRITA BONITA " 
+					value="<?php echo $ftg1; ?>"/><br>
+					<input type="text" name="ftg2" class="form-control"  
+					placeholder="Ejemplo: ALEJANDRITA BONITA " 
+					value="<?php echo $ftg2; ?>"/><br>
 				</div>
 				<div class="form-group">
 					<label>Matrícula/Número de personal:</label>
-					<input type="text" name="matricula" class="form-control" pattern="[A-Z]+[0-9]{8}*" placeholder="Ejemplo: S10011096 "/>					
+					<input type="text" name="matricula" class="form-control" 
+					pattern="[S]{1}[0-9]{8}" placeholder="Ejemplo: S10011096 "
+					value="<?php echo $matricula; ?>"/>					
 				</div>
 				<div class="form-group">
 					<label>Facultad:</label>
@@ -112,7 +128,9 @@
 
 				<div class="form-group">
 					<label>Promedio:</label>
-					<input type="text" name="promedio" class="form-control"  pattern="[0-9]+[.]+[0-9]+[0-9]*" placeholder="Ejemplo: 9.89"/>					
+					<input type="text" name="promedio" class="form-control"  
+					pattern="[0-9]{1,2}[.]{1}[0-9]{1,2}" placeholder="Ejemplo: 9.89"
+					value="<?php echo $promedio; ?>"/>					
 				</div>
 				<div class="form-group">
 					<label>Área de Inscripción:</label>
@@ -202,12 +220,22 @@
 				<div class="form-group">
 					<label>Opciones de Paises:</label>	
 					<label>Opcion 1:</label>
-					<input type="text" name="pais1" class="form-control"value="<?php echo set_value('pais1'); ?>"/><br>
+					<input type="text" name="pais1" class="form-control" pattern="[A-ZÁÉÍÓÚÑ]*" placeholder="Ejemplo: UK"
+					 value="<?php echo $pais1; ?>"/><br>
 					<label>Opcion 2*:</label>
-					<input type="text" name="pais2" class="form-control"value="<?php echo set_value('pais2'); ?>"/><br>
+					<input type="text" name="pais2" class="form-control" pattern="[A-ZÁÉÍÓÚÑ]*" placeholder="Ejemplo: ALEMANIA"
+					 value="<?php echo $pais2; ?>"/><br>
 					<label>Opcion 3*:</label>
-					<input type="text" name="pais3" class="form-control"value="<?php echo set_value('pais3'); ?>"/><br>	
+					<input type="text" name="pais3" class="form-control" pattern="[A-ZÁÉÍÓÚÑ]*" placeholder="Ejemplo: EEUU"
+					 value="<?php echo $pais3; ?>"/><br>	
 				</div>	
+				<div class="form-group">
+					<label>Solicitas beca:</label>
+					<select class="form-control" name="beca">
+					  <option>SI</option>
+					  <option>NO</option>
+					</select>								
+				</div>
 				<label>Campos no obligatorios*</label><br>	
 				<input type="submit" name="guardar" value="Guardar" />														
 			</form>	
