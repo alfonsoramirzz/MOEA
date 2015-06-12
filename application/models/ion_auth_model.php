@@ -2352,4 +2352,289 @@ class Ion_auth_model extends CI_Model
 	/************************** EQUIPO 5 **************************************/
 	/********************* REGISTRAR INTERESADO *******************************/
 	/**************************************************************************/
+
+	/**************************************************************************/
+	/************************** EQUIPO 6 **************************************/
+	/********************* REGISTRAR CONVOCATORIAS ****************************/
+	/**************************************************************************/
+	/**
+	 * obtView
+	 *
+	 * @return boolean or query
+	 * @author EQU6
+	 **/
+	public function obtView($idPrograma = null)
+	{
+		if($idPrograma != null)
+		{
+			$query = $this->db->where('idConv',$idPrograma);	
+		}
+		$query = $this->db->from('conView');
+	    $query = $this->db->get();
+	    if ($query->num_rows() > 0)
+	    {
+	    	return $query->result();
+	    }else
+	    {
+	    	return FALSE;
+	    }
+  	}
+
+  	/**
+	 * obtArea
+	 *
+	 * @return boolean or query
+	 * @author EQU6
+	 **/
+  	public function obtArea($id = null)
+	{
+		$query = $this->db->from('Area');
+		$query = $this->db->get();
+		if($query->num_rows() > 0 )
+        {
+            return $query->result();
+        }		
+	}
+
+	/**
+	 * obtPais
+	 *
+	 * @return query
+	 * @author EQU6
+	 **/
+	public function obtPais($pais = null)
+	{
+		if($pais!=null)
+		{
+			$this->db->select('idPaisConvo');
+			$this->db->where('pais',$pais);
+		}	
+		$query = $this->db->from('paisconvo');
+		$query = $this->db->get();
+		if($query->num_rows() > 0 )
+        {
+            return $query->result();
+        }			
+	}
+
+	/**
+	 * obtCiudad
+	 *
+	 * @return query
+	 * @author EQU6
+	 **/
+	public function obtCiudad($ciudad = null)
+	{
+		if($ciudad!=null)
+		{
+			$query = $this->db->select('Lugar_idLugar');
+			$query = $this->db->where('ciudad',$ciudad);
+		}	
+		$query = $this->db->from('ciudad');
+		$query = $this->db->get();
+		if($query->num_rows() > 0 )
+        {
+            return $query->result();
+        }			
+	}
+
+	/**
+	 * obtGrado
+	 *
+	 * @return query
+	 * @author EQU6
+	 **/
+	public function obtGrado($id = null)
+	{
+		$query = $this->db->from('Grado');
+		$query = $this->db->get();
+		if($query->num_rows() > 0 )
+        {
+            return $query->result();
+        }			
+	}
+
+
+	/**
+	 * obtUni
+	 *
+	 * @return query
+	 * @author EQU6
+	 **/
+	public function obtUni($id = null)
+	{
+		$query = $this->db->from('Universidad');
+		$query = $this->db->get();
+		if($query->num_rows() > 0 )
+        {
+            return $query->result();
+        }		
+	}
+
+	/**
+	 * conv
+	 *
+	 * @return bool
+	 * @author EQU6
+	 **/
+	public function conv($nom,$fi,$ff,$desc,$grado,$uni,$area,$prom,$pais, $ciudad)
+	{	
+		if($this->validaFecha($fi,$ff) && $this->unico($nom, 'Convocatoria', 'nombreConv'))
+		{
+			$nom = strtoupper($nom);
+			$this->db->query("insert into Convocatoria 
+			(nombreConv, fechaInicio, fechaFin, descripcion, Grado_idGrado,
+			 Universidad_idUniversidad1, Area_idArea, promedioSolicitado, Lugar_idLugar,estado)
+			values
+			('$nom','$fi','$ff','$desc',
+			(select idGrado from Grado where nombre = '$grado'),
+			(select idUniversidad from Universidad where nombre = '$uni'),
+			(select idArea from Area where nombreAreaFormacion = '$area'),
+			$prom,
+			(select idLugar from lugar where ((lugar.idPaisLugar = (select idPaisConvo from paisConvo where pais = '$pais'))and(lugar.idCiudadLugar = (select idCiudad from ciudad where ciudad = '$ciudad')))),1)");
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	/**
+	 * validaFecha
+	 *
+	 * @return bool
+	 * @author EQU6
+	 **/
+	public function validaFecha($fi,$ff)
+	{
+		$datetime1 = new DateTime($fi);
+        $datetime2 = new DateTime($ff);
+        $interval = $datetime1->diff($datetime2);
+        if($interval->format('%R%') == '+')
+        {
+            return true;
+        }else
+        {
+        	$this->set_error('La fecha no es válida');
+            return false;
+        }
+	}
+
+	/**
+	 * unico
+	 *
+	 * @return bool
+	 * @author EQU6
+	 **/
+	public function unico($nombreConv, $tabla, $col)
+	{
+		$this->db->where($col, $nombreConv);
+		$this->db->from($tabla);
+		if($this->db->count_all_results() == 0)
+		{
+			return true;	
+		}else
+		{
+			$this->set_error('El nombre ya existe');
+			return false;
+		}
+	}
+
+	/**
+	 * guardaArea
+	 *
+	 * @return bool
+	 * @author EQU6
+	 **/
+	public function guardaArea($area)
+	{
+		if ( $this->unico($area, 'area', 'nombreAreaFormacion')) 
+		{
+			$area = strtoupper($area);
+			$this->db->query("insert into Area (nombreAreaFormacion) Values ('$area')");
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * guardaPais
+	 *
+	 * @return bool
+	 * @author EQU6
+	 **/
+	public function guardaPais($pais)
+	{
+		if ( $this->unico($pais, 'paisconvo', 'pais')) 
+		{
+			$pais = strtoupper($pais);
+			$this->db->query("insert into paisconvo (pais) Values ('$pais')");
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * guardaCiudad
+	 *
+	 * @return bool
+	 * @author EQU6
+	 **/
+	public function guardaCiudad($ciudad, $pais)
+	{
+		$query = $this->obtPais($pais);
+		if ( $this->unico($ciudad, 'ciudad', 'ciudad')) 
+		{
+			$ciud['ciudad'] = strtoupper($ciudad);
+			$this->db->insert('ciudad', $ciud);
+			$lugar['idCiudadLugar'] = $this->db->insert_id();
+			$lugar['idPaisLugar'] = strtoupper($query[0]->idPaisConvo);
+			$this->db->insert('lugar', $lugar);
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * guardaGrado
+	 *
+	 * @return bool
+	 * @author EQU6
+	 **/
+	public function guardaGrado($grado)
+	{
+		if($this->unico($grado, 'grado', 'nombre'))
+		{
+			$grado = strtoupper($grado);
+			$this->db->query("insert into grado (nombre) Values ('$grado')");
+			return true;
+		}else
+		{
+			return false;
+		}
+	}
+	
+	/**
+	 * guardaUni
+	 *
+	 * @return bool
+	 * @author EQU6
+	 **/
+	public function guardaUni($uni)
+	{
+		if($this->unico($uni, 'universidad', 'nombre'))
+		{
+			$uni = strtoupper($uni);
+			$this->db->query("insert into universidad (nombre) Values ('$uni')");
+			return true;
+		}else
+		{
+			return false;
+		}
+	}
+  	/**************************************************************************/
+	/************************** EQUIPO 6 **************************************/
+	/********************* REGISTRAR CONVOCATORIAS ****************************/
+	/**************************************************************************/
 }

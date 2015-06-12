@@ -103,7 +103,8 @@ div.slide
   margin-left:12%
 }
 
-.caja{
+.caja
+{
   width: 30%;
   float: left;
   list-style: none;
@@ -204,6 +205,13 @@ div.slide
 
 }
 
+#sidebar-wrapper
+{
+  margin-top: -20px;
+  height: 100%;
+  background-color: #693;
+}
+
 
 /*****************************/
 /*********** EQUIPO 5 ********/
@@ -211,7 +219,7 @@ div.slide
 /*****************************/
 .registro
 {
-  margin-top: 100px;
+  margin-top: 70px;
   width: 50%;
 }
 
@@ -229,4 +237,20 @@ div.slide
 /*****************************/
 /*********** EQUIPO 5 ********/
 /*** REGISTRAR INTERESADO*****/
+/*****************************/
+
+
+/*****************************/
+/*********** EQUIPO 6 ********/
+/*** REGISTRAR CONVOCATORIA***/
+/*****************************/
+
+.convocatorias
+{
+  margin-top: 70px;
+}
+
+/*****************************/
+/*********** EQUIPO 6 ********/
+/*** REGISTRAR CONVOCATORIA***/
 /*****************************/

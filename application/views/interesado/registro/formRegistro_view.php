@@ -13,19 +13,19 @@
 				<div class="form-group ">
 					<label>Nombre:</label>
 					<input  class="form-control" type="text" name="nombre" 
-							pattern="[A-Z]{1,}[\s]{0,1}[A-Z]{1,}" placeholder="Ejemplo: MARIO ALEJANDRO" 
+							pattern="[A-Za-z\s]+" placeholder="Ejemplo: MARIO ALEJANDRO" 
 							value="<?php echo $nombre ?>"/>
 				</div>
 				<div class="form-group ">								
 					<label>Apellido Paterno:</label>
 					<input type="text" name="apellidoP" class="form-control" 
-							pattern="[A-ZÁÉÍÓÚÑ]*[\s]*[A-ZÁÉÍÓÚÑ]*" placeholder="Ejemplo: DEL ANGEL"  
+							pattern="[A-Za-záéíóúñÁÉÍÓÚÑ\s]*" placeholder="Ejemplo: DEL ANGEL"  
 							value="<?php echo $apellidoP ?>"/>
 				</div>
 				<div class="form-group ">
 					<label>Apellido Materno*:</label>
 					<input type="text" name="apellidoM" class="form-control" 
-							pattern="[A-ZÁÉÍÓÚÑ]+[\s]*[A-ZÁÉÍÓÚÑ]*" placeholder="Ejemplo: DEL ANGEL"
+							pattern="[A-ZÁÉÍÓÚÑa-záéíóúñ\s]*" placeholder="Ejemplo: DEL ANGEL"
 							value="<?php echo $apellidoM ?>"/>
 				</div>
 				<div class="form-group ">
@@ -36,7 +36,7 @@
 				<div class="form-group ">
 					<label>CURP:</label>
 					<input type="text" name="curp" class="form-control" 
-							pattern="[A-Z]{4}[0-9]{6}[A-Z]{6}[0-9]{2}" placeholder="Ejemplo: ROVJ901121MDFJLN01"
+							pattern="[A-Za-z]{4}[0-9]{6}[A-Z]{6}[0-9]{2}" placeholder="Ejemplo: ROVJ901121MDFJLN01"
 							value="<?php echo $curp ?>" />
 				</div>				
 				<div class="form-group">
@@ -59,10 +59,10 @@
 				<div class="form-group">
 					<label>Facebook, Twitter, Google+*: </label>
 					<input type="text" name="ftg1" class="form-control"  
-					placeholder="Ejemplo: ALEJANDRITA BONITA " 
+					 placeholder="Ejemplo: ALEJANDRITA BONITA " 
 					value="<?php echo $ftg1; ?>"/><br>
 					<input type="text" name="ftg2" class="form-control"  
-					placeholder="Ejemplo: ALEJANDRITA BONITA " 
+					 placeholder="Ejemplo: ALEJANDRITA BONITA " 
 					value="<?php echo $ftg2; ?>"/><br>
 				</div>
 				<div class="form-group">
@@ -129,7 +129,7 @@
 				<div class="form-group">
 					<label>Promedio:</label>
 					<input type="text" name="promedio" class="form-control"  
-					pattern="[0-9]{1,2}[.]{1}[0-9]{1,2}" placeholder="Ejemplo: 9.89"
+					pattern="[0-9]{1,2}[\.]{1}[0-9]{1,2}" placeholder="Ejemplo: 9.89"
 					value="<?php echo $promedio; ?>"/>					
 				</div>
 				<div class="form-group">
@@ -220,13 +220,13 @@
 				<div class="form-group">
 					<label>Opciones de Paises:</label>	
 					<label>Opcion 1:</label>
-					<input type="text" name="pais1" class="form-control" pattern="[A-ZÁÉÍÓÚÑ]*" placeholder="Ejemplo: UK"
+					<input type="text" name="pais1" class="form-control" pattern="[A-ZÁÉÍÓÚÑa-záéíóúñ]*" placeholder="Ejemplo: UK"
 					 value="<?php echo $pais1; ?>"/><br>
 					<label>Opcion 2*:</label>
-					<input type="text" name="pais2" class="form-control" pattern="[A-ZÁÉÍÓÚÑ]*" placeholder="Ejemplo: ALEMANIA"
+					<input type="text" name="pais2" class="form-control" pattern="[A-ZÁÉÍÓÚÑa-záéíóúñ]*" placeholder="Ejemplo: ALEMANIA"
 					 value="<?php echo $pais2; ?>"/><br>
 					<label>Opcion 3*:</label>
-					<input type="text" name="pais3" class="form-control" pattern="[A-ZÁÉÍÓÚÑ]*" placeholder="Ejemplo: EEUU"
+					<input type="text" name="pais3" class="form-control" pattern="[A-ZÁÉÍÓÚÑa-záéíóúñ]*" placeholder="Ejemplo: EEUU"
 					 value="<?php echo $pais3; ?>"/><br>	
 				</div>	
 				<div class="form-group">
