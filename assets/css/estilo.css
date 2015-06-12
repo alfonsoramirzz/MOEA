@@ -221,6 +221,11 @@ div.slide
   margin-bottom: 400px;
 }
 
+.form-control
+{
+  text-transform: uppercase;
+}
+
 /*****************************/
 /*********** EQUIPO 5 ********/
 /*** REGISTRAR INTERESADO*****/
