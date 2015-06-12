@@ -24,7 +24,7 @@ class Auth extends CI_Controller {
 			redirect('auth/principal', 'refresh');
 			//redirect('auth/login', 'refresh');
 		}
-		elseif ($this->ion_auth->in_group('general')) //remove this elseif if you want to enable this for non-admins
+		elseif ($this->ion_auth->in_group('registrado')) //remove this elseif if you want to enable this for non-admins
 		{
 			redirect('auth/principal', 'refresh');
 		}
