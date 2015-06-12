@@ -9,13 +9,13 @@
         <!-- Wrapper for slides -->
         <div class="carousel-inner" role="listbox">
             <div class="item active">
-              <img src="<?= base_url(); ?>recursos/images/banner-maestria-derecho.png" alt="Mujer">
+              <img src="<?= base_url(); ?>assets/images/banner-maestria-derecho.png" alt="Mujer">
             </div>
             <div class="item">
-              <img src="<?= base_url(); ?>recursos/images/bannre-kanagwa.png" alt="Hombre">
+              <img src="<?= base_url(); ?>assets/images/bannre-kanagwa.png" alt="Hombre">
             </div>
             <div class="item">
-              <img src="<?= base_url(); ?>recursos/images/banner-concurso-938x320.png" alt="Hombre">
+              <img src="<?= base_url(); ?>assets/images/banner-concurso-938x320.png" alt="Hombre">
             </div>
         </div>
 

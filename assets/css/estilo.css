@@ -1,0 +1,227 @@
+.titulo
+{
+	color: white;
+}
+
+.usuario-icono
+{
+	color: rgb(0, 102, 153);
+}
+
+header ul li a:hover
+{
+	cursor: pointer;
+}
+
+footer ul li a.efecto
+{
+	 cursor: default;
+}
+
+.font-footer
+{
+	color: grey;
+}
+
+.font-footer:hover
+{
+	color: rgb(0,0,0);
+}
+
+.convocatorias
+{
+	margin: 5% 5% 10% 5%;
+}
+
+.pie-enlace
+{
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+
+div.carousel,
+div.slide
+{
+	margin-top: 70px;
+	height: 500px;
+
+}
+
+.carousel-inner > .item > img,
+.carousel-inner > .item > a > img 
+{
+	width: 100%;
+	height: 100%;
+	margin: auto;
+}
+
+.linea-gradada
+{
+	background: #069; /* Old browsers */
+	background: -moz-linear-gradient(left,  #069 30%, #FFF 60%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, right top, color-stop(30%,#FFF), color-stop(60%,#FFF)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(left,  #069 30%,#FFF 60%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(left,  #069 30%,#FFF 60%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(left,  #069 30%,#FFF 60%); /* IE10+ */
+	background: linear-gradient(to right,  #069 30%,#FFF 60%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#006699', endColorstr='#FFFFFF',GradientType=1 ); /* IE6-9 */
+	height: 30px;
+	width: 100%;
+	float: left;
+}
+
+.linea-footer
+{
+	border-color: rgb(255,255,255);
+	background-image: linear-gradient(rgb(255,255,255) 0px, rgb(255,255,255) 100%);
+}
+
+.modal-dialog{
+    width: 400px;
+}
+
+.modal-content{
+    border-radius:0px;
+    padding-right: 20px;
+    padding-top: 20px;
+}
+
+.modal-header{
+    padding-left: 40px;
+    padding-right: 20px;
+    padding-bottom: 20px;
+}
+
+.form-control{
+      border-radius: 0px;
+}
+
+
+.contenido{
+  width: 80%;
+  margin-left:12%
+}
+
+.caja{
+  width: 30%;
+  float: left;
+  list-style: none;
+  padding: 0;
+  margin: 0 15px 20px 5px;
+  height: 220px;
+  box-shadow: 0 0 5px 1px #999999;
+  border: 1px #069 solid;
+  color: #4F4F4F;
+
+}
+.azul{
+  background: #0099CC;
+  color: #FFF;
+  text-align: center;
+  display: block;
+  padding: 4% 0;
+  font-size: 1.35em;
+}
+.verde{
+  background: #669933;
+  color: #FFF;
+  text-align: center;
+  display: block;
+  padding: 4% 0;
+  font-size: 1.35em;
+}
+.morado{
+  background: #643DB1;
+  color: #FFF;
+  text-align: center;
+  display: block;
+  padding: 4% 0;
+  font-size: 1.35em;
+}
+.naranja{
+  background: #CC9933;
+  color: #FFF;
+  text-align: center;
+  display: block;
+  padding: 4% 0;
+  font-size: 1.35em;
+}
+.amarino{
+  background: #006699;
+  color: #FFF;
+  text-align: center;
+  display: block;
+  padding: 4% 0;
+  font-size: 1.35em;
+}
+.aqua{
+  background: #3db1b1;
+  color: #FFF;
+  text-align: center;
+  display: block;
+  padding: 4% 0;
+  font-size: 1.35em;
+}
+.contenidoconv{
+  width: 95%;
+  margin-left:4%
+}
+.convocatoria{
+  width: 31%;
+  float: left;
+  list-style: none;
+  padding: 0;
+  margin: 0 15px 20px 5px;
+  height: 294px;
+  box-shadow: 0 0 5px 1px #999999;
+  border: 1px #069 solid;
+  color: #4F4F4F;
+
+}
+.misconvocatoria{
+  width: 31%;
+  float: left;
+  list-style: none;
+  padding: 0;
+  margin: 0 15px 20px 5px;
+  height: 256px;
+  box-shadow: 0 0 5px 1px #999999;
+  border: 1px #069 solid;
+  color: #4F4F4F;
+
+}
+.historial{
+  width: 35%;
+  float: left;
+  list-style: none;
+  padding: 0;
+  margin: 0 15px 20px 5px;
+  height: 190px;
+  box-shadow: 0 0 5px 1px #999999;
+  border: 1px #069 solid;
+  color: #4F4F4F;
+
+}
+
+
+/*****************************/
+/*********** EQUIPO 5 ********/
+/*** REGISTRAR INTERESADO*****/
+/*****************************/
+.registro
+{
+  margin-top: 100px;
+  width: 50%;
+}
+
+.succesRegistro
+{
+  margin-top: 100px;
+  margin-bottom: 400px;
+}
+
+/*****************************/
+/*********** EQUIPO 5 ********/
+/*** REGISTRAR INTERESADO*****/
+/*****************************/

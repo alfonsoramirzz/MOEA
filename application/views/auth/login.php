@@ -1,42 +1,28 @@
-<div class="modal fade" id="basicModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-      <div class="modal-header">
-        <h2><?php echo lang('login_heading');?></h2>
-        <div>
-          <h5><small><strong>YA SOY USUARIO DE TSHIRTANDSTAFF.COM</strong></small></h5>
-          <p><small>Introduce tu dirección de e-mail y la contraseña para identificarte en la web.</small></p>
-          <form class="form-horizontal" name="form" action="<?php base_url();?>login" method="POST">
-            <div>         
-              <input type="email" name="identity" class="form-control"/><br>
-            </div>
-            <div>         
-              <input type="password" name="password" value="" class="form-control"/>
-            </div>
-            <div>
-              <label><?php echo lang('login_remember_label', 'remember');?></label>
-              <input type="checkbox" name="remember" id="remember" value="1" checked="checked" />
-            </div>
-            <div>
-              <button type="submit" class="form-btn"><?php echo lang('login_submit_btn');?></button>
-            </div>
-          </form>
-        </div>
-      </div>
+<h1><?php echo lang('login_heading');?></h1>
+<p><?php echo lang('login_subheading');?></p>
 
-      <div class="modal-header">
-        <h2><?php echo lang('signup_heading');?></h2>
-        <div>
-          <h5><small><strong>QUIERO SER USUARIO DE TSHIRTANDSTAFF.COM</strong></small></h5>
-          <p><small>Si todavía no tienes una cuenta de usuario de TSHIRTANDSTAFF.COM, utiliza esta opción para acceder al formulario de registro. Te solicitaremos la información imprescindible para agilizar el proceso de compra.</small></p>
-          <div>
-            <a href="create_user">
-            <button class="form-btn"><?php echo lang('signup_btn');?></button>
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<div id="infoMessage"><?php echo $message;?></div>
+
+<?php echo form_open("auth/login");?>
+
+  <p>
+    <?php echo lang('login_identity_label', 'identity');?>
+    <?php echo form_input($identity);?>
+  </p>
+
+  <p>
+    <?php echo lang('login_password_label', 'password');?>
+    <?php echo form_input($password);?>
+  </p>
+
+  <p>
+    <?php echo lang('login_remember_label', 'remember');?>
+    <?php echo form_checkbox('remember', '1', FALSE, 'id="remember"');?>
+  </p>
+
+
+  <p><?php echo form_submit('submit', lang('login_submit_btn'));?></p>
+
+<?php echo form_close();?>
+
+<p><a href="forgot_password"><?php echo lang('login_forgot_password');?></a></p>

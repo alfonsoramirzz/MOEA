@@ -864,107 +864,7 @@ class Ion_auth_model extends CI_Model
 		return FALSE;
 	}
 
-	/**
-	 * register
-	 *
-	 * @return bool
-	 * @author Mathew
-	 **/
-	public function register($username, $password, $email, $additional_data = array(), $groups = array())
-	{
-		$this->trigger_events('pre_register');
-
-		$manual_activation = $this->config->item('manual_activation', 'ion_auth');
-
-		if ($this->identity_column == 'email' && $this->email_check($email))
-		{
-			$this->set_error('account_creation_duplicate_email');
-			return FALSE;
-		}
-		elseif ($this->identity_column == 'username' && $this->username_check($username))
-		{
-			$this->set_error('account_creation_duplicate_username');
-			return FALSE;
-		}
-		elseif ( !$this->config->item('default_group', 'ion_auth') && empty($groups) )
-		{
-			$this->set_error('account_creation_missing_default_group');
-			return FALSE;
-		}
-
-		//check if the default set in config exists in database
-		$query = $this->db->get_where($this->tables['groups'],array('name' => $this->config->item('default_group', 'ion_auth')),1)->row();
-		if( !isset($query->id) && empty($groups) )
-		{
-			$this->set_error('account_creation_invalid_default_group');
-			return FALSE;
-		}
-
-		//capture default group details
-		$default_group = $query;
-
-		// If username is taken, use username1 or username2, etc.
-		if ($this->identity_column != 'username')
-		{
-			$original_username = $username;
-			for($i = 0; $this->username_check($username); $i++)
-			{
-				if($i > 0)
-				{
-					$username = $original_username . $i;
-				}
-			}
-		}
-
-		// IP Address
-		$ip_address = $this->_prepare_ip($this->input->ip_address());
-		$salt       = $this->store_salt ? $this->salt() : FALSE;
-		$password   = $this->hash_password($password, $salt);
-
-		// Users table.
-		$data = array(
-		    'username'   => $username,
-		    'password'   => $password,
-		    'email'      => $email,
-		    'ip_address' => $ip_address,
-		    'created_on' => time(),
-		    'active'     => ($manual_activation === false ? 1 : 0)
-		);
-
-		if ($this->store_salt)
-		{
-			$data['salt'] = $salt;
-		}
-
-		//filter out any data passed that doesnt have a matching column in the users table
-		//and merge the set user data and the additional data
-		$user_data = array_merge($this->_filter_data($this->tables['users'], $additional_data), $data);
-
-		$this->trigger_events('extra_set');
-
-		$this->db->insert($this->tables['users'], $user_data);
-
-		$id = $this->db->insert_id();
-
-		//add in groups array if it doesn't exits and stop adding into default group if default group ids are set
-		if( isset($default_group->id) && empty($groups) )
-		{
-			$groups[] = $default_group->id;
-		}
-
-		if (!empty($groups))
-		{
-			//add to groups
-			foreach ($groups as $group)
-			{
-				$this->add_to_group($group, $id);
-			}
-		}
-
-		$this->trigger_events('post_register');
-
-		return (isset($id)) ? $id : FALSE;
-	}
+	
 
 	/**
 	 * login
@@ -1397,7 +1297,7 @@ class Ion_auth_model extends CI_Model
 		$id || $id = $this->session->userdata('user_id');
 
 		$this->limit(1);
-		$this->order_by('id', 'desc');
+		$this->order_by($this->tables['users'].'.id', 'desc');
 		$this->where($this->tables['users'].'.id', $id);
 
 		$this->users();
@@ -2103,6 +2003,8 @@ class Ion_auth_model extends CI_Model
 		return $message;
 	}
 
+
+
 	/**
 	 * messages
 	 *
@@ -2148,6 +2050,23 @@ class Ion_auth_model extends CI_Model
 			return $this->messages;
 		}
 	}
+
+
+	/**
+	 * clear_messages
+	 *
+	 * Clear messages
+	 *
+	 * @return void
+	 * @author Ben Edmunds
+	 **/
+	public function clear_messages()
+	{
+		$this->messages = array();
+
+		return TRUE;
+	}
+
 
 	/**
 	 * set_error
@@ -2210,6 +2129,24 @@ class Ion_auth_model extends CI_Model
 		}
 	}
 
+
+	/**
+	 * clear_errors
+	 *
+	 * Clear Errors
+	 *
+	 * @return void
+	 * @author Ben Edmunds
+	 **/
+	public function clear_errors()
+	{
+		$this->errors = array();
+
+		return TRUE;
+	}
+
+
+
 	protected function _filter_data($table, $data)
 	{
 		$filtered_data = array();
@@ -2231,4 +2168,163 @@ class Ion_auth_model extends CI_Model
 		//just return the string IP address now for better compatibility
 		return $ip_address;
 	}
+
+
+	/**************************************************************************/
+	/************************** EQUIPO 5 **************************************/
+	/********************* REGISTRAR INTERESADO *******************************/
+	/**************************************************************************/
+	/**
+	 * registrarIdioma
+	 *
+	 * @return int
+	 * @author EQU5
+	 **/
+	public function registrarIdioma($idioma)
+	{
+		$this->db->insert('idioma', $idioma);
+		return $this->db->insert_id();
+	}
+
+	/**
+	 * registrarIdioma
+	 *
+	 * @return int
+	 * @author EQU5
+	 **/
+	public function registrarFacultad($facultad)
+	{
+		$this->db->insert('facultad', $facultad);
+		return $this->db->insert_id();
+	}
+
+	/**
+	 * registrarDatosPersonales
+	 *
+	 * @return int
+	 * @author EQU5
+	 **/
+	public function registrarDatosPersonales($datosPersonales)
+	{
+		$this->db->insert('datospersonales', $datospersonales);
+		return $this->db->insert_id();
+	}
+
+	/**
+	 * registrarPaises
+	 *
+	 * @return int
+	 * @author EQU5
+	 **/
+	public function registrarPaises($paises)
+	{
+		$this->db->insert('paisesinteresado', $paises);
+		return $this->db->insert_id();
+	}
+
+	/**
+	 * register
+	 *
+	 * @return bool
+	 * @author Mathew
+	 **/
+	public function register($username, $password, $email, $additional_data = array(), $groups = array())
+	{
+		$this->trigger_events('pre_register');
+
+		$manual_activation = $this->config->item('manual_activation', 'ion_auth');
+
+		if ($this->identity_column == 'email' && $this->email_check($email))
+		{
+			$this->set_error('account_creation_duplicate_email');
+			return -1;
+		}
+		elseif ($this->identity_column == 'username' && $this->username_check($username))
+		{
+			$this->set_error('account_creation_duplicate_username');
+			return -1;
+		}
+		elseif ( !$this->config->item('default_group', 'ion_auth') && empty($groups) )
+		{
+			$this->set_error('account_creation_missing_default_group');
+			return -1;
+		}
+
+		//check if the default set in config exists in database
+		$query = $this->db->get_where($this->tables['groups'],array('name' => $this->config->item('default_group', 'ion_auth')),1)->row();
+		if( !isset($query->id) && empty($groups) )
+		{
+			$this->set_error('account_creation_invalid_default_group');
+			return -1;
+		}
+
+		//capture default group details
+		$default_group = $query;
+
+		// If username is taken, use username1 or username2, etc.
+		if ($this->identity_column != 'username')
+		{
+			$original_username = $username;
+			for($i = 0; $this->username_check($username); $i++)
+			{
+				if($i > 0)
+				{
+					$username = $original_username . $i;
+				}
+			}
+		}
+
+		// IP Address
+		$ip_address = $this->_prepare_ip($this->input->ip_address());
+		$salt       = $this->store_salt ? $this->salt() : FALSE;
+		$password   = $this->hash_password($password, $salt);
+
+		// Users table.
+		$data = array(
+		    'username'   => $username,
+		    'password'   => $password,
+		    'email'      => $email,
+		    'ip_address' => $ip_address,
+		    'created_on' => time(),
+		    'active'     => ($manual_activation === false ? 1 : 0)
+		);
+
+		if ($this->store_salt)
+		{
+			$data['salt'] = $salt;
+		}
+
+		//filter out any data passed that doesnt have a matching column in the users table
+		//and merge the set user data and the additional data
+		$user_data = array_merge($this->_filter_data($this->tables['users'], $additional_data), $data);
+
+		$this->trigger_events('extra_set');
+
+		$this->db->insert($this->tables['users'], $user_data);
+
+		$id = $this->db->insert_id();
+
+		//add in groups array if it doesn't exits and stop adding into default group if default group ids are set
+		if( isset($default_group->id) && empty($groups) )
+		{
+			$groups[] = $default_group->id;
+		}
+
+		if (!empty($groups))
+		{
+			//add to groups
+			foreach ($groups as $group)
+			{
+				$this->add_to_group($group, $id);
+			}
+		}
+
+		$this->trigger_events('post_register');
+
+		return (isset($id)) ? $id : -1;
+	}
+	/**************************************************************************/
+	/************************** EQUIPO 5 **************************************/
+	/********************* REGISTRAR INTERESADO *******************************/
+	/**************************************************************************/
 }
