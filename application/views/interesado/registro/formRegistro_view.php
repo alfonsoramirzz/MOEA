@@ -2,6 +2,7 @@
 	$this->load->view('head/librerias_view'); 
     $this->load->view('header/header_view', $logeado, $user);
  ?>
+<div id="page-content-wrapper" class="container-fluid">
 <div class="container registro">    
    <div class="row">
 		<h2>Completar tu registro</h2> 	
@@ -23,7 +24,7 @@
 							value="<?php echo $apellidoP ?>"/>
 				</div>
 				<div class="form-group ">
-					<label>Apellido Materno*:</label>
+					<label>Apellido Maternospan<strong class="noObligatorios">*</strong>:</label>
 					<input type="text" name="apellidoM" class="form-control" 
 							pattern="[A-ZÁÉÍÓÚÑa-záéíóúñ\s]*" placeholder="Ejemplo: DEL ANGEL"
 							value="<?php echo $apellidoM ?>"/>
@@ -36,7 +37,7 @@
 				<div class="form-group ">
 					<label>CURP:</label>
 					<input type="text" name="curp" class="form-control" 
-							pattern="[A-Za-z]{4}[0-9]{6}[A-Z]{6}[0-9]{2}" placeholder="Ejemplo: ROVJ901121MDFJLN01"
+							pattern="[A-Za-z]{4}[0-9]{6}[A-Za-z]{6}[0-9]{2}" placeholder="Ejemplo: ROVJ901121MDFJLN01"
 							value="<?php echo $curp ?>" />
 				</div>				
 				<div class="form-group">
@@ -57,7 +58,7 @@
 				</div>
 				
 				<div class="form-group">
-					<label>Facebook, Twitter, Google+*: </label>
+					<label>Facebook, Twitter, Google+<strong class="noObligatorios">*</strong>: </label>
 					<input type="text" name="ftg1" class="form-control"  
 					 placeholder="Ejemplo: ALEJANDRITA BONITA " 
 					value="<?php echo $ftg1; ?>"/><br>
@@ -109,7 +110,7 @@
 					</select>									
 				</div>
 				<div class="form-group">
-					<label>Semestre*:</label>
+					<label>Semestre<strong class="noObligatorios">*</strong>:</label>
 					<select class="form-control selection" name="semestre"/>
 					  <option>Primer semestre</option>
 					  <option>Segundo Semestre</option>
@@ -123,6 +124,7 @@
 					  <option>Decimo Semestre</option>
 					  <option>Onceavo Semestre</option>
 					  <option>Doceavo Semestre</option>
+					  <option>No Aplica</option>
 					</select>
 				</div>
 
@@ -204,6 +206,7 @@
 					  <option>Ingles</option>
 					   <option>Italiano</option>
 					  <option>Mandarin</option>
+					  <option>No Aplica</option>
 					</select>								
 				</div>
 				<div class="form-group">
@@ -215,6 +218,7 @@
 					  <option>Ingles</option>
 					   <option>Italiano</option>
 					  <option>Mandarin</option>
+					  <option>No Aplica</option>
 					</select>								
 				</div>
 				<div class="form-group">
@@ -222,10 +226,10 @@
 					<label>Opcion 1:</label>
 					<input type="text" name="pais1" class="form-control" pattern="[A-ZÁÉÍÓÚÑa-záéíóúñ]*" placeholder="Ejemplo: UK"
 					 value="<?php echo $pais1; ?>"/><br>
-					<label>Opcion 2*:</label>
+					<label>Opcion 2<strong class="noObligatorios">*</strong>:</label>
 					<input type="text" name="pais2" class="form-control" pattern="[A-ZÁÉÍÓÚÑa-záéíóúñ]*" placeholder="Ejemplo: ALEMANIA"
 					 value="<?php echo $pais2; ?>"/><br>
-					<label>Opcion 3*:</label>
+					<label>Opcion 3<strong class="noObligatorios">*</strong>:</label>
 					<input type="text" name="pais3" class="form-control" pattern="[A-ZÁÉÍÓÚÑa-záéíóúñ]*" placeholder="Ejemplo: EEUU"
 					 value="<?php echo $pais3; ?>"/><br>	
 				</div>	
@@ -236,14 +240,12 @@
 					  <option>NO</option>
 					</select>								
 				</div>
-				<label>Campos no obligatorios*</label><br>	
+				<label>Campos no obligatorios<strong class="noObligatorios">*</strong></label><br>	
 				<input type="submit" name="guardar" value="Guardar" />														
 			</form>	
 		</div>
 	</div>
 </div>
-
-
 <?php 
     $this->load->view('footer/footer_view');
  ?>

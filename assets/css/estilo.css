@@ -250,6 +250,11 @@ div.slide
   margin-top: 70px;
 }
 
+
+.noObligatorios
+{
+  color: red;
+}
 /*****************************/
 /*********** EQUIPO 6 ********/
 /*** REGISTRAR CONVOCATORIA***/

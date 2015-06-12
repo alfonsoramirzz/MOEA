@@ -17,7 +17,7 @@
                     </a>
                 </li>
                 <li>
-                    <a onclick="verReportes()">
+                    <a href="verReporte">
                       <i class="glyphicon glyphicon-file "></i>
                       <span>REPORTES</span>
                     </a>

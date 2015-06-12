@@ -2,7 +2,7 @@
     $this->load->view('head/librerias_view'); 
     $this->load->view('header/header_view', $logeado, $user);
  ?>
-
+<div id="page-content-wrapper" class="container-fluid">
  <div class="container registro">    
 	<div class="row">
         <div class="col-md-12">
@@ -154,8 +154,9 @@
 					</div>				
 				</form>	
 			</div>			      
-       </div>     
-
+       </div> 
+    </div>    
+</div>
 <?php 
     $this->load->view('footer/footer_view');
  ?>

@@ -2633,8 +2633,184 @@ class Ion_auth_model extends CI_Model
 			return false;
 		}
 	}
+
   	/**************************************************************************/
 	/************************** EQUIPO 6 **************************************/
 	/********************* REGISTRAR CONVOCATORIAS ****************************/
+	/**************************************************************************/
+
+	/**************************************************************************/
+	/************************** EQUIPO 7 **************************************/
+	/********************* ACTUALIZAR CONVOCATORIAS ****************************/
+	/**************************************************************************/
+	/**
+	 * obtConvocatoria
+	 *
+	 * @return bool
+	 * @author EQU7
+	 **/
+	public function obtConvocatoria($idPrograma=null)
+	{
+		if($idPrograma != null)
+		{
+			$query = $this->db->where('idConv',$idPrograma);	
+		}
+		$query = $this->db->from('conView');
+	    $query = $this->db->get();
+	    if ($query->num_rows() > 0)
+	    {
+	    	return $query;
+	    }else
+	    {
+	    	return FALSE;
+	    }
+  	}
+
+  	/**
+	 * actualiza
+	 *
+	 * @return bool
+	 * @author EQU7
+	 **/
+  	public function actConv($nom,$fi,$ff,$desc,$grado,$uni,$area,$prom,$pais,$ciudad,$id)
+  	{
+  		if($this->validaFecha($fi,$ff))
+		{
+			$nom = strtoupper($nom);
+			$this->db->query("update Convocatoria 
+			set nombreConv = '$nom',
+			fechaInicio = '$fi',
+			fechaFin = '$ff',
+			descripcion = '$desc',
+			promedioSolicitado = '$prom',
+			Grado_idGrado = (select idGrado from Grado where nombre = '$grado'),
+			Universidad_idUniversidad1 = (select idUniversidad from Universidad where nombre = '$uni'),
+			Area_idArea = (select idArea from Area where nombreAreaFormacion = '$area'),
+			Lugar_idLugar = (select idLugar from lugar where ((lugar.idPaisLugar = (select idPaisConvo from paisConvo where pais = '$pais'))and(lugar.idCiudadLugar = (select idCiudad from ciudad where ciudad = '$ciudad'))))
+			where idPrograma = '$id'");
+			return true;	
+		}else
+		{
+			return false;
+		}
+  	}
+  	/**************************************************************************/
+	/************************** EQUIPO 7 **************************************/
+	/********************* ACTUALIZAR CONVOCATORIAS ****************************/
+	/**************************************************************************/
+
+	/**************************************************************************/
+	/************************** EQUIPO 2 **************************************/
+	/********************* GENERAR INFORMES ***********************************/
+	/**************************************************************************/
+	/**
+	 * getTipo
+	 *
+	 * @return bool
+	 * @author EQU2
+	 **/
+	function getTipo($id)
+	{
+		switch ($id) 
+		{
+			case '2':
+				$this->db->select('nombre As nombre');
+				$query = $this->db->get('grado');
+				return $query->result();
+				break;
+			case '3':
+				$this->db->select('nombreAreaFormacion As nombre');
+				$query = $this->db->get('area');
+				return $query->result();
+				break;
+			case '4':
+				$this->db->distinct('pais');
+				$this->db->select('pais As nombre');				
+				$query = $this->db->get('paisconvo');
+				return $query->result();
+				break;
+			case '5':
+				$this->db->select('nombre As nombre');
+				$query = $this->db->get('universidad');
+				return $query->result();
+				break;
+			
+			default:
+				# code...
+				break;
+		}
+	}
+	/**
+	 * getReg
+	 *
+	 * @return bool
+	 * @author EQU2
+	 **/
+	function getReg($idReporte, $tipo)
+	{
+		$this->db->select('convocatoria.idPrograma as id,convocatoria.nombreConv as Convocatoria, convocatoria.fechaInicio,convocatoria.fechaFin,convocatoria.promedioSolicitado as promedio,universidad.nombre as Universidad, area.nombreAreaFormacion as Area, grado.nombre as Grado, ciudad.ciudad as Ciudad, paisConvo.pais as Pais');    
+		$this->db->from('convocatoria');
+		$this->db->join('universidad', 'convocatoria.Universidad_idUniversidad1 = idUniversidad');
+		$this->db->join('area', 'convocatoria.Area_idArea = area.idArea');
+		$this->db->join('grado', 'convocatoria.Grado_idGrado = grado.idGrado');
+		$this->db->join('lugar', 'convocatoria.Lugar_idLugar = lugar.idLugar');
+		$this->db->join('ciudad', 'lugar.idCiudadLugar = ciudad.idCiudad');
+		$this->db->join('paisConvo', 'lugar.idPaisLugar = paisConvo.idPaisConvo');
+		$this->db->order_by("convocatoria.fechaInicio","asc");
+		switch ($idReporte) 
+		{
+			case '2':
+				$this->db->where('grado.nombre', $tipo);
+				break;
+			case '3':
+				$this->db->where('area.nombreAreaFormacion', $tipo);
+				break;
+			case '4':
+				$this->db->where('paisConvo.pais', $tipo);
+				break;
+			case '5':
+				$que = $this->db->query("SELECT idUniversidad FROM universidad 
+													WHERE nombre = '".$tipo."';"
+									);
+				$que = $que->row();
+				$this->db->where('convocatoria.Universidad_idUniversidad1', $que->idUniversidad);
+				break;
+			default:
+				# code...
+				break;
+		}
+		$query = $this->db->get();
+		if($query -> num_rows() > 0){
+			return $query;
+		}else{
+			return false;
+		}
+	}
+	/**
+	 * getFavs
+	 *
+	 * @return bool
+	 * @author EQU2
+	 **/
+	function getFavs()
+	{
+		$this->db->distinct();
+
+		$this->db->select('convocatoria.nombreConv as Convocatoria,(SELECT count(*) from favoritos where idPrograma = convocatoria.idPrograma) as favs');    
+		$this->db->from('convocatoria');
+		$this->db->join('favoritos', 'favoritos.idPrograma=convocatoria.idPrograma'); 
+		$query = $this->db->get();
+		return $query;
+		if($query -> num_rows() > 0)
+		{
+			return $query;
+		}else
+		{
+			return false;
+		}
+	}
+	/**************************************************************************/
+	/************************** EQUIPO 2 **************************************/
+	/********************* GENERAR INFORMES ***********************************/
 	/**************************************************************************/
 }

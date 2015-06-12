@@ -14,18 +14,18 @@
 				Actualizacion de convocatorias
 			</div> 	
 			<div class="panel-body">
-				<?= form_open('adm/actualizarConvocatoria'); ?>
+				<form action="act_convocatoria" method="POST">
 					<div class="form-group">
 						<label>Nombre de convocatoria:</label>
-                        <input type="hidden" name="id" value="<?= $convocatoria->result()[0]->idconv;?>">
+                        <input type="hidden" name="id" value="<?php echo $convocatoria->idconv;?>">
                         <?php 
                         $name = array(
                             'required' => true,
-                            'name'  => 'name',
+                            'name'  => 'nombre',
                             'id'    => 'txtNombre',
                             'class' => 'form-control',
                             'type'  => 'text',
-                            'value' => $convocatoria->result()[0]->nombre
+                            'value' => $convocatoria->nombre
                         );
                         echo form_input($name);?>
 						<br>	
@@ -42,7 +42,7 @@
                         </td>
                         <td width="50%" align="center">
                         <br>
-                        <a href="<?= base_url()?>index.php/adm/agregarArea" target="_blank">ADD</a>
+                       <a href="act_area">ADD</a>
                         </td>
                         </tr>
                         </table>
@@ -53,14 +53,14 @@
                         <td width="50%">
 						<label>País:</label>
                         <select name="pais" class="form-control">
-                        <?php foreach ($lugar as $row) { ?>
-                            <option> <?= $row->pais;?> </option>;
+                        <?php foreach ($pais as $row) { ?>
+                            <option> <?php echo $row->pais;?> </option>;
                         <?php } ?>
                         </select>			
 						</td>
                         <td width="50%" align="center">
                         <br>
-                        <a href="<?= base_url()?>index.php/adm/agregarPais" target="_blank">ADD</a>
+                       	<a href="act_pais">ADD</a>
                         </td>
                         </tr>
                         </table>
@@ -78,7 +78,7 @@
                         </td>
                         <td width="50%" align="center">
                         <br>
-                        <a href="<?= base_url()?>index.php/adm/agregarCiudad" target="_blank">ADD</a>
+                        <a href="act_ciudad">ADD</a>
                         </td>
                         </tr>
                         </table>
@@ -96,27 +96,27 @@
                         </td>
                         <td width="50%" align="center">
                         <br>
-                        <a href="<?= base_url()?>index.php/adm/agregarGrado" target="_blank">ADD</a>
+                        <a href="act_grado">ADD</a>
                         </td>
                         </tr>
                         </table>
 						
                         <br>
 						<label>Promedio:</label>
-						<input type="number" class="form-control" name="prom" 
-                        step="0.1" min="6" max="10" value="<?=$convocatoria->result()[0]->prom?>"required>    			
+						<input type="number" class="form-control" name="promedio" 
+                        step="0.1" min="6" max="10" value="<?=$convocatoria->prom?>"required>    			
 						<br>
 
 						<table width="100%">
 						<tr>
 						<td width="50%">
 						<label>Fecha inicial:</label>
-						<input type="date" class="form-control" name="fechaI" value="<?=$convocatoria->result()[0]->fi?>" required>
+						<input type="date" class="form-control" name="fechaI" value="<?=$convocatoria->fi?>" required>
 						</td>
 
 						<td width="50%">
 						<label>Fecha Final:</label>
-						<input type="date" class="form-control" name="fechaF" value="<?=$convocatoria->result()[0]->ff?>" required>
+						<input type="date" class="form-control" name="fechaF" value="<?=$convocatoria->ff?>" required>
 						</td>
 						</tr>
 						</table>
@@ -134,7 +134,7 @@
                         </td>
                         <td width="50%" align="center">
                         <br>
-                        <a href="<?= base_url()?>index.php/adm/agregarUniversidad" target="_blank">ADD</a>
+                        <a href="act_universidad">ADD</a>
                         </td>
                         </tr>
                         </table>
@@ -149,21 +149,17 @@
                             'rows'  => '5', 
                             'cols'  => '40',
                             'class' => 'form-control',
-                            'value' => $convocatoria->result()[0]->desc
+                            'value' => $convocatoria->desc
                         );
                         echo form_textarea($desc);?>					
 						<br>
-						<button class="btn btn-primary">
-							Actualizar convocatoria						
-						</button>
+						<button type="submit" class="btn btn-primary">Actualizar convocatoria</button>
 					</div> 
-
-				<?= form_close();?>
-                <a href="<?=base_url()?>adm/eliminar/<?= $convocatoria->result()[0]->idconv;?>">                           
-                    <button class="btn btn-danger" onclick="return confirm('Desea Eliminar');">Eliminar</button>
-                </a>                        
+				</form>                       
 			</div>			      
        	</div>     
                 
     </div>
-          
+<?php 
+    $this->load->view('footer/footer_view');
+ ?>

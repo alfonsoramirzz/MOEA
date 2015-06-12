@@ -28,10 +28,10 @@
 						<div class="panel-footer">
 							<div class="row">									
 								<div class="col-md-6" >
-									<form action=""></form>
-									<a href="actualizar/<?= $row->idconv;?>">										
-										<button class="btn btn-warning">Modificar</button>
-									</a>									
+									<form action="actualizarConv" method="POST">
+										<input type="hidden" name="idConv" value="<?php echo $row->idconv; ?>">										
+										<button type="submit" class="btn btn-warning">Modificar</button>
+									</form>								
 								</div>	
 								<?php if($row->edo == 1){ ?>
 								<div class="col-md-6" >
