@@ -2694,6 +2694,34 @@ class Ion_auth_model extends CI_Model
 			return false;
 		}
   	}
+  	/**
+	 * desactivar
+	 *
+	 * @return none
+	 * @author EQU7
+	 **/
+  	public function desactivar($id)
+	{
+		$data=array(
+          'estado'=>0
+        );
+		$this->db->where('idPrograma', $id);
+		$this->db->update('Convocatoria',$data); 
+	}
+	/**
+	 * activar
+	 *
+	 * @return none
+	 * @author EQU7
+	 **/
+	public function activar($id)
+	{
+		$data=array(
+          'estado'=>1
+        );
+		$this->db->where('idPrograma', $id);
+		$this->db->update('Convocatoria',$data); 
+	}
   	/**************************************************************************/
 	/************************** EQUIPO 7 **************************************/
 	/********************* ACTUALIZAR CONVOCATORIAS ****************************/

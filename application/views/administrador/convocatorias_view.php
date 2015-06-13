@@ -35,15 +35,17 @@
 								</div>	
 								<?php if($row->edo == 1){ ?>
 								<div class="col-md-6" >
-									<a href="desactivar/<?= $row->idconv;?>">										
-										<button class="btn btn-danger">Desactivar</button>
-									</a>									
+									<form action="desactivar" method="POST">
+										<input type="hidden" name="idConv" value="<?php echo $row->idconv; ?>">										
+										<button type="submit" class="btn btn-danger">Desactivar</button>
+									</form>									
 								</div>
 								<?php }else{?>
 									<div class="col-md-6" >
-										<a href="activar/<?= $row->idconv;?>">										
-											<button class="btn btn-danger">Activar</button>
-										</a>									
+										<form action="activar" method="POST">
+											<input type="hidden" name="idConv" value="<?php echo $row->idconv; ?>">										
+											<button type="submit" class="btn btn-danger">Activar</button>
+										</form>									
 									</div>
 								<?php }?>
 							</div>													

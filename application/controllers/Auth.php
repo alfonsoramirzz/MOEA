@@ -1390,6 +1390,20 @@ class Auth extends CI_Controller {
 			$this->_render_page('administrador/registro/formAgregarUni_view', $this->data);
 		}
 	}
+
+	public function desactivar()
+	{
+		$id = $this->input->post('idConv');
+		$this->ion_auth->desactivar($id);
+        redirect('auth/convocatorias');
+	}
+
+	public function activar()
+	{
+		$id = $this->input->post('idConv');
+		$this->ion_auth->activar($id);
+        redirect('auth/convocatorias');
+	}
 	/**************************************************************************/
 	/************************** EQUIPO 6 **************************************/
 	/********************* ACTUALIZAR CONVOCATORIAS ***************************/
@@ -1516,5 +1530,208 @@ class Auth extends CI_Controller {
 	/**************************************************************************/
 	/************************** EQUIPO 2 **************************************/
 	/********************* GENERAR INFORMES ***********************************/
+	/**************************************************************************/
+
+	/**************************************************************************/
+	/************************** EQUIPO 4 **************************************/
+	/********************* GENERAR MOSTRAR ***********************************/
+	/**************************************************************************/
+	
+	function PrincipalInt()
+	{
+		$this->data['user'] = $this->ion_auth->user()->row();//
+		
+		$datos_convocatoria = array
+		(
+			'datos_convocatoria' => $this->Consulta_model->getConvocatoria(), 
+			'numero_filas' => $this->Consulta_model->getCantidadFilas(),
+			'dataUser' => $this->data,
+			'tablas_favoritas' => $this->Consulta_model->getFavoritos(),
+			'user' => $this->data['user'],
+			'matricula_u' => $this->Seguimiento_model->obtenerMatricula($this->data['user']->id),
+			'logeado' => $this->ion_auth->logged_in()
+		);
+		$this->load->view('interesado/mostrar_informacion/principal_int',$datos_convocatoria);
+	}
+	
+	function showConvocatoria(){
+		$id = $_POST['id'];
+		$datos = $this->Consulta_model->obtener($id);
+		foreach($datos->result() as $row){
+			$uni=$row->Universidad_idUniversidad1;
+			$lugar=$row->Lugar_idLugar;
+			$area=$row->Area_idArea;
+			$grado=$row->Grado_idGrado;
+		}
+		
+		
+		$data = array(
+		    'data' => $this->Consulta_model->obtener($id),
+			'data2' => $this->Consulta_model->datos($id)
+		);
+		
+		
+		$this->load->view('interesado/mostrar_informacion/contenido',$data);
+		
+		
+	}
+	
+	function showConvocatoriaCorreo()
+	{
+		$id = $_POST['id'];
+		/*$datos = $this->Consulta_model->obtener($id);
+		foreach($datos->result() as $row)
+		{
+			$uni=$row->Universidad_idUniversidad1;
+			$lugar=$row->Lugar_idLugar;
+			$area=$row->Area_idArea;
+			$grado=$row->Grado_idGrado;
+		}*/
+		
+		$data = array(
+		    'data' => $this->Consulta_model->obtener($id),
+			'data2' => $this->Consulta_model->datos($id),
+			'user' => $this->ion_auth->user()->row()
+		);
+		
+		$this->load->view('interesado/mostrar_informacion/contenido_correo',$data);
+		
+		
+	}
+	
+	function megusta(){
+		$iduser=$this->uri->segment(3);
+		$id=$this->uri->segment(4);
+		//$id = $_POST['id'];
+		//$iduser = $_POST['userid'];
+
+		     $query = $this->Consulta_model->getUsuario($iduser);
+		//$this->load->view('pagina_principal/prueba',$data);
+		foreach($query->result() as $row){
+			$mat=$row->matricula;
+		}
+		$this->Consulta_model->favorito($id,$mat);
+		redirect('auth/PrincipalInt');
+	}
+	
+	
+	/**************************************************************************/
+	/************************** EQUIPO 4 **************************************/
+	/********************* GENERAR MOSTRAR ***********************************/
+	/**************************************************************************/
+	
+	/**************************************************************************/
+	/************************** EQUIPO 1 **************************************/
+	/********************* GENERAR SEGUIMIENTO ***********************************/
+	/**************************************************************************/
+	
+	/*
+	* En estas vista va las convocatorias  a las que pedi informacion por correo
+	*/ 
+	public function seguimiento_correo()
+	{
+		$this->data['user'] = $this->ion_auth->user()->row();
+		$this->data['logeado'] = $this->ion_auth->logged_in();
+		$matricula = $this->Seguimiento_model->obtenerMatricula($this->data['user']->id);
+		$this->data['convocatorias'] = $this->Seguimiento_model->obtenerConvocatoriasCorreo($matricula);
+		$this->load->view('interesado/seguimiento/correo_view', $this->data);
+	}
+	
+	/*
+	* En esta vista van las convocatorias a las que di megusta
+	*/
+	public function ver_mis_favoritos()
+	{
+		$this->data['user'] = $this->ion_auth->user()->row();
+		$this->data['logeado'] = $this->ion_auth->logged_in();
+		$matricula = $this->Seguimiento_model->obtenerMatricula($this->data['user']->id);
+		$this->data['convocatorias'] = $this->Seguimiento_model->obtenerConvocatorias($matricula);
+		$this->load->view('interesado/seguimiento/favoritos_view', $this->data);
+	}
+
+
+	/*
+	* En esta vista van las convocatorias en las que fui aceptado
+	* se tienen que activar desde el lado del administrador
+	*/
+	public function ver_mi_historial()
+	{
+		$this->data['user'] = $this->ion_auth->user()->row();
+		$this->data['logeado'] = $this->ion_auth->logged_in();
+		$matricula = $this->Seguimiento_model->obtenerMatricula($this->data['user']->id);
+		$this->data['convocatorias'] = $this->Seguimiento_model->obtenerConvocatorias($matricula);
+		$this->load->view('interesado/seguimiento/historial_view', $this->data);
+	}
+
+	public  function ver_encuesta()
+	{
+    //id de favoritos
+		$id=$this->uri->segment(3);
+		$datos= array('id' => $id );
+    //echo $id;
+		$this->load->view('interesado/seguimiento/encuesta', $datos);
+	}
+	public function guarda_encuesta()
+	{
+		$id=$_POST["id"];
+		$r1=$_POST["p1"];
+		$r2=$_POST["p2"];
+		$r3=$_POST["p3"];
+		$datos= array('idFavoritos' => $id, "respuesta1" => $r1, "respuesta2" => $r2, "respuesta3" =>$r3 );
+		$this->Seguimiento_model->guardaCuestionario($datos);
+		$this->load->view("interesado/seguimiento/continuar");
+	}
+	
+	/**************************************************************************/
+	/************************** EQUIPO 1 **************************************/
+	/********************* GENERAR SEGUIMIENTO ***********************************/
+	/**************************************************************************/
+	
+	/**************************************************************************/
+	/************************** EQUIPO 3 **************************************/
+	/********************* GENERAR correo ***********************************/
+	/**************************************************************************/
+	
+	public function enviarCorreo()
+	{
+  		
+  	$name = $_POST['asunto'];
+	$email = $_POST['email'];
+	$descProblem = $_POST['dudas'];
+	$subject =$name;
+	$estado =''; 
+	$messageE = <<<EMAIL
+
+	$descProblem
+EMAIL;
+
+	$header ="From: $email ";
+	if($_POST){
+		if ($name == '' || $email ==''|| $descProblem='') {
+			echo "<script> alert('Mensaje No Enviado!');
+			</script>";
+		
+		}
+		else
+		{
+		 $to ='ejemplo@eejemplo.com';
+		mail( $to,$subject, $messageE, $header);
+		echo "<script> alert('Mensaje  Enviado!');
+		</script>";
+
+		$data = array(
+				'matricula'=> $this->input->post('mat'), 
+				'idPrograma'=> $this->input->post('idprograma')
+			);
+		
+		$this->ModeloConv->insertar($data);
+		redirect("auth/PrincipalInt");
+		}
+       
+	}
+  }
+  /**************************************************************************/
+	/************************** EQUIPO 3 **************************************/
+	/********************* GENERAR correo ***********************************/
 	/**************************************************************************/
 }

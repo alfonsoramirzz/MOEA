@@ -11,25 +11,25 @@
                     <figure>                
                 </li>
                 <li>
-                    <a onclick="verConvocatorias()">
+                   <a href='<?=base_url()?>index.php/auth/principalInt'>
                       <i class="glyphicon glyphicon-th"></i>
                       <span>CONVOCATORIAS</span>
                     </a>
                 </li>
                 <li>
-                    <a onclick="verConvInfor()">
+                    <a href="<?=base_url()?>index.php/auth/seguimiento_correo">
                       <i class="glyphicon glyphicon-info-sign "></i>
                       <span>INFORMACIÓN</span>
                     </a>
                 </li>
                 <li>
-                    <a onclick="verMisConv()">
-                      <i class="glyphicon glyphicon-thumbs-up"></i>
+                    <a href="<?=base_url()?>index.php/auth/ver_mis_favoritos">
+                      <i class="glyphicon glyphicon-star-empty"></i>
                       <span>MIS CONVOCATORIAS</span>
                     </a>
                 </li>
                 <li>
-                    <a onclick="verMiHistorico()">
+                    <a href="<?=base_url()?>index.php/auth/ver_mi_historial">
                       <i class="glyphicon glyphicon-file "></i>
                       <span>MI HISTORIAL</span>
                     </a>
