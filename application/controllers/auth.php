@@ -1653,6 +1653,22 @@ class Auth extends CI_Controller {
 		$this->data['convocatorias'] = $this->Seguimiento_model->obtenerConvocatorias($matricula);
 		$this->load->view('interesado/seguimiento/historial_view', $this->data);
 	}
+	public  function ver_encuesta(){
+    //id de favoritos
+		$id=$this->uri->segment(3);
+		$datos= array('id' => $id );
+    //echo $id;
+		$this->load->view('interesado/seguimiento/encuesta', $datos);
+	}
+	public function guarda_encuesta(){
+		$id=$_POST["id"];
+		$r1=$_POST["p1"];
+		$r2=$_POST["p2"];
+		$r3=$_POST["p3"];
+		$datos= array('idFavoritos' => $id, "respuesta1" => $r1, "respuesta2" => $r2, "respuesta3" =>$r3 );
+		$this->Seguimiento_model->guardaCuestionario($datos);
+		$this->load->view("interesado/seguimiento/continuar");
+	}
 	
 	/**************************************************************************/
 	/************************** EQUIPO 1 **************************************/
