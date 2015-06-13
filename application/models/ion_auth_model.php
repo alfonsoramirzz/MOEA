@@ -864,107 +864,7 @@ class Ion_auth_model extends CI_Model
 		return FALSE;
 	}
 
-	/**
-	 * register
-	 *
-	 * @return bool
-	 * @author Mathew
-	 **/
-	public function register($username, $password, $email, $additional_data = array(), $groups = array())
-	{
-		$this->trigger_events('pre_register');
-
-		$manual_activation = $this->config->item('manual_activation', 'ion_auth');
-
-		if ($this->identity_column == 'email' && $this->email_check($email))
-		{
-			$this->set_error('account_creation_duplicate_email');
-			return FALSE;
-		}
-		elseif ($this->identity_column == 'username' && $this->username_check($username))
-		{
-			$this->set_error('account_creation_duplicate_username');
-			return FALSE;
-		}
-		elseif ( !$this->config->item('default_group', 'ion_auth') && empty($groups) )
-		{
-			$this->set_error('account_creation_missing_default_group');
-			return FALSE;
-		}
-
-		//check if the default set in config exists in database
-		$query = $this->db->get_where($this->tables['groups'],array('name' => $this->config->item('default_group', 'ion_auth')),1)->row();
-		if( !isset($query->id) && empty($groups) )
-		{
-			$this->set_error('account_creation_invalid_default_group');
-			return FALSE;
-		}
-
-		//capture default group details
-		$default_group = $query;
-
-		// If username is taken, use username1 or username2, etc.
-		if ($this->identity_column != 'username')
-		{
-			$original_username = $username;
-			for($i = 0; $this->username_check($username); $i++)
-			{
-				if($i > 0)
-				{
-					$username = $original_username . $i;
-				}
-			}
-		}
-
-		// IP Address
-		$ip_address = $this->_prepare_ip($this->input->ip_address());
-		$salt       = $this->store_salt ? $this->salt() : FALSE;
-		$password   = $this->hash_password($password, $salt);
-
-		// Users table.
-		$data = array(
-		    'username'   => $username,
-		    'password'   => $password,
-		    'email'      => $email,
-		    'ip_address' => $ip_address,
-		    'created_on' => time(),
-		    'active'     => ($manual_activation === false ? 1 : 0)
-		);
-
-		if ($this->store_salt)
-		{
-			$data['salt'] = $salt;
-		}
-
-		//filter out any data passed that doesnt have a matching column in the users table
-		//and merge the set user data and the additional data
-		$user_data = array_merge($this->_filter_data($this->tables['users'], $additional_data), $data);
-
-		$this->trigger_events('extra_set');
-
-		$this->db->insert($this->tables['users'], $user_data);
-
-		$id = $this->db->insert_id();
-
-		//add in groups array if it doesn't exits and stop adding into default group if default group ids are set
-		if( isset($default_group->id) && empty($groups) )
-		{
-			$groups[] = $default_group->id;
-		}
-
-		if (!empty($groups))
-		{
-			//add to groups
-			foreach ($groups as $group)
-			{
-				$this->add_to_group($group, $id);
-			}
-		}
-
-		$this->trigger_events('post_register');
-
-		return (isset($id)) ? $id : FALSE;
-	}
+	
 
 	/**
 	 * login
@@ -1397,7 +1297,7 @@ class Ion_auth_model extends CI_Model
 		$id || $id = $this->session->userdata('user_id');
 
 		$this->limit(1);
-		$this->order_by('id', 'desc');
+		$this->order_by($this->tables['users'].'.id', 'desc');
 		$this->where($this->tables['users'].'.id', $id);
 
 		$this->users();
@@ -2103,6 +2003,8 @@ class Ion_auth_model extends CI_Model
 		return $message;
 	}
 
+
+
 	/**
 	 * messages
 	 *
@@ -2148,6 +2050,23 @@ class Ion_auth_model extends CI_Model
 			return $this->messages;
 		}
 	}
+
+
+	/**
+	 * clear_messages
+	 *
+	 * Clear messages
+	 *
+	 * @return void
+	 * @author Ben Edmunds
+	 **/
+	public function clear_messages()
+	{
+		$this->messages = array();
+
+		return TRUE;
+	}
+
 
 	/**
 	 * set_error
@@ -2210,6 +2129,24 @@ class Ion_auth_model extends CI_Model
 		}
 	}
 
+
+	/**
+	 * clear_errors
+	 *
+	 * Clear Errors
+	 *
+	 * @return void
+	 * @author Ben Edmunds
+	 **/
+	public function clear_errors()
+	{
+		$this->errors = array();
+
+		return TRUE;
+	}
+
+
+
 	protected function _filter_data($table, $data)
 	{
 		$filtered_data = array();
@@ -2231,4 +2168,649 @@ class Ion_auth_model extends CI_Model
 		//just return the string IP address now for better compatibility
 		return $ip_address;
 	}
+
+
+	/**************************************************************************/
+	/************************** EQUIPO 5 **************************************/
+	/********************* REGISTRAR INTERESADO *******************************/
+	/**************************************************************************/
+	/**
+	 * registrarIdioma
+	 *
+	 * @return int
+	 * @author EQU5
+	 **/
+	public function registrarIdioma($idioma)
+	{
+		$this->db->insert('idioma', $idioma);
+		return $this->db->insert_id();
+	}
+
+	/**
+	 * registrarIdioma
+	 *
+	 * @return int
+	 * @author EQU5
+	 **/
+	public function registrarFacultad($facultad)
+	{
+		$this->db->insert('facultad', $facultad);
+		return $this->db->insert_id();
+	}
+
+	/**
+	 * registrarDatosPersonales
+	 *
+	 * @return int
+	 * @author EQU5
+	 **/
+	public function registrarDatosPersonales($datosPersonales)
+	{
+		$this->db->insert('datospersonales', $datosPersonales);
+		return $this->db->insert_id();
+	}
+
+	/**
+	 * registrarPaises
+	 *
+	 * @return int
+	 * @author EQU5
+	 **/
+	public function registrarPaises($paises)
+	{
+		$this->db->insert('paisesinteresado', $paises);
+		return $this->db->insert_id();
+	}
+
+	/**
+	 * register
+	 *
+	 * @return int
+	 * @author Mathew, EQU5
+	 **/
+	public function register($username, $password, $email, $additional_data = array(), $groups = array())
+	{
+		$this->trigger_events('pre_register');
+
+		$manual_activation = $this->config->item('manual_activation', 'ion_auth');
+
+		if ($this->identity_column == 'email' && $this->email_check($email))
+		{
+			$this->set_error('account_creation_duplicate_email');
+			return -1;
+		}
+		elseif ($this->identity_column == 'username' && $this->username_check($username))
+		{
+			$this->set_error('account_creation_duplicate_username');
+			return -1;
+		}
+		elseif ( !$this->config->item('default_group', 'ion_auth') && empty($groups) )
+		{
+			$this->set_error('account_creation_missing_default_group');
+			return -1;
+		}
+
+		//check if the default set in config exists in database
+		$query = $this->db->get_where($this->tables['groups'],array('name' => $this->config->item('default_group', 'ion_auth')),1)->row();
+		if( !isset($query->id) && empty($groups) )
+		{
+			$this->set_error('account_creation_invalid_default_group');
+			return -1;
+		}
+
+		//capture default group details
+		$default_group = $query;
+
+		// If username is taken, use username1 or username2, etc.
+		if ($this->identity_column != 'username')
+		{
+			$original_username = $username;
+			for($i = 0; $this->username_check($username); $i++)
+			{
+				if($i > 0)
+				{
+					$username = $original_username . $i;
+				}
+			}
+		}
+
+		// IP Address
+		$ip_address = $this->_prepare_ip($this->input->ip_address());
+		$salt       = $this->store_salt ? $this->salt() : FALSE;
+		$password   = $this->hash_password($password, $salt);
+
+		// Users table.
+		$data = array(
+		    'username'   => $username,
+		    'password'   => $password,
+		    'email'      => $email,
+		    'ip_address' => $ip_address,
+		    'created_on' => time(),
+		    'active'     => ($manual_activation === false ? 1 : 0)
+		);
+
+		if ($this->store_salt)
+		{
+			$data['salt'] = $salt;
+		}
+
+		//filter out any data passed that doesnt have a matching column in the users table
+		//and merge the set user data and the additional data
+		$user_data = array_merge($this->_filter_data($this->tables['users'], $additional_data), $data);
+
+		$this->trigger_events('extra_set');
+
+		$this->db->insert($this->tables['users'], $user_data);
+
+		$id = $this->db->insert_id();
+
+		//add in groups array if it doesn't exits and stop adding into default group if default group ids are set
+		if( isset($default_group->id) && empty($groups) )
+		{
+			$groups[] = $default_group->id;
+		}
+
+		if (!empty($groups))
+		{
+			//add to groups
+			foreach ($groups as $group)
+			{
+				$this->add_to_group($group, $id);
+			}
+		}
+
+		$this->trigger_events('post_register');
+
+		return (isset($id)) ? $id : -1;
+	}
+
+	
+	/**
+	 * registrarCuenta
+	 *
+	 * @return int
+	 * @author EQU5
+	 **/
+	public function registrarCuenta($cuentas)
+	{
+		$this->db->insert('cuenta', $cuentas);
+		return $this->db->insert_id();
+	}
+
+	/**
+	 * registrarInteresado
+	 *
+	 * @return int
+	 * @author EQU5
+	 **/
+	public function registrarInteresado($interesado)
+	{
+		$this->db->insert('interesado', $interesado);
+		return $this->db->insert_id();
+	}
+	/**************************************************************************/
+	/************************** EQUIPO 5 **************************************/
+	/********************* REGISTRAR INTERESADO *******************************/
+	/**************************************************************************/
+
+	/**************************************************************************/
+	/************************** EQUIPO 6 **************************************/
+	/********************* REGISTRAR CONVOCATORIAS ****************************/
+	/**************************************************************************/
+	/**
+	 * obtView
+	 *
+	 * @return boolean or query
+	 * @author EQU6
+	 **/
+	public function obtView($idPrograma = null)
+	{
+		if($idPrograma != null)
+		{
+			$query = $this->db->where('idConv',$idPrograma);	
+		}
+		$query = $this->db->from('conView');
+	    $query = $this->db->get();
+	    if ($query->num_rows() > 0)
+	    {
+	    	return $query->result();
+	    }else
+	    {
+	    	return FALSE;
+	    }
+  	}
+
+  	/**
+	 * obtArea
+	 *
+	 * @return boolean or query
+	 * @author EQU6
+	 **/
+  	public function obtArea($id = null)
+	{
+		$query = $this->db->from('Area');
+		$query = $this->db->get();
+		if($query->num_rows() > 0 )
+        {
+            return $query->result();
+        }		
+	}
+
+	/**
+	 * obtPais
+	 *
+	 * @return query
+	 * @author EQU6
+	 **/
+	public function obtPais($pais = null)
+	{
+		if($pais!=null)
+		{
+			$this->db->select('idPaisConvo');
+			$this->db->where('pais',$pais);
+		}	
+		$query = $this->db->from('paisconvo');
+		$query = $this->db->get();
+		if($query->num_rows() > 0 )
+        {
+            return $query->result();
+        }			
+	}
+
+	/**
+	 * obtCiudad
+	 *
+	 * @return query
+	 * @author EQU6
+	 **/
+	public function obtCiudad($ciudad = null)
+	{
+		if($ciudad!=null)
+		{
+			$query = $this->db->select('Lugar_idLugar');
+			$query = $this->db->where('ciudad',$ciudad);
+		}	
+		$query = $this->db->from('ciudad');
+		$query = $this->db->get();
+		if($query->num_rows() > 0 )
+        {
+            return $query->result();
+        }			
+	}
+
+	/**
+	 * obtGrado
+	 *
+	 * @return query
+	 * @author EQU6
+	 **/
+	public function obtGrado($id = null)
+	{
+		$query = $this->db->from('Grado');
+		$query = $this->db->get();
+		if($query->num_rows() > 0 )
+        {
+            return $query->result();
+        }			
+	}
+
+
+	/**
+	 * obtUni
+	 *
+	 * @return query
+	 * @author EQU6
+	 **/
+	public function obtUni($id = null)
+	{
+		$query = $this->db->from('Universidad');
+		$query = $this->db->get();
+		if($query->num_rows() > 0 )
+        {
+            return $query->result();
+        }		
+	}
+
+	/**
+	 * conv
+	 *
+	 * @return bool
+	 * @author EQU6
+	 **/
+	public function conv($nom,$fi,$ff,$desc,$grado,$uni,$area,$prom,$pais, $ciudad)
+	{	
+		if($this->validaFecha($fi,$ff) && $this->unico($nom, 'Convocatoria', 'nombreConv'))
+		{
+			$nom = strtoupper($nom);
+			$this->db->query("insert into Convocatoria 
+			(nombreConv, fechaInicio, fechaFin, descripcion, Grado_idGrado,
+			 Universidad_idUniversidad1, Area_idArea, promedioSolicitado, Lugar_idLugar,estado)
+			values
+			('$nom','$fi','$ff','$desc',
+			(select idGrado from Grado where nombre = '$grado'),
+			(select idUniversidad from Universidad where nombre = '$uni'),
+			(select idArea from Area where nombreAreaFormacion = '$area'),
+			$prom,
+			(select idLugar from lugar where ((lugar.idPaisLugar = (select idPaisConvo from paisConvo where pais = '$pais'))and(lugar.idCiudadLugar = (select idCiudad from ciudad where ciudad = '$ciudad')))),1)");
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	/**
+	 * validaFecha
+	 *
+	 * @return bool
+	 * @author EQU6
+	 **/
+	public function validaFecha($fi,$ff)
+	{
+		$datetime1 = new DateTime($fi);
+        $datetime2 = new DateTime($ff);
+        $interval = $datetime1->diff($datetime2);
+        if($interval->format('%R%') == '+')
+        {
+            return true;
+        }else
+        {
+        	$this->set_error('La fecha no es válida');
+            return false;
+        }
+	}
+
+	/**
+	 * unico
+	 *
+	 * @return bool
+	 * @author EQU6
+	 **/
+	public function unico($nombreConv, $tabla, $col)
+	{
+		$this->db->where($col, $nombreConv);
+		$this->db->from($tabla);
+		if($this->db->count_all_results() == 0)
+		{
+			return true;	
+		}else
+		{
+			$this->set_error('El nombre ya existe');
+			return false;
+		}
+	}
+
+	/**
+	 * guardaArea
+	 *
+	 * @return bool
+	 * @author EQU6
+	 **/
+	public function guardaArea($area)
+	{
+		if ( $this->unico($area, 'area', 'nombreAreaFormacion')) 
+		{
+			$area = strtoupper($area);
+			$this->db->query("insert into Area (nombreAreaFormacion) Values ('$area')");
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * guardaPais
+	 *
+	 * @return bool
+	 * @author EQU6
+	 **/
+	public function guardaPais($pais)
+	{
+		if ( $this->unico($pais, 'paisconvo', 'pais')) 
+		{
+			$pais = strtoupper($pais);
+			$this->db->query("insert into paisconvo (pais) Values ('$pais')");
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * guardaCiudad
+	 *
+	 * @return bool
+	 * @author EQU6
+	 **/
+	public function guardaCiudad($ciudad, $pais)
+	{
+		$query = $this->obtPais($pais);
+		if ( $this->unico($ciudad, 'ciudad', 'ciudad')) 
+		{
+			$ciud['ciudad'] = strtoupper($ciudad);
+			$this->db->insert('ciudad', $ciud);
+			$lugar['idCiudadLugar'] = $this->db->insert_id();
+			$lugar['idPaisLugar'] = strtoupper($query[0]->idPaisConvo);
+			$this->db->insert('lugar', $lugar);
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * guardaGrado
+	 *
+	 * @return bool
+	 * @author EQU6
+	 **/
+	public function guardaGrado($grado)
+	{
+		if($this->unico($grado, 'grado', 'nombre'))
+		{
+			$grado = strtoupper($grado);
+			$this->db->query("insert into grado (nombre) Values ('$grado')");
+			return true;
+		}else
+		{
+			return false;
+		}
+	}
+	
+	/**
+	 * guardaUni
+	 *
+	 * @return bool
+	 * @author EQU6
+	 **/
+	public function guardaUni($uni)
+	{
+		if($this->unico($uni, 'universidad', 'nombre'))
+		{
+			$uni = strtoupper($uni);
+			$this->db->query("insert into universidad (nombre) Values ('$uni')");
+			return true;
+		}else
+		{
+			return false;
+		}
+	}
+
+  	/**************************************************************************/
+	/************************** EQUIPO 6 **************************************/
+	/********************* REGISTRAR CONVOCATORIAS ****************************/
+	/**************************************************************************/
+
+	/**************************************************************************/
+	/************************** EQUIPO 7 **************************************/
+	/********************* ACTUALIZAR CONVOCATORIAS ****************************/
+	/**************************************************************************/
+	/**
+	 * obtConvocatoria
+	 *
+	 * @return bool
+	 * @author EQU7
+	 **/
+	public function obtConvocatoria($idPrograma=null)
+	{
+		if($idPrograma != null)
+		{
+			$query = $this->db->where('idConv',$idPrograma);	
+		}
+		$query = $this->db->from('conView');
+	    $query = $this->db->get();
+	    if ($query->num_rows() > 0)
+	    {
+	    	return $query;
+	    }else
+	    {
+	    	return FALSE;
+	    }
+  	}
+
+  	/**
+	 * actualiza
+	 *
+	 * @return bool
+	 * @author EQU7
+	 **/
+  	public function actConv($nom,$fi,$ff,$desc,$grado,$uni,$area,$prom,$pais,$ciudad,$id)
+  	{
+  		if($this->validaFecha($fi,$ff))
+		{
+			$nom = strtoupper($nom);
+			$this->db->query("update Convocatoria 
+			set nombreConv = '$nom',
+			fechaInicio = '$fi',
+			fechaFin = '$ff',
+			descripcion = '$desc',
+			promedioSolicitado = '$prom',
+			Grado_idGrado = (select idGrado from Grado where nombre = '$grado'),
+			Universidad_idUniversidad1 = (select idUniversidad from Universidad where nombre = '$uni'),
+			Area_idArea = (select idArea from Area where nombreAreaFormacion = '$area'),
+			Lugar_idLugar = (select idLugar from lugar where ((lugar.idPaisLugar = (select idPaisConvo from paisConvo where pais = '$pais'))and(lugar.idCiudadLugar = (select idCiudad from ciudad where ciudad = '$ciudad'))))
+			where idPrograma = '$id'");
+			return true;	
+		}else
+		{
+			return false;
+		}
+  	}
+  	/**************************************************************************/
+	/************************** EQUIPO 7 **************************************/
+	/********************* ACTUALIZAR CONVOCATORIAS ****************************/
+	/**************************************************************************/
+
+	/**************************************************************************/
+	/************************** EQUIPO 2 **************************************/
+	/********************* GENERAR INFORMES ***********************************/
+	/**************************************************************************/
+	/**
+	 * getTipo
+	 *
+	 * @return bool
+	 * @author EQU2
+	 **/
+	function getTipo($id)
+	{
+		switch ($id) 
+		{
+			case '2':
+				$this->db->select('nombre As nombre');
+				$query = $this->db->get('grado');
+				return $query->result();
+				break;
+			case '3':
+				$this->db->select('nombreAreaFormacion As nombre');
+				$query = $this->db->get('area');
+				return $query->result();
+				break;
+			case '4':
+				$this->db->distinct('pais');
+				$this->db->select('pais As nombre');				
+				$query = $this->db->get('paisconvo');
+				return $query->result();
+				break;
+			case '5':
+				$this->db->select('nombre As nombre');
+				$query = $this->db->get('universidad');
+				return $query->result();
+				break;
+			
+			default:
+				# code...
+				break;
+		}
+	}
+	/**
+	 * getReg
+	 *
+	 * @return bool
+	 * @author EQU2
+	 **/
+	function getReg($idReporte, $tipo)
+	{
+		$this->db->select('convocatoria.idPrograma as id,convocatoria.nombreConv as Convocatoria, convocatoria.fechaInicio,convocatoria.fechaFin,convocatoria.promedioSolicitado as promedio,universidad.nombre as Universidad, area.nombreAreaFormacion as Area, grado.nombre as Grado, ciudad.ciudad as Ciudad, paisConvo.pais as Pais');    
+		$this->db->from('convocatoria');
+		$this->db->join('universidad', 'convocatoria.Universidad_idUniversidad1 = idUniversidad');
+		$this->db->join('area', 'convocatoria.Area_idArea = area.idArea');
+		$this->db->join('grado', 'convocatoria.Grado_idGrado = grado.idGrado');
+		$this->db->join('lugar', 'convocatoria.Lugar_idLugar = lugar.idLugar');
+		$this->db->join('ciudad', 'lugar.idCiudadLugar = ciudad.idCiudad');
+		$this->db->join('paisConvo', 'lugar.idPaisLugar = paisConvo.idPaisConvo');
+		$this->db->order_by("convocatoria.fechaInicio","asc");
+		switch ($idReporte) 
+		{
+			case '2':
+				$this->db->where('grado.nombre', $tipo);
+				break;
+			case '3':
+				$this->db->where('area.nombreAreaFormacion', $tipo);
+				break;
+			case '4':
+				$this->db->where('paisConvo.pais', $tipo);
+				break;
+			case '5':
+				$que = $this->db->query("SELECT idUniversidad FROM universidad 
+													WHERE nombre = '".$tipo."';"
+									);
+				$que = $que->row();
+				$this->db->where('convocatoria.Universidad_idUniversidad1', $que->idUniversidad);
+				break;
+			default:
+				# code...
+				break;
+		}
+		$query = $this->db->get();
+		if($query -> num_rows() > 0){
+			return $query;
+		}else{
+			return false;
+		}
+	}
+	/**
+	 * getFavs
+	 *
+	 * @return bool
+	 * @author EQU2
+	 **/
+	function getFavs()
+	{
+		$this->db->distinct();
+
+		$this->db->select('convocatoria.nombreConv as Convocatoria,(SELECT count(*) from favoritos where idPrograma = convocatoria.idPrograma) as favs');    
+		$this->db->from('convocatoria');
+		$this->db->join('favoritos', 'favoritos.idPrograma=convocatoria.idPrograma'); 
+		$query = $this->db->get();
+		return $query;
+		if($query -> num_rows() > 0)
+		{
+			return $query;
+		}else
+		{
+			return false;
+		}
+	}
+	/**************************************************************************/
+	/************************** EQUIPO 2 **************************************/
+	/********************* GENERAR INFORMES ***********************************/
+	/**************************************************************************/
 }

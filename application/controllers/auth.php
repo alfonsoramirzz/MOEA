@@ -6,6 +6,14 @@ class Auth extends CI_Controller {
 	{
 		parent::__construct();
 		$this->form_validation->set_error_delimiters($this->config->item('error_start_delimiter', 'ion_auth'), $this->config->item('error_end_delimiter', 'ion_auth'));
+		$this->load->Model("Consulta/Consulta_model");
+		$this->load->Model("Seguimiento_model");
+		$this->load->helper('text');
+		$this->load->model('ModeloConv');
+		
+		
+		
+		
 	}
 
 	//redirect if needed, otherwise display the user list
@@ -15,12 +23,12 @@ class Auth extends CI_Controller {
 		if (!$this->ion_auth->logged_in())
 		{
 			//redirect them to the login page
-			redirect('auth/Principal', 'refresh');
+			redirect('auth/principal', 'refresh');
 			//redirect('auth/login', 'refresh');
 		}
-		elseif ($this->ion_auth->in_group('general')) //remove this elseif if you want to enable this for non-admins
+		elseif ($this->ion_auth->in_group('registrado')) //remove this elseif if you want to enable this for non-admins
 		{
-			redirect('auth/Principal', 'refresh');
+			redirect('auth/principal', 'refresh');
 		}
 		elseif (!$this->ion_auth->is_admin()) //remove this elseif if you want to enable this for non-admins
 		{
@@ -30,6 +38,7 @@ class Auth extends CI_Controller {
 		else
 		{
 			//set the flash data error message if there is one
+			/*
 			$this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
 
 			//list the users
@@ -40,53 +49,9 @@ class Auth extends CI_Controller {
 			}
 
 			$this->_render_page('auth/index', $this->data);
+			*/
+			redirect('auth/principal', 'refresh');
 		}
-	}
-
-	function Principal()
-	{
-		$this->data['user'] = $this->ion_auth->user()->row();
-		$this->load->view('pagina_principal/principal_view', $this->data);
-	}
-
-	function verIniSesion()
-	{
-		$this->load->view('auth/login');
-	}
-	
-	function verConvocatorias()
-	{
-		$this->load->view('convocatorias_view');
-	}
-
-	function verConvInfo()
-	{
-		$this->load->view('informacion_view');
-	}
-
-	function verMisConv()
-	{
-		$this->load->view('misconvocatorias_view');
-	}
-
-	function verMiHistorico()
-	{
-		$this->load->view('mihistorico_view');
-	}
-
-	function verSeguimiento()
-	{
-		$this->load->view('seguimiento_view');
-	}
-
-	function verDetalleConv()
-	{
-		$this->load->view('detalle_conv_view');
-	}
-
-	function verReportes()
-	{
-		$this->load->view('reportes/reportes_view');
 	}
 
 	//log the user in
@@ -116,7 +81,7 @@ class Auth extends CI_Controller {
 				//if the login was un-successful
 				//redirect them back to the login page
 				$this->session->set_flashdata('message', $this->ion_auth->errors());
-				redirect('auth/login', 'refresh'); //use redirects instead of loading views for compatibility with MY_Controller libraries
+				redirect('auth', 'refresh'); //use redirects instead of loading views for compatibility with MY_Controller libraries
 			}
 		}
 		else
@@ -458,100 +423,7 @@ class Auth extends CI_Controller {
 		}
 	}
 
-	//create a new user
-	function create_user()
-	{
-		$this->data['title'] = "Create User";
-
-		if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin())
-		{
-			redirect('auth', 'refresh');
-		}
-
-		$tables = $this->config->item('tables','ion_auth');
-
-		//validate form input
-		$this->form_validation->set_rules('first_name', $this->lang->line('create_user_validation_fname_label'), 'required');
-		$this->form_validation->set_rules('last_name', $this->lang->line('create_user_validation_lname_label'), 'required');
-		$this->form_validation->set_rules('email', $this->lang->line('create_user_validation_email_label'), 'required|valid_email|is_unique['.$tables['users'].'.email]');
-		$this->form_validation->set_rules('phone', $this->lang->line('create_user_validation_phone_label'), 'required');
-		$this->form_validation->set_rules('company', $this->lang->line('create_user_validation_company_label'), 'required');
-		$this->form_validation->set_rules('password', $this->lang->line('create_user_validation_password_label'), 'required|min_length[' . $this->config->item('min_password_length', 'ion_auth') . ']|max_length[' . $this->config->item('max_password_length', 'ion_auth') . ']|matches[password_confirm]');
-		$this->form_validation->set_rules('password_confirm', $this->lang->line('create_user_validation_password_confirm_label'), 'required');
-
-		if ($this->form_validation->run() == true)
-		{
-			$username = strtolower($this->input->post('first_name')) . ' ' . strtolower($this->input->post('last_name'));
-			$email    = strtolower($this->input->post('email'));
-			$password = $this->input->post('password');
-
-			$additional_data = array(
-				'first_name' => $this->input->post('first_name'),
-				'last_name'  => $this->input->post('last_name'),
-				'company'    => $this->input->post('company'),
-				'phone'      => $this->input->post('phone'),
-			);
-		}
-		if ($this->form_validation->run() == true && $this->ion_auth->register($username, $password, $email, $additional_data))
-		{
-			//check to see if we are creating the user
-			//redirect them back to the admin page
-			$this->session->set_flashdata('message', $this->ion_auth->messages());
-			redirect("auth", 'refresh');
-		}
-		else
-		{
-			//display the create user form
-			//set the flash data error message if there is one
-			$this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message')));
-
-			$this->data['first_name'] = array(
-				'name'  => 'first_name',
-				'id'    => 'first_name',
-				'type'  => 'text',
-				'value' => $this->form_validation->set_value('first_name'),
-			);
-			$this->data['last_name'] = array(
-				'name'  => 'last_name',
-				'id'    => 'last_name',
-				'type'  => 'text',
-				'value' => $this->form_validation->set_value('last_name'),
-			);
-			$this->data['email'] = array(
-				'name'  => 'email',
-				'id'    => 'email',
-				'type'  => 'text',
-				'value' => $this->form_validation->set_value('email'),
-			);
-			$this->data['company'] = array(
-				'name'  => 'company',
-				'id'    => 'company',
-				'type'  => 'text',
-				'value' => $this->form_validation->set_value('company'),
-			);
-			$this->data['phone'] = array(
-				'name'  => 'phone',
-				'id'    => 'phone',
-				'type'  => 'text',
-				'value' => $this->form_validation->set_value('phone'),
-			);
-			$this->data['password'] = array(
-				'name'  => 'password',
-				'id'    => 'password',
-				'type'  => 'password',
-				'value' => $this->form_validation->set_value('password'),
-			);
-			$this->data['password_confirm'] = array(
-				'name'  => 'password_confirm',
-				'id'    => 'password_confirm',
-				'type'  => 'password',
-				'value' => $this->form_validation->set_value('password_confirm'),
-			);
-
-			$this->_render_page('auth/create_user', $this->data);
-		}
-	}
-
+	
 	//edit a user
 	function edit_user($id)
 	{
@@ -849,4 +721,991 @@ class Auth extends CI_Controller {
 		if (!$render) return $view_html;
 	}
 
+
+
+	/**************************************************************************/
+	/************************* PRINCIPAL **************************************/
+	/**************************************************************************/
+	function principal()
+	{
+		$this->data['user'] = $this->ion_auth->user()->row();
+		$this->data['logeado'] = $this->ion_auth->logged_in();
+		$this->load->view('pagina_principal/principal_view', $this->data);
+	}
+
+
+
+	/**************************************************************************/
+	/************************* PRINCIPAL **************************************/
+	/**************************************************************************/
+
+
+
+
+
+
+
+
+
+
+	/**************************************************************************/
+	/************************** EQUIPO 5 **************************************/
+	/********************* REGISTRAR INTERESADO *******************************/
+	/**************************************************************************/
+
+	//create a new user
+	function create_user()
+	{		
+		$tables = $this->config->item('tables','ion_auth');
+
+		//validate form input
+		$this->form_validation->set_rules('nombre', 'Nombre', 'required');
+		$this->form_validation->set_rules('apellidoP', 'Apellido Paterno', 'required');
+		#$this->form_validation->set_rules('apellidoM', 'Apellido Materno', 'required');
+		$this->form_validation->set_rules('telefono', 'Teléfono', 'required');
+		$this->form_validation->set_rules('curp', 'CURP', 'required');
+		$this->form_validation->set_rules('email', 'E-Mail', 'required|valid_email|is_unique['.$tables['users'].'.email]');
+		$this->form_validation->set_rules('password', $this->lang->line('create_user_validation_password_label'), 'required|min_length[' . $this->config->item('min_password_length', 'ion_auth') . ']|max_length[' . $this->config->item('max_password_length', 'ion_auth') . ']|matches[password_confirm]');
+		$this->form_validation->set_rules('password_confirm', $this->lang->line('create_user_validation_password_confirm_label'), 'required');
+		#$this->form_validation->set_rules('ftg1', 'Facebook, Twitter, Google+', 'required');
+		#$this->form_validation->set_rules('ftg2', 'Facebook, Twitter, Google+', 'required');
+		$this->form_validation->set_rules('matricula', 'Matrícula/Número de personal', 'required');
+		$this->form_validation->set_rules('promedio', 'Promedio', 'required');
+		$this->form_validation->set_rules('pais1', 'Pais Opción 1', 'required');
+		#$this->form_validation->set_rules('pais2', 'Pais Opción 2', 'required');
+		#$this->form_validation->set_rules('pais3', 'Pais Opción 3', 'required');
+		$this->form_validation->set_rules('beca', 'Solicitas beca', 'required');
+		
+		if ($this->form_validation->run() == true)
+		{
+			$username = strtoupper($this->input->post('nombre')) . ' ' . strtoupper($this->input->post('apellidoP'));
+			$email    = strtolower($this->input->post('email'));
+			$password = $this->input->post('password');
+
+			$additional_data = array(
+				'first_name' => $this->input->post('nombre'),
+				'last_name'  => $this->input->post('apellidoP').' '.$this->input->post('apellidoM'),
+				'company'    => '',
+				'phone'      => $this->input->post('telefono'),
+			);
+		}
+
+		if ($this->form_validation->run() == true)
+		{
+			$idUser = $this->ion_auth->register($username, $password, $email, $additional_data);
+			if ($idUser != -1)
+			{
+			
+				$idioma = array
+				(
+					'idioma1' => $_POST['idioma1'],
+					'idioma2' => $_POST['idioma2'],
+					'idioma3' => $_POST['idioma3']
+				);
+				$idIdioma = $this->ion_auth->registrarIdioma($idioma);
+
+				$facultad = array
+				(
+					'nombreFacultad' => $_POST['facultad'],
+					'areaAdscripcion' => $_POST['area']
+				);
+				$idFacultad = $this->ion_auth->registrarFacultad($facultad);
+
+				$datosPersonales = array
+				(
+					'nombre' => $this->input->post('nombre'),
+					'apellidoP' => $this->input->post('apellidoP'),
+					'apellidoM' => $this->input->post('apellidoM'),
+					'telefono' => $this->input->post('telefono'),
+					'curp' => $this->input->post('curp')
+				);
+				$iddatosPersonales = $this->ion_auth->registrarDatosPersonales($datosPersonales);
+
+				$paises = array
+				(
+					'pais1' => $_POST['pais1'],
+					'pais2' => $_POST['pais2'],
+					'pais3' => $_POST['pais3']
+				);
+				$idpaises = $this->ion_auth->registrarPaises($paises);
+
+				$cuentas = array
+				(
+					'correo' => $_POST['ftg1'],
+					'otraCuenta' => $_POST['ftg2']
+				);
+				$idcuentas = $this->ion_auth->registrarCuenta($cuentas);
+
+				$interesado = array
+				(
+					'matricula' => $this->input->post('matricula'),
+					'areaInteres' => $this->input->post('nombre'),
+					'semestre' => $this->input->post('nombre'),
+					'solicitaBeca' =>  $_POST['beca'],
+					'promedio_solicitante' => $this->input->post('promedio'),
+					'Usuario_idUsuario' => $idUser,
+					'Facultad_idFacultad' => $idFacultad,
+					'Idioma_idIdioma' => $idIdioma,
+					'otroPerfil_idotroPerfil' => $idcuentas,
+					'datosPersonales_iddatosPersonales' => $iddatosPersonales,
+					'situacionActual' => $_POST['situacionActual'],
+					'nivelDeInteres' => $_POST['nivel'],
+					'pais_idpais' => $idpaises
+				 );
+				$this->ion_auth->registrarInteresado($interesado);
+				//check to see if we are creating the user
+				//redirect them back to the admin page
+				$this->session->set_flashdata('message', $this->ion_auth->messages());
+				redirect("auth", 'refresh');
+			}
+		}
+		else
+		{
+			//display the create user form
+			//set the flash data error message if there is one
+			$this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message')));
+
+			$this->data['nombre'] = $this->form_validation->set_value('nombre');
+			$this->data['apellidoP'] = $this->form_validation->set_value('apellidoP');
+			$this->data['apellidoM'] = $this->form_validation->set_value('apellidoM');
+			$this->data['telefono'] = $this->form_validation->set_value('telefono');
+			$this->data['curp'] = $this->form_validation->set_value('curp');
+			$this->data['email'] = $this->form_validation->set_value('email');
+			$this->data['password'] = $this->form_validation->set_value('password');
+			$this->data['password_confirm'] = $this->form_validation->set_value('password_confirm');
+			$this->data['ftg1'] = $this->form_validation->set_value('ftg1');
+			$this->data['ftg2'] = $this->form_validation->set_value('ftg2');
+			$this->data['matricula'] =$this->form_validation->set_value('matricula');
+			$this->data['promedio'] =$this->form_validation->set_value('promedio');
+			$this->data['pais1'] =$this->form_validation->set_value('pais1');
+			$this->data['pais2'] =$this->form_validation->set_value('pais2');
+			$this->data['pais3'] =$this->form_validation->set_value('pais3');
+			$this->data['user'] = null;
+			$this->data['logeado'] = 0;
+			$this->_render_page('interesado/registro/formRegistro_view', $this->data);
+		}
+	}
+
+
+	/**************************************************************************/
+	/************************** EQUIPO 5 **************************************/
+	/********************* REGISTRAR INTERESADO *******************************/
+	/**************************************************************************/
+
+	/**************************************************************************/
+	/************************** EQUIPO 7 **************************************/
+	/********************* REGISTRAR CONVOCATORIAS ****************************/
+	/**************************************************************************/
+	function convocatorias()
+	{
+		$this->data['user'] = $this->ion_auth->user()->row();
+		$this->data['logeado'] = $this->ion_auth->logged_in();
+		$this->data['convocatoria'] = $this->ion_auth->obtView();
+		$this->_render_page('administrador/convocatorias_view', $this->data);
+	}
+
+	function crear_convocatoria()
+	{
+		$this->form_validation->set_rules('nombre', 'Nombre', 'required');
+		$this->form_validation->set_rules('promedio', 'Promedio', 'required');
+		$this->form_validation->set_rules('fechaI', 'Fecha Inicial', 'required');
+		$this->form_validation->set_rules('fechaF', 'Fecha Final', 'required');
+		$this->form_validation->set_rules('desc', 'Pais Opción 3', 'required');
+		if ($this->form_validation->run() == true)
+		{
+			$nombre = strtoupper($this->input->post('nombre'));
+			$promedio = $this->input->post('promedio');
+			$fechaI = $this->input->post('fechaI');
+			$fechaF = $this->input->post('fechaF');
+			$desc = strtoupper($this->input->post('desc'));
+			$grado = $_POST['grado'];
+			$uni = $_POST['universidad'];
+			$area = $_POST['area'];
+			$ciudad = $_POST['ciudad'];
+			$pais = $_POST['pais'];
+		}
+
+
+		if ($this->form_validation->run() == true && $this->ion_auth->conv($nombre, $fechaI, $fechaF, $desc, $grado, $uni, $area, $promedio, $pais, $ciudad))
+		{
+			$this->session->set_flashdata('message', $this->ion_auth->messages());
+			redirect("auth/convocatorias", 'refresh');
+		}
+		else
+		{
+			$this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message')));
+
+			$this->data['nombre'] = $this->form_validation->set_value('nombre');
+			$this->data['promedio'] = $this->form_validation->set_value('promedio');
+			$this->data['fechaI'] = $this->form_validation->set_value('fechaI');
+			$this->data['fechaF'] = $this->form_validation->set_value('fechaF');
+			$this->data['desc'] = $this->form_validation->set_value('desc');
+			$this->data['user'] = $this->ion_auth->user()->row();
+			$this->data['logeado'] = $this->ion_auth->logged_in();
+			$this->data['area'] = $this->ion_auth->obtArea();
+			$this->data['pais'] = $this->ion_auth->obtPais();
+			$this->data['ciudad'] = $this->ion_auth->obtCiudad();
+			$this->data['grado'] = $this->ion_auth->obtGrado();
+			$this->data['uni'] = $this->ion_auth->obtUni();
+			$this->_render_page('administrador/registro/formRegistro_view', $this->data);
+		}
+	}
+
+	function crear_area()
+	{
+		$this->form_validation->set_rules('area', 'Nombre', 'required');
+		if ($this->form_validation->run() == true)
+		{
+			$area = strtoupper($this->input->post('area'));
+		}
+
+
+		if ($this->form_validation->run() == true && $this->ion_auth->guardaArea($area))
+		{
+			$this->session->set_flashdata('message', $this->ion_auth->messages());
+			$this->data['nombre'] = '';
+			$this->data['promedio'] = '';
+			$this->data['fechaI'] = '';
+			$this->data['fechaF'] = '';
+			$this->data['desc'] = '';
+			$this->data['user'] = $this->ion_auth->user()->row();
+			$this->data['logeado'] = $this->ion_auth->logged_in();
+			$this->data['area'] = $this->ion_auth->obtArea();
+			$this->data['pais'] = $this->ion_auth->obtPais();
+			$this->data['ciudad'] = $this->ion_auth->obtCiudad();
+			$this->data['grado'] = $this->ion_auth->obtGrado();
+			$this->data['uni'] = $this->ion_auth->obtUni();
+			redirect("auth/crear_convocatoria", 'refresh');
+		}
+		else
+		{
+			$this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message')));
+
+			$this->data['area'] = $this->form_validation->set_value('area');
+			$this->data['user'] = $this->ion_auth->user()->row();
+			$this->data['logeado'] = $this->ion_auth->logged_in();
+			$this->_render_page('administrador/registro/formAgregarArea_view', $this->data);
+		}
+	}
+
+	function crear_pais()
+	{
+		$this->form_validation->set_rules('pais', 'Nombre', 'required');
+		if ($this->form_validation->run() == true)
+		{
+			$area = strtoupper($this->input->post('pais'));
+		}
+
+
+		if ($this->form_validation->run() == true && $this->ion_auth->guardaPais($area))
+		{
+			$this->session->set_flashdata('message', $this->ion_auth->messages());
+			$this->data['nombre'] = '';
+			$this->data['promedio'] = '';
+			$this->data['fechaI'] = '';
+			$this->data['fechaF'] = '';
+			$this->data['desc'] = '';
+			$this->data['user'] = $this->ion_auth->user()->row();
+			$this->data['logeado'] = $this->ion_auth->logged_in();
+			$this->data['area'] = $this->ion_auth->obtArea();
+			$this->data['pais'] = $this->ion_auth->obtPais();
+			$this->data['ciudad'] = $this->ion_auth->obtCiudad();
+			$this->data['grado'] = $this->ion_auth->obtGrado();
+			$this->data['uni'] = $this->ion_auth->obtUni();
+			redirect("auth/crear_convocatoria", 'refresh');
+		}
+		else
+		{
+			$this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message')));
+
+			$this->data['pais'] = $this->form_validation->set_value('pais');
+			$this->data['user'] = $this->ion_auth->user()->row();
+			$this->data['logeado'] = $this->ion_auth->logged_in();
+			$this->_render_page('administrador/registro/formAgregarPais_view', $this->data);
+		}
+	}
+
+	function crear_ciudad()
+	{
+		$this->form_validation->set_rules('ciudad', 'Nombre', 'required');
+		if ($this->form_validation->run() == true)
+		{
+			$pais = strtoupper($this->input->post('pais'));
+			$ciudad = strtoupper($this->input->post('ciudad'));
+		}
+
+
+		if ($this->form_validation->run() == true && $this->ion_auth->guardaCiudad($ciudad, $pais))
+		{
+			$this->session->set_flashdata('message', $this->ion_auth->messages());
+			$this->data['nombre'] = '';
+			$this->data['promedio'] = '';
+			$this->data['fechaI'] = '';
+			$this->data['fechaF'] = '';
+			$this->data['desc'] = '';
+			$this->data['user'] = $this->ion_auth->user()->row();
+			$this->data['logeado'] = $this->ion_auth->logged_in();
+			$this->data['area'] = $this->ion_auth->obtArea();
+			$this->data['pais'] = $this->ion_auth->obtPais();
+			$this->data['ciudad'] = $this->ion_auth->obtCiudad();
+			$this->data['grado'] = $this->ion_auth->obtGrado();
+			$this->data['uni'] = $this->ion_auth->obtUni();
+			redirect("auth/crear_convocatoria", 'refresh');
+		}
+		else
+		{
+			$this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message')));
+
+			$this->data['ciudad'] = $this->form_validation->set_value('ciudad');
+			$this->data['pais'] = $this->form_validation->set_value('pais');
+			$this->data['user'] = $this->ion_auth->user()->row();
+			$this->data['logeado'] = $this->ion_auth->logged_in();
+			$this->data['pais'] = $this->ion_auth->obtPais();
+			$this->_render_page('administrador/registro/formAgregarCiudad_view', $this->data);
+		}
+	}
+
+	function crear_grado()
+	{
+		$this->form_validation->set_rules('grado', 'Nombre', 'required');
+		if ($this->form_validation->run() == true)
+		{
+			$grado = strtoupper($this->input->post('grado'));
+		}
+
+
+		if ($this->form_validation->run() == true && $this->ion_auth->guardaGrado($grado))
+		{
+			$this->session->set_flashdata('message', $this->ion_auth->messages());
+			$this->data['nombre'] = '';
+			$this->data['promedio'] = '';
+			$this->data['fechaI'] = '';
+			$this->data['fechaF'] = '';
+			$this->data['desc'] = '';
+			$this->data['user'] = $this->ion_auth->user()->row();
+			$this->data['logeado'] = $this->ion_auth->logged_in();
+			$this->data['area'] = $this->ion_auth->obtArea();
+			$this->data['pais'] = $this->ion_auth->obtPais();
+			$this->data['ciudad'] = $this->ion_auth->obtCiudad();
+			$this->data['grado'] = $this->ion_auth->obtGrado();
+			$this->data['uni'] = $this->ion_auth->obtUni();
+			redirect("auth/crear_convocatoria", 'refresh');
+		}
+		else
+		{
+			$this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message')));
+
+			$this->data['grado'] = $this->form_validation->set_value('grado');
+			$this->data['user'] = $this->ion_auth->user()->row();
+			$this->data['logeado'] = $this->ion_auth->logged_in();
+			$this->_render_page('administrador/registro/formAgregarGrado_view', $this->data);
+		}
+	}
+
+	function crear_universidad()
+	{
+		$this->form_validation->set_rules('universidad', 'Nombre', 'required');
+		if ($this->form_validation->run() == true)
+		{
+			$uni = strtoupper($this->input->post('universidad'));
+		}
+
+
+		if ($this->form_validation->run() == true && $this->ion_auth->guardaUni($uni))
+		{
+			$this->session->set_flashdata('message', $this->ion_auth->messages());
+			$this->data['nombre'] = '';
+			$this->data['promedio'] = '';
+			$this->data['fechaI'] = '';
+			$this->data['fechaF'] = '';
+			$this->data['desc'] = '';
+			$this->data['user'] = $this->ion_auth->user()->row();
+			$this->data['logeado'] = $this->ion_auth->logged_in();
+			$this->data['area'] = $this->ion_auth->obtArea();
+			$this->data['pais'] = $this->ion_auth->obtPais();
+			$this->data['ciudad'] = $this->ion_auth->obtCiudad();
+			$this->data['grado'] = $this->ion_auth->obtGrado();
+			$this->data['uni'] = $this->ion_auth->obtUni();
+			redirect("auth/crear_convocatoria", 'refresh');
+		}
+		else
+		{
+			$this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message')));
+
+			$this->data['universidad'] = $this->form_validation->set_value('universidad');
+			$this->data['user'] = $this->ion_auth->user()->row();
+			$this->data['logeado'] = $this->ion_auth->logged_in();
+			$this->_render_page('administrador/registro/formAgregarUni_view', $this->data);
+		}
+	}
+	/**************************************************************************/
+	/************************** EQUIPO 7 **************************************/
+	/********************* REGISTRAR CONVOCATORIAS ****************************/
+	/**************************************************************************/
+
+	/**************************************************************************/
+	/************************** EQUIPO 6 **************************************/
+	/********************* ACTUALIZAR CONVOCATORIAS ***************************/
+	/**************************************************************************/
+	function actualizarConv()
+	{
+		$this->data['area'] = $this->ion_auth->obtArea();
+		$this->data['lugar'] = $this->ion_auth->obtCiudad();
+		$this->data['ciudad'] = $this->ion_auth->obtCiudad();
+		$this->data['grado'] = $this->ion_auth->obtGrado();
+		$this->data['uni'] = $this->ion_auth->obtUni();
+		$this->data['user'] = $this->ion_auth->user()->row();
+		$this->data['pais'] = $this->ion_auth->obtPais();
+		$id = $this->input->post('idConv');
+		$conv = $this->ion_auth->obtConvocatoria($id);
+		$this->data['convocatoria'] = $conv->result()[0];
+		$this->data['logeado'] = $this->ion_auth->logged_in();
+		$this->_render_page('administrador/actualizar/formActualizarConv_view', $this->data);
+	}
+
+	function act_convocatoria()
+	{
+		$this->form_validation->set_rules('nombre', 'Nombre', 'required');
+		$this->form_validation->set_rules('promedio', 'Promedio', 'required');
+		$this->form_validation->set_rules('fechaI', 'Fecha Inicial', 'required');
+		$this->form_validation->set_rules('fechaF', 'Fecha Final', 'required');
+		$this->form_validation->set_rules('desc', 'Pais Opción 3', 'required');
+		if ($this->form_validation->run() == true)
+		{
+			$id = $this->input->post('id');
+			$nombre = strtoupper($this->input->post('nombre'));
+			$promedio = $this->input->post('promedio');
+			$fechaI = $this->input->post('fechaI');
+			$fechaF = $this->input->post('fechaF');
+			$desc = strtoupper($this->input->post('desc'));
+			$grado = $_POST['grado'];
+			$uni = $_POST['universidad'];
+			$area = $_POST['area'];
+			$ciudad = $_POST['ciudad'];
+			$pais = $_POST['pais'];
+		}
+
+
+		if ($this->form_validation->run() == true && $this->ion_auth->actConv($nombre, $fechaI, $fechaF, $desc, $grado, $uni, $area, $promedio, $pais, $ciudad, $id))
+		{
+			$this->session->set_flashdata('message', $this->ion_auth->messages());
+			redirect("auth/convocatorias", 'refresh');
+		}
+		else
+		{
+			$this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message')));
+
+			$this->data['nombre'] = $this->form_validation->set_value('nombre');
+			$this->data['promedio'] = $this->form_validation->set_value('promedio');
+			$this->data['fechaI'] = $this->form_validation->set_value('fechaI');
+			$this->data['fechaF'] = $this->form_validation->set_value('fechaF');
+			$this->data['desc'] = $this->form_validation->set_value('desc');
+			$this->data['user'] = $this->ion_auth->user()->row();
+			$this->data['logeado'] = $this->ion_auth->logged_in();
+			$this->data['area'] = $this->ion_auth->obtArea();
+			$this->data['pais'] = $this->ion_auth->obtPais();
+			$this->data['ciudad'] = $this->ion_auth->obtCiudad();
+			$this->data['grado'] = $this->ion_auth->obtGrado();
+			$this->data['uni'] = $this->ion_auth->obtUni();
+			$this->_render_page('administrador/registro/formRegistro_view', $this->data);
+		}
+	}
+
+	function act_area()
+	{
+		$this->form_validation->set_rules('area', 'Nombre', 'required');
+		if ($this->form_validation->run() == true)
+		{
+			$area = strtoupper($this->input->post('area'));
+		}
+
+
+		if ($this->form_validation->run() == true && $this->ion_auth->guardaArea($area))
+		{
+			$this->session->set_flashdata('message', $this->ion_auth->messages());
+			$this->data['nombre'] = '';
+			$this->data['promedio'] = '';
+			$this->data['fechaI'] = '';
+			$this->data['fechaF'] = '';
+			$this->data['desc'] = '';
+			$this->data['user'] = $this->ion_auth->user()->row();
+			$this->data['logeado'] = $this->ion_auth->logged_in();
+			$this->data['area'] = $this->ion_auth->obtArea();
+			$this->data['pais'] = $this->ion_auth->obtPais();
+			$this->data['ciudad'] = $this->ion_auth->obtCiudad();
+			$this->data['grado'] = $this->ion_auth->obtGrado();
+			$this->data['uni'] = $this->ion_auth->obtUni();
+			redirect("auth/act_convocatoria", 'refresh');
+		}
+		else
+		{
+			$this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message')));
+
+			$this->data['area'] = $this->form_validation->set_value('area');
+			$this->data['user'] = $this->ion_auth->user()->row();
+			$this->data['logeado'] = $this->ion_auth->logged_in();
+			$this->_render_page('administrador/registro/formAgregarArea_view', $this->data);
+		}
+	}
+
+	function act_pais()
+	{
+		$this->form_validation->set_rules('pais', 'Nombre', 'required');
+		if ($this->form_validation->run() == true)
+		{
+			$area = strtoupper($this->input->post('pais'));
+		}
+
+
+		if ($this->form_validation->run() == true && $this->ion_auth->guardaPais($area))
+		{
+			$this->session->set_flashdata('message', $this->ion_auth->messages());
+			$this->data['nombre'] = '';
+			$this->data['promedio'] = '';
+			$this->data['fechaI'] = '';
+			$this->data['fechaF'] = '';
+			$this->data['desc'] = '';
+			$this->data['user'] = $this->ion_auth->user()->row();
+			$this->data['logeado'] = $this->ion_auth->logged_in();
+			$this->data['area'] = $this->ion_auth->obtArea();
+			$this->data['pais'] = $this->ion_auth->obtPais();
+			$this->data['ciudad'] = $this->ion_auth->obtCiudad();
+			$this->data['grado'] = $this->ion_auth->obtGrado();
+			$this->data['uni'] = $this->ion_auth->obtUni();
+			redirect("auth/act_convocatoria", 'refresh');
+		}
+		else
+		{
+			$this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message')));
+
+			$this->data['pais'] = $this->form_validation->set_value('pais');
+			$this->data['user'] = $this->ion_auth->user()->row();
+			$this->data['logeado'] = $this->ion_auth->logged_in();
+			$this->_render_page('administrador/registro/formAgregarPais_view', $this->data);
+		}
+	}
+
+	function act_ciudad()
+	{
+		$this->form_validation->set_rules('ciudad', 'Nombre', 'required');
+		if ($this->form_validation->run() == true)
+		{
+			$pais = strtoupper($this->input->post('pais'));
+			$ciudad = strtoupper($this->input->post('ciudad'));
+		}
+
+
+		if ($this->form_validation->run() == true && $this->ion_auth->guardaCiudad($ciudad, $pais))
+		{
+			$this->session->set_flashdata('message', $this->ion_auth->messages());
+			$this->data['nombre'] = '';
+			$this->data['promedio'] = '';
+			$this->data['fechaI'] = '';
+			$this->data['fechaF'] = '';
+			$this->data['desc'] = '';
+			$this->data['user'] = $this->ion_auth->user()->row();
+			$this->data['logeado'] = $this->ion_auth->logged_in();
+			$this->data['area'] = $this->ion_auth->obtArea();
+			$this->data['pais'] = $this->ion_auth->obtPais();
+			$this->data['ciudad'] = $this->ion_auth->obtCiudad();
+			$this->data['grado'] = $this->ion_auth->obtGrado();
+			$this->data['uni'] = $this->ion_auth->obtUni();
+			redirect("auth/act_convocatoria", 'refresh');
+		}
+		else
+		{
+			$this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message')));
+
+			$this->data['ciudad'] = $this->form_validation->set_value('ciudad');
+			$this->data['pais'] = $this->form_validation->set_value('pais');
+			$this->data['user'] = $this->ion_auth->user()->row();
+			$this->data['logeado'] = $this->ion_auth->logged_in();
+			$this->data['pais'] = $this->ion_auth->obtPais();
+			$this->_render_page('administrador/registro/formAgregarCiudad_view', $this->data);
+		}
+	}
+
+	function act_grado()
+	{
+		$this->form_validation->set_rules('grado', 'Nombre', 'required');
+		if ($this->form_validation->run() == true)
+		{
+			$grado = strtoupper($this->input->post('grado'));
+		}
+
+
+		if ($this->form_validation->run() == true && $this->ion_auth->guardaGrado($grado))
+		{
+			$this->session->set_flashdata('message', $this->ion_auth->messages());
+			$this->data['nombre'] = '';
+			$this->data['promedio'] = '';
+			$this->data['fechaI'] = '';
+			$this->data['fechaF'] = '';
+			$this->data['desc'] = '';
+			$this->data['user'] = $this->ion_auth->user()->row();
+			$this->data['logeado'] = $this->ion_auth->logged_in();
+			$this->data['area'] = $this->ion_auth->obtArea();
+			$this->data['pais'] = $this->ion_auth->obtPais();
+			$this->data['ciudad'] = $this->ion_auth->obtCiudad();
+			$this->data['grado'] = $this->ion_auth->obtGrado();
+			$this->data['uni'] = $this->ion_auth->obtUni();
+			redirect("auth/act_convocatoria", 'refresh');
+		}
+		else
+		{
+			$this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message')));
+
+			$this->data['grado'] = $this->form_validation->set_value('grado');
+			$this->data['user'] = $this->ion_auth->user()->row();
+			$this->data['logeado'] = $this->ion_auth->logged_in();
+			$this->_render_page('administrador/registro/formAgregarGrado_view', $this->data);
+		}
+	}
+
+	function act_universidad()
+	{
+		$this->form_validation->set_rules('universidad', 'Nombre', 'required');
+		if ($this->form_validation->run() == true)
+		{
+			$uni = strtoupper($this->input->post('universidad'));
+		}
+
+
+		if ($this->form_validation->run() == true && $this->ion_auth->guardaUni($uni))
+		{
+			$this->session->set_flashdata('message', $this->ion_auth->messages());
+			$this->data['nombre'] = '';
+			$this->data['promedio'] = '';
+			$this->data['fechaI'] = '';
+			$this->data['fechaF'] = '';
+			$this->data['desc'] = '';
+			$this->data['user'] = $this->ion_auth->user()->row();
+			$this->data['logeado'] = $this->ion_auth->logged_in();
+			$this->data['area'] = $this->ion_auth->obtArea();
+			$this->data['pais'] = $this->ion_auth->obtPais();
+			$this->data['ciudad'] = $this->ion_auth->obtCiudad();
+			$this->data['grado'] = $this->ion_auth->obtGrado();
+			$this->data['uni'] = $this->ion_auth->obtUni();
+			redirect("auth/act_convocatoria", 'refresh');
+		}
+		else
+		{
+			$this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message')));
+
+			$this->data['universidad'] = $this->form_validation->set_value('universidad');
+			$this->data['user'] = $this->ion_auth->user()->row();
+			$this->data['logeado'] = $this->ion_auth->logged_in();
+			$this->_render_page('administrador/registro/formAgregarUni_view', $this->data);
+		}
+	}
+	/**************************************************************************/
+	/************************** EQUIPO 6 **************************************/
+	/********************* ACTUALIZAR CONVOCATORIAS ***************************/
+	/**************************************************************************/
+
+	/**************************************************************************/
+	/************************** EQUIPO 2 **************************************/
+	/********************* GENERAR INFORMES ***********************************/
+	/**************************************************************************/
+	function verReporte()
+	{
+		$this->data['user'] = $this->ion_auth->user()->row();
+		$this->data['logeado'] = $this->ion_auth->logged_in();
+		$this->_render_page('administrador/reportes/reportes_view', $this->data);
+	}
+
+
+	function getTipos()
+	{
+		$id = $this->input->post('id');
+		if($id == 1 || $id == 2 ||$id == 3 ||$id == 4 || $id == 5 || $id == 6)
+		{
+			switch ($id) 
+			{
+				case '1':
+					$this->verReporteContenido(1);
+					break;
+				case '2':
+					$this->data['tipo'] = "Grado";
+					$this->data['query'] = $this->ion_auth_model->getTipo($id);
+					$this->load->view('administrador/reportes/selectTipo_view', $this->data);
+					break;
+				case '3':
+					$this->data['tipo'] = "Area";
+					$this->data['query'] = $this->ion_auth_model->getTipo($id);
+					$this->load->view('administrador/reportes/selectTipo_view', $this->data);
+					break;					
+				case '4':
+					$this->data['tipo'] = "País";
+					$this->data['query'] = $this->ion_auth_model->getTipo($id);
+					$this->load->view('administrador/reportes/selectTipo_view', $this->data);
+					break;				
+				case '5':
+					$this->data['tipo'] = "Universidad";
+					$this->data['query'] = $this->ion_auth_model->getTipo($id);
+					$this->load->view('administrador/reportes/selectTipo_view', $this->data);
+					break;
+				case '6':
+					$this->verReporteContenido(6);
+					break;	
+				
+				default:
+					# code...
+					break;
+			}
+		}
+	}
+
+	function verReporteContenido($idReporte = 0)
+	{		
+		if ($idReporte == 0) 
+		{		
+			$tipo = $this->input->post('tipo');
+			$idReporte = $this->input->post('idReporte');
+			if($idReporte == 1 || $idReporte == 2 ||$idReporte == 3 || $idReporte == 4 || $idReporte == 5)
+			{
+				$query = $this->ion_auth_model->getReg($idReporte, $tipo);				
+				if($query != false)
+				{
+					switch ($idReporte) 
+					{
+						case '2':
+							$this->data['tipo'] = "Reporte de convocatorias por grado de estudio";
+							break;
+						case '3':
+							$this->data['tipo'] = "Reporte de convocatorias por area de formación";
+							break;
+						case '4':
+							$this->data['tipo'] = "Reporte de convocatorias por país";
+							break;
+						case '5':
+							$this->data['tipo'] = "Reporte de convocatorias por universidad";
+							break;
+						
+						default:
+							break;
+					}											
+					$this->data['registros'] = $query;	
+					$html = $this->load->view('administrador/reportes/reportecontenido_view', $this->data, true);
+					$data = pdf_create($html, '', false);
+					delete_files('assets/pdf/temporal.pdf');
+			     	write_file('assets/pdf/temporal.pdf', $data);
+				}
+			}
+		}
+		elseif ($idReporte == 1) 
+		{
+			$query = $this->ion_auth_model->getReg(0, 0);
+			if($query != false)
+			{
+				$this->data['tipo'] = "Reporte de convocatorias";
+				$this->data['registros'] = $query;	
+				$html = $this->load->view('administrador/reportes/reportecontenido_view', $this->data, true);
+				$data = pdf_create($html, '', false);
+				delete_files('assets/pdf/temporal.pdf');
+		     	write_file('assets/pdf/temporal.pdf', $data);
+			}
+		}
+		elseif ($idReporte == 6) 
+		{
+			$query = $this->ion_auth_model->getFavs();
+			
+			if($query != false)
+			{
+				$this->data['favs'] = $query;					
+				$html = $this->load->view('administrador/reportes/reporteFavoritos_view', $this->data, true);
+				$data = pdf_create($html, '', false);
+				delete_files('assets/pdf/temporal.pdf');
+		     	write_file('assets/pdf/temporal.pdf', $data);
+			}
+		}
+
+	}
+	/**************************************************************************/
+	/************************** EQUIPO 2 **************************************/
+	/********************* GENERAR INFORMES ***********************************/
+	/**************************************************************************/
+	
+	/**************************************************************************/
+	/************************** EQUIPO 4 **************************************/
+	/********************* GENERAR MOSTRAR ***********************************/
+	/**************************************************************************/
+	
+	function PrincipalInt()
+	{
+		$this->data['user'] = $this->ion_auth->user()->row();//
+		
+		$datos_convocatoria = array
+		(
+			'datos_convocatoria' => $this->Consulta_model->getConvocatoria(), 
+			'numero_filas' => $this->Consulta_model->getCantidadFilas(),
+			'dataUser' => $this->data,
+			'tablas_favoritas' => $this->Consulta_model->getFavoritos(),
+			'user' => $this->data['user'],
+			'matricula_u' => $this->Seguimiento_model->obtenerMatricula($this->data['user']->id),
+			'logeado' => $this->ion_auth->logged_in()
+		);
+		$this->load->view('interesado/mostrar_informacion/principal_int',$datos_convocatoria);
+	}
+	
+	function showConvocatoria(){
+		$id = $_POST['id'];
+		$datos = $this->Consulta_model->obtener($id);
+		foreach($datos->result() as $row){
+			$uni=$row->Universidad_idUniversidad1;
+			$lugar=$row->Lugar_idLugar;
+			$area=$row->Area_idArea;
+			$grado=$row->Grado_idGrado;
+		}
+		
+		
+		$data = array(
+		    'data' => $this->Consulta_model->obtener($id),
+			'data2' => $this->Consulta_model->datos($id)
+		);
+		
+		
+		$this->load->view('interesado/mostrar_informacion/contenido',$data);
+		
+		
+	}
+	
+	function showConvocatoriaCorreo(){
+		$id = $_POST['id'];
+		$datos = $this->Consulta_model->obtener($id);
+		foreach($datos->result() as $row){
+			$uni=$row->Universidad_idUniversidad1;
+			$lugar=$row->Lugar_idLugar;
+			$area=$row->Area_idArea;
+			$grado=$row->Grado_idGrado;
+		}
+		
+		
+		$data = array(
+		    'data' => $this->Consulta_model->obtener($id),
+			'data2' => $this->Consulta_model->datos($id),
+			'user' => $this->ion_auth->user()->row()
+		);
+		
+		$this->load->view('interesado/mostrar_informacion/contenido_correo',$data);
+		
+		
+	}
+	
+	function megusta(){
+		$iduser=$this->uri->segment(3);
+		$id=$this->uri->segment(4);
+		//$id = $_POST['id'];
+		//$iduser = $_POST['userid'];
+
+		     $query = $this->Consulta_model->getUsuario($iduser);
+		//$this->load->view('pagina_principal/prueba',$data);
+		foreach($query->result() as $row){
+			$mat=$row->matricula;
+		}
+		$this->Consulta_model->favorito($id,$mat);
+		redirect('auth/PrincipalInt');
+	}
+	
+	
+	/**************************************************************************/
+	/************************** EQUIPO 4 **************************************/
+	/********************* GENERAR MOSTRAR ***********************************/
+	/**************************************************************************/
+	
+	/**************************************************************************/
+	/************************** EQUIPO 1 **************************************/
+	/********************* GENERAR SEGUIMIENTO ***********************************/
+	/**************************************************************************/
+	
+	/*
+	* En estas vista va las convocatorias  a las que pedi informacion por correo
+	*/ 
+	public function seguimiento_correo()
+	{
+		$this->data['user'] = $this->ion_auth->user()->row();
+		$this->data['logeado'] = $this->ion_auth->logged_in();
+		$matricula = $this->Seguimiento_model->obtenerMatricula($this->data['user']->id);
+		$this->data['convocatorias'] = $this->Seguimiento_model->obtenerConvocatoriasCorreo($matricula);
+		$this->load->view('interesado/seguimiento/correo_view', $this->data);
+	}
+	
+	/*
+	* En esta vista van las convocatorias a las que di megusta
+	*/
+	public function ver_mis_favoritos()
+	{
+		$this->data['user'] = $this->ion_auth->user()->row();
+		$this->data['logeado'] = $this->ion_auth->logged_in();
+		$matricula = $this->Seguimiento_model->obtenerMatricula($this->data['user']->id);
+		$this->data['convocatorias'] = $this->Seguimiento_model->obtenerConvocatorias($matricula);
+		$this->load->view('interesado/seguimiento/favoritos_view', $this->data);
+	}
+	/*
+	* En esta vista van las convocatorias en las que fui aceptado
+	* se tienen que activar desde el lado del administrador
+	*/
+	public function ver_mi_historial()
+	{
+		$this->data['user'] = $this->ion_auth->user()->row();
+		$this->data['logeado'] = $this->ion_auth->logged_in();
+		$matricula = $this->Seguimiento_model->obtenerMatricula($this->data['user']->id);
+		$this->data['convocatorias'] = $this->Seguimiento_model->obtenerConvocatorias($matricula);
+		$this->load->view('interesado/seguimiento/historial_view', $this->data);
+	}
+	
+	/**************************************************************************/
+	/************************** EQUIPO 1 **************************************/
+	/********************* GENERAR SEGUIMIENTO ***********************************/
+	/**************************************************************************/
+	
+	/**************************************************************************/
+	/************************** EQUIPO 3 **************************************/
+	/********************* GENERAR correo ***********************************/
+	/**************************************************************************/
+	
+	public function enviarCorreo(){
+  	
+  	
+  	$name = $_POST['asunto'];
+	$email = $_POST['email'];
+	$descProblem = $_POST['dudas'];
+	$subject =$name;
+	$estado =''; 
+	$messageE = <<<EMAIL
+
+	$descProblem
+EMAIL;
+
+	$header ="From: $email ";
+	if($_POST){
+		if ($name == '' || $email ==''|| $descProblem='') {
+			echo "<script> alert('Mensaje No Enviado!');
+			</script>";
+		
+		}
+		else{
+		 $to ='ejemplo@eejemplo.com';
+		mail( $to,$subject, $messageE, $header);
+		echo "<script> alert('Mensaje  Enviado!');
+		</script>";
+
+		$data= 
+			array(
+				'matricula'=> $this->input->post('mat'), 
+				'idPrograma'=> $this->input->post('idprograma')
+			);
+		
+		$this->ModeloConv->insertar($data);
+		redirect("auth/PrincipalInt");
+		}
+       
+	}
+  }
+  /**************************************************************************/
+	/************************** EQUIPO 3 **************************************/
+	/********************* GENERAR correo ***********************************/
+	/**************************************************************************/
+	
+	
 }
