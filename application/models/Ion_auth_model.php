@@ -2369,7 +2369,7 @@ class Ion_auth_model extends CI_Model
 		{
 			$query = $this->db->where('idConv',$idPrograma);	
 		}
-		$query = $this->db->from('conView');
+		$query = $this->db->from('conview');
 	    $query = $this->db->get();
 	    if ($query->num_rows() > 0)
 	    {
@@ -2388,7 +2388,7 @@ class Ion_auth_model extends CI_Model
 	 **/
   	public function obtArea($id = null)
 	{
-		$query = $this->db->from('Area');
+		$query = $this->db->from('area');
 		$query = $this->db->get();
 		if($query->num_rows() > 0 )
         {
@@ -2446,7 +2446,7 @@ class Ion_auth_model extends CI_Model
 	 **/
 	public function obtGrado($id = null)
 	{
-		$query = $this->db->from('Grado');
+		$query = $this->db->from('grado');
 		$query = $this->db->get();
 		if($query->num_rows() > 0 )
         {
@@ -2463,7 +2463,7 @@ class Ion_auth_model extends CI_Model
 	 **/
 	public function obtUni($id = null)
 	{
-		$query = $this->db->from('Universidad');
+		$query = $this->db->from('universidad');
 		$query = $this->db->get();
 		if($query->num_rows() > 0 )
         {
@@ -2479,19 +2479,19 @@ class Ion_auth_model extends CI_Model
 	 **/
 	public function conv($nom,$fi,$ff,$desc,$grado,$uni,$area,$prom,$pais, $ciudad)
 	{	
-		if($this->validaFecha($fi,$ff) && $this->unico($nom, 'Convocatoria', 'nombreConv'))
+		if($this->validaFecha($fi,$ff) && $this->unico($nom, 'convocatoria', 'nombreConv'))
 		{
 			$nom = strtoupper($nom);
-			$this->db->query("insert into Convocatoria 
+			$this->db->query("insert into convocatoria 
 			(nombreConv, fechaInicio, fechaFin, descripcion, Grado_idGrado,
 			 Universidad_idUniversidad1, Area_idArea, promedioSolicitado, Lugar_idLugar,estado)
 			values
 			('$nom','$fi','$ff','$desc',
-			(select idGrado from Grado where nombre = '$grado'),
-			(select idUniversidad from Universidad where nombre = '$uni'),
-			(select idArea from Area where nombreAreaFormacion = '$area'),
+			(select idGrado from grado where nombre = '$grado'),
+			(select idUniversidad from universidad where nombre = '$uni'),
+			(select idArea from area where nombreAreaFormacion = '$area'),
 			$prom,
-			(select idLugar from lugar where ((lugar.idPaisLugar = (select idPaisConvo from paisConvo where pais = '$pais'))and(lugar.idCiudadLugar = (select idCiudad from ciudad where ciudad = '$ciudad')))),1)");
+			(select idLugar from lugar where ((lugar.idPaisLugar = (select idPaisConvo from paisconvo where pais = '$pais'))and(lugar.idCiudadLugar = (select idCiudad from ciudad where ciudad = '$ciudad')))),1)");
 			return true;
 		}
 		else
@@ -2552,7 +2552,7 @@ class Ion_auth_model extends CI_Model
 		if ( $this->unico($area, 'area', 'nombreAreaFormacion')) 
 		{
 			$area = strtoupper($area);
-			$this->db->query("insert into Area (nombreAreaFormacion) Values ('$area')");
+			$this->db->query("insert into area (nombreAreaFormacion) Values ('$area')");
 			return true;
 		}
 		return false;
@@ -2655,7 +2655,7 @@ class Ion_auth_model extends CI_Model
 		{
 			$query = $this->db->where('idConv',$idPrograma);	
 		}
-		$query = $this->db->from('conView');
+		$query = $this->db->from('conview');
 	    $query = $this->db->get();
 	    if ($query->num_rows() > 0)
 	    {
@@ -2677,16 +2677,16 @@ class Ion_auth_model extends CI_Model
   		if($this->validaFecha($fi,$ff))
 		{
 			$nom = strtoupper($nom);
-			$this->db->query("update Convocatoria 
+			$this->db->query("update convocatoria 
 			set nombreConv = '$nom',
 			fechaInicio = '$fi',
 			fechaFin = '$ff',
 			descripcion = '$desc',
 			promedioSolicitado = '$prom',
-			Grado_idGrado = (select idGrado from Grado where nombre = '$grado'),
+			Grado_idGrado = (select idGrado from grado where nombre = '$grado'),
 			Universidad_idUniversidad1 = (select idUniversidad from Universidad where nombre = '$uni'),
-			Area_idArea = (select idArea from Area where nombreAreaFormacion = '$area'),
-			Lugar_idLugar = (select idLugar from lugar where ((lugar.idPaisLugar = (select idPaisConvo from paisConvo where pais = '$pais'))and(lugar.idCiudadLugar = (select idCiudad from ciudad where ciudad = '$ciudad'))))
+			Area_idArea = (select idArea from area where nombreAreaFormacion = '$area'),
+			Lugar_idLugar = (select idLugar from lugar where ((lugar.idPaisLugar = (select idPaisConvo from paisconvo where pais = '$pais'))and(lugar.idCiudadLugar = (select idCiudad from ciudad where ciudad = '$ciudad'))))
 			where idPrograma = '$id'");
 			return true;	
 		}else
@@ -2706,7 +2706,7 @@ class Ion_auth_model extends CI_Model
           'estado'=>0
         );
 		$this->db->where('idPrograma', $id);
-		$this->db->update('Convocatoria',$data); 
+		$this->db->update('convocatoria',$data); 
 	}
 	/**
 	 * activar
@@ -2720,7 +2720,7 @@ class Ion_auth_model extends CI_Model
           'estado'=>1
         );
 		$this->db->where('idPrograma', $id);
-		$this->db->update('Convocatoria',$data); 
+		$this->db->update('convocatoria',$data); 
 	}
   	/**************************************************************************/
 	/************************** EQUIPO 7 **************************************/

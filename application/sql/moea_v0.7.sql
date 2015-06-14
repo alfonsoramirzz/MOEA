@@ -614,7 +614,7 @@ INSERT INTO `users_groups` VALUES ('30', '28', '3');
 -- View structure for conview
 -- ----------------------------
 DROP VIEW IF EXISTS `conview`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER  VIEW `conview` AS SELEcT 
+CREATE VIEW `conview` AS SELEcT 
         `convocatoria`.`idPrograma` AS `idconv`,
         `convocatoria`.`nombreconv` AS `nombre`,
         `convocatoria`.`fechaInicio` AS `fi`,
