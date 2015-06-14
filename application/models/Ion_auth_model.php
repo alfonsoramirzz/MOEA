@@ -2369,7 +2369,7 @@ class Ion_auth_model extends CI_Model
 		{
 			$query = $this->db->where('idConv',$idPrograma);	
 		}
-		$query = $this->db->from('conView');
+		$query = $this->db->from('conview');
 	    $query = $this->db->get();
 	    if ($query->num_rows() > 0)
 	    {
@@ -2655,7 +2655,7 @@ class Ion_auth_model extends CI_Model
 		{
 			$query = $this->db->where('idConv',$idPrograma);	
 		}
-		$query = $this->db->from('conView');
+		$query = $this->db->from('conview');
 	    $query = $this->db->get();
 	    if ($query->num_rows() > 0)
 	    {
@@ -2776,14 +2776,14 @@ class Ion_auth_model extends CI_Model
 	 **/
 	function getReg($idReporte, $tipo)
 	{
-		$this->db->select('convocatoria.idPrograma as id,convocatoria.nombreConv as Convocatoria, convocatoria.fechaInicio,convocatoria.fechaFin,convocatoria.promedioSolicitado as promedio,universidad.nombre as Universidad, area.nombreAreaFormacion as Area, grado.nombre as Grado, ciudad.ciudad as Ciudad, paisConvo.pais as Pais');    
+		$this->db->select('convocatoria.idPrograma as id,convocatoria.nombreConv as Convocatoria, convocatoria.fechaInicio,convocatoria.fechaFin,convocatoria.promedioSolicitado as promedio,universidad.nombre as Universidad, area.nombreAreaFormacion as Area, grado.nombre as Grado, ciudad.ciudad as Ciudad, paisconvo.pais as Pais');    
 		$this->db->from('convocatoria');
 		$this->db->join('universidad', 'convocatoria.Universidad_idUniversidad1 = idUniversidad');
 		$this->db->join('area', 'convocatoria.Area_idArea = area.idArea');
 		$this->db->join('grado', 'convocatoria.Grado_idGrado = grado.idGrado');
 		$this->db->join('lugar', 'convocatoria.Lugar_idLugar = lugar.idLugar');
 		$this->db->join('ciudad', 'lugar.idCiudadLugar = ciudad.idCiudad');
-		$this->db->join('paisConvo', 'lugar.idPaisLugar = paisConvo.idPaisConvo');
+		$this->db->join('paisconvo', 'lugar.idPaisLugar = paisconvo.idPaisConvo');
 		$this->db->order_by("convocatoria.fechaInicio","asc");
 		switch ($idReporte) 
 		{
@@ -2794,7 +2794,7 @@ class Ion_auth_model extends CI_Model
 				$this->db->where('area.nombreAreaFormacion', $tipo);
 				break;
 			case '4':
-				$this->db->where('paisConvo.pais', $tipo);
+				$this->db->where('paisconvo.pais', $tipo);
 				break;
 			case '5':
 				$que = $this->db->query("SELECT idUniversidad FROM universidad 

@@ -1422,10 +1422,10 @@ class Auth extends CI_Controller {
 
 
 	function getTipos()
-	{
+	{		
 		$id = $this->input->post('id');
 		if($id == 1 || $id == 2 ||$id == 3 ||$id == 4 || $id == 5 || $id == 6)
-		{
+		{			
 			switch ($id) 
 			{
 				case '1':
@@ -1463,14 +1463,14 @@ class Auth extends CI_Controller {
 	}
 
 	function verReporteContenido($idReporte = 0)
-	{		
+	{				
 		if ($idReporte == 0) 
-		{		
+		{							
 			$tipo = $this->input->post('tipo');
-			$idReporte = $this->input->post('idReporte');
-			if($idReporte == 1 || $idReporte == 2 ||$idReporte == 3 || $idReporte == 4 || $idReporte == 5)
+			$idReporte = $this->input->post('idReporte');						
+			if($idReporte == 2 || $idReporte == 3 || $idReporte == 4 || $idReporte == 5)
 			{
-				$query = $this->ion_auth_model->getReg($idReporte, $tipo);				
+				$query = $this->ion_auth_model->getReg($idReporte, $tipo);												
 				if($query != false)
 				{
 					switch ($idReporte) 
@@ -1492,7 +1492,7 @@ class Auth extends CI_Controller {
 							break;
 					}											
 					$this->data['registros'] = $query;	
-					$html = $this->load->view('administrador/reportes/reportecontenido_view', $this->data, true);
+					$html = $this->load->view('administrador/reportes/reportecontenido_view', $this->data, true);					
 					$data = pdf_create($html, '', false);
 					delete_files('assets/pdf/temporal.pdf');
 			     	write_file('assets/pdf/temporal.pdf', $data);
@@ -1501,7 +1501,7 @@ class Auth extends CI_Controller {
 		}
 		elseif ($idReporte == 1) 
 		{
-			$query = $this->ion_auth_model->getReg(0, 0);
+			$query = $this->ion_auth_model->getReg(0, 0);			
 			if($query != false)
 			{
 				$this->data['tipo'] = "Reporte de convocatorias";

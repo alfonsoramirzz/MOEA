@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50624
 File Encoding         : 65001
 
-Date: 2015-06-12 15:30:45
+Date: 2015-06-13 10:28:36
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -143,11 +143,12 @@ CREATE TABLE `correo` (
   KEY `fk_interesado_has_convocatoria_interesado1_idx` (`matricula`),
   CONSTRAINT `fk_correo_has_interesado` FOREIGN KEY (`matricula`) REFERENCES `interesado` (`matricula`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_interesado_has_convocatoria_convocatoria1` FOREIGN KEY (`idPrograma`) REFERENCES `convocatoria` (`idPrograma`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of correo
 -- ----------------------------
+INSERT INTO `correo` VALUES ('1', '12', 'S12011258');
 
 -- ----------------------------
 -- Table structure for cuenta
@@ -284,11 +285,13 @@ CREATE TABLE `favoritos` (
   KEY `fk_Programa_has_Interesado_Programa1_idx` (`idPrograma`),
   CONSTRAINT `fk_Programa_has_Interesado_Programa1` FOREIGN KEY (`idPrograma`) REFERENCES `convocatoria` (`idPrograma`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_interesado_favorito1` FOREIGN KEY (`matricula`) REFERENCES `interesado` (`matricula`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of favoritos
 -- ----------------------------
+INSERT INTO `favoritos` VALUES ('20', '12', 'S12011258');
+INSERT INTO `favoritos` VALUES ('21', '13', 'S12011258');
 
 -- ----------------------------
 -- Table structure for grado
@@ -568,8 +571,8 @@ CREATE TABLE `users` (
 -- ----------------------------
 -- Records of users
 -- ----------------------------
-INSERT INTO `users` VALUES ('1', '127.0.0.1', 'administrator', '$2a$07$SeBknntpZror9uyftVopmu61qg0ms8Qv1yV6FG.kQOSM.9QhmTo36', '', 'admin@admin.com', '', null, null, '9vdJfCzey.pbcRboqlNZL.', '1268889823', '1434140379', '1', 'Admin', 'istrator', 'ADMIN', '0');
-INSERT INTO `users` VALUES ('20', '::1', 'LORENZO ALFONSO RAMIREZ', '$2y$08$DWbbkbvOooqNnVTiZv5CZukGFNDeLKkeYkm6khL7d16HmFvQ2RVGq', null, 'prueba@prueba.com', null, null, null, 't.2rpsiN8/U2AMfoe5iZee', '1434093181', '1434138987', '1', 'LORENZO ALFONSO', 'RAMIREZ ZARATE', '', '2288-60-37-94');
+INSERT INTO `users` VALUES ('1', '127.0.0.1', 'administrator', '$2a$07$SeBknntpZror9uyftVopmu61qg0ms8Qv1yV6FG.kQOSM.9QhmTo36', '', 'admin@admin.com', '', null, null, 'MNpeJjjCxZpDFSQoctCPC.', '1268889823', '1434208311', '1', 'Admin', 'istrator', 'ADMIN', '0');
+INSERT INTO `users` VALUES ('20', '::1', 'LORENZO ALFONSO RAMIREZ', '$2y$08$DWbbkbvOooqNnVTiZv5CZukGFNDeLKkeYkm6khL7d16HmFvQ2RVGq', null, 'prueba@prueba.com', null, null, null, 'cgSoANm25uMPvpLvWcbpnu', '1434093181', '1434207497', '1', 'LORENZO ALFONSO', 'RAMIREZ ZARATE', '', '2288-60-37-94');
 INSERT INTO `users` VALUES ('21', '192.168.1.68', 'CESAR LAGUNES', '$2y$08$6hqhnf11bfTfF84omoZ2tOjtqgCL8ShJcE9KXdu0D3MK4Ql9SklIG', null, 'clagunes25@gmail.com', null, null, null, 'H9CTU4DHFgAiaYiS8W27jO', '1434125215', '1434128774', '1', 'CESAR', 'LAGUNES AVENDANO', '', '2281-84-67-08');
 INSERT INTO `users` VALUES ('22', '172.72.34.76', 'JULIAN GALVAN', '$2y$08$x6K4WwoglO2QvyxLI0e1Augia1GXgcClrVSlVx9DPY9m5dO150LUi', null, 'jgv3192@gmail.com', null, null, null, 'OGTBGDDgxx1ztbp.4JnTUe', '1434126379', '1434126431', '1', 'julian', 'GALVAN VIVEROS', '', '2281-71-50-66');
 INSERT INTO `users` VALUES ('23', '172.72.34.76', 'FRANCISCO HERNANDEZ', '$2y$08$RSZqnM7dQO/WUlps0NOklevxV7fZxnNI/JObea0y7/cj5lCoAjVI6', null, 'paquito@gmail.com', null, null, null, null, '1434126634', null, '1', 'FRANCISCO', 'HERNANDEZ LOPEZ', '', '2281-67-87-56');
@@ -614,7 +617,7 @@ INSERT INTO `users_groups` VALUES ('30', '28', '3');
 -- View structure for conview
 -- ----------------------------
 DROP VIEW IF EXISTS `conview`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER  VIEW `conview` AS SELEcT 
+CREATE  VIEW `conview` AS SELEcT 
         `convocatoria`.`idPrograma` AS `idconv`,
         `convocatoria`.`nombreconv` AS `nombre`,
         `convocatoria`.`fechaInicio` AS `fi`,

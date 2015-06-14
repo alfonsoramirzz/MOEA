@@ -13,8 +13,15 @@
       <option id="4"  onclick="getTipos()">Por Pais</option>
       <option id="5"  onclick="getTipos()">Por universidad</option>
       <option id="6"  onclick="getTipos()">Favoritas</option>
-  </select>
+  </select>  
 </div>
+<!--<div class="form-group">
+  <form action="verReporteContenido" method="POST">
+    <input type="hidden" name="idReporte" value="2">
+    <input type="hidden" name="tipo" value="Licenciatura">
+    <button type="submit" class="btn btn-primary">Realizar</button>
+  </form>
+</div>-->
 <div id="FiltroReportes"> 
 </div>
 <br><br>
