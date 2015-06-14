@@ -728,9 +728,20 @@ class Auth extends CI_Controller {
 	/**************************************************************************/
 	function principal()
 	{
+		/*
 		$this->data['user'] = $this->ion_auth->user()->row();
 		$this->data['logeado'] = $this->ion_auth->logged_in();
-		$this->load->view('pagina_principal/principal_view', $this->data);
+		$this->load->view('interesado/mostrar_informacion/principal_view', $this->data);
+		//$this->load->view('pagina_principal/principal_view', $this->data);*/
+		$this->data['user'] = $this->ion_auth->user()->row();//
+		$this->data['logeado'] = $this->ion_auth->logged_in();
+		$datos_convocatoria = array
+		(
+			'datos_convocatoria' => $this->Consulta_model->getConvocatoria(), 
+			'numero_filas' => $this->Consulta_model->getCantidadFilas(),
+			'dataUser' => $this->data
+		);
+		$this->load->view('interesado/mostrar_informacion/principal_view',$datos_convocatoria);
 	}
 
 
