@@ -153,7 +153,7 @@ function verDetalleCov()
 }
 
 function getTipos()
-{
+{    
     var Reporte = document.getElementById("Reporte");
     var idReporte = Reporte.options[Reporte.selectedIndex].id;
     $.ajax

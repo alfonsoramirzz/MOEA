@@ -5,7 +5,7 @@
 <div id="page-content-wrapper" class="container-fluid convocatorias">
 <div class="form-group" >
   <label for="">Tipo</label><br>
-  <select id="Reporte" name="tipoReporte">
+  <select id="Reporte" name="tipoReporte" onchange="getTipos()">
       <option>Seleccione un Reporte...</option>
       <option id="1"  onclick="getTipos()">Convocatorias</option>
       <option id="2"  onclick="getTipos()">Grado</option>
