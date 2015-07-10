@@ -2369,7 +2369,7 @@ class Ion_auth_model extends CI_Model
 		{
 			$query = $this->db->where('idConv',$idPrograma);	
 		}
-		$query = $this->db->from('conView');
+		$query = $this->db->from('conview');
 	    $query = $this->db->get();
 	    if ($query->num_rows() > 0)
 	    {
@@ -2655,7 +2655,7 @@ class Ion_auth_model extends CI_Model
 		{
 			$query = $this->db->where('idConv',$idPrograma);	
 		}
-		$query = $this->db->from('conView');
+		$query = $this->db->from('conview');
 	    $query = $this->db->get();
 	    if ($query->num_rows() > 0)
 	    {
