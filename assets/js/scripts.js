@@ -153,7 +153,7 @@ function verDetalleCov()
 }
 
 function getTipos()
-{
+{    
     var Reporte = document.getElementById("Reporte");
     var idReporte = Reporte.options[Reporte.selectedIndex].id;
     $.ajax
@@ -164,7 +164,8 @@ function getTipos()
                 success: function(jso)
                         {
                             try
-                            {                                                           
+                            {   
+                                //alert(jso);                                                        
                                 //$("#page-content-wrapper").html(jso);
                                 var list = document.getElementById("FiltroReportes");  
                                 while (list.hasChildNodes())
@@ -219,7 +220,8 @@ function verReportContenido()
                 success: function(jso)
                         {
                             try
-                            {                                                            
+                            {           
+                                //alert(jso);                                                 
                                 //$("#page-content-wrapper").html(jso);
                                 var list = document.getElementById("area_report");
                                 var contenido = list.innerHTML;  
@@ -268,76 +270,3 @@ function barraCarga()
     }, 800);
 
 }
-
-
-/****************************************************************/
-/********************** EXAMEN **********************************/
-/****************************************************************/
-
-
-function verRegistroUniv()
-{
-    $.ajax
-            ({
-                type: "POST",
-                url: "verRegistroUniv",
-                success: function(jso)
-                        {
-                            try
-                            {     
-                                $("#wrapper").toggleClass("toggled");                               
-                                $("#page-content-wrapper").html(jso);
-                            }catch(e)
-                            {
-                                alert('Exception while resquest...');
-                            }                       
-                        },
-                error:  function()
-                        {
-                            alert('Error while resquest..');
-                        }
-            });
-}
-
-/* Nombre: mostrarAlerta 
-   Autor: Alfonso
-   Descripcion: Muestra la alerta en la pantalla
-*/
-function mostrarAlerta(msj, alerta) 
-{
-    var close = document.createElement("button");
-    var spa = document.createElement("span");
-    var alert = document.getElementById(alerta);
-    close.setAttribute("type", "button");
-    close.setAttribute("onclick", "quitarAlerta('"+alerta+"')");
-    close.setAttribute("class", "close");
-    close.setAttribute("data-dismiss", "alert");
-    close.setAttribute("aria-label", "Close");
-    spa.setAttribute("aria-hidden", "true");
-    spa.innerHTML = "&times;";
-    close.appendChild(spa);  
-    alert.setAttribute("class", "alert alert-warning");
-    alert.setAttribute("role", "alert");
-    alert.innerHTML = msj;
-    alert.appendChild(close);                    
-}
-
-/* Nombre: quitarAlerta 
-   Autor: Alfonso
-   Descripcion: Borra la alerta de la pantalla
-*/
-function quitarAlerta(alerta) 
-{
-     // Get the <ul> element with id="myList"
-    var list = document.getElementById(alerta);
-    list.className = '';
-    // As long as <ul> has a child node, remove it
-    while (list.hasChildNodes())
-    {   
-        list.removeChild(list.firstChild);
-    }
-}
-
-/****************************************************************/
-/********************** EXAMEN **********************************/
-/****************************************************************/
